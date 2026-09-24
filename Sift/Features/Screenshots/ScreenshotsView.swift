@@ -49,17 +49,31 @@ struct ScreenshotsView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: Spacing.xxs) {
-            Text(ByteFormatter.string(vm.totalBytes))
-                .font(Font.sift.heroNumber)
-                .foregroundStyle(Color.sift.inkPrimary)
-                .contentTransition(.numericText())
-            Text("^[\(vm.items.count) screenshot](inflect: true) · \(vm.selectedCount) selected")
-                .font(Font.sift.caption)
-                .foregroundStyle(Color.sift.inkSecondary)
+        HStack(alignment: .bottom) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                Text(ByteFormatter.string(vm.totalBytes))
+                    .font(Font.sift.heroNumber)
+                    .foregroundStyle(Color.sift.inkPrimary)
+                    .contentTransition(.numericText())
+                Text("^[\(vm.items.count) screenshot](inflect: true)")
+                    .font(Font.sift.caption)
+                    .foregroundStyle(Color.sift.inkSecondary)
+            }
+            Spacer()
+            if vm.selectedCount > 0 {
+                Text("\(vm.selectedCount) selected")
+                    .font(Font.sift.caption.weight(.semibold))
+                    .foregroundStyle(Color.sift.accent)
+                    .padding(.horizontal, Spacing.s)
+                    .padding(.vertical, Spacing.xxs)
+                    .background(Color.sift.accentSoft, in: Capsule())
+                    .contentTransition(.numericText())
+                    .transition(.scale.combined(with: .opacity))
+            }
         }
         .padding(.top, Spacing.s)
         .animation(Motion.standard, value: vm.totalBytes)
+        .animation(Motion.standard, value: vm.selectedCount)
     }
 
     private var grid: some View {

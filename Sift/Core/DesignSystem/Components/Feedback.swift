@@ -100,7 +100,9 @@ struct FilterChips<Option: Hashable & Identifiable>: View {
 
 /// Explains why Sift needs a permission before the iOS prompt appears (FR-PERM-2/3).
 struct PermissionPrimer: View {
-    let systemImage: String
+    enum Hero { case brandMark, symbol(String) }
+
+    let hero: Hero
     let title: Text
     let reasons: [Text]
     let allowTitle: LocalizedStringKey
@@ -110,20 +112,19 @@ struct PermissionPrimer: View {
     var body: some View {
         VStack(spacing: Spacing.xl) {
             Spacer()
-            Image(systemName: systemImage)
-                .font(.system(size: 56))
-                .symbolRenderingMode(.hierarchical)
-                .foregroundStyle(Color.sift.accent)
-                .accessibilityHidden(true)
+            heroView
             title
-                .font(Font.sift.title)
+                .font(.system(.largeTitle, design: .rounded, weight: .bold))
                 .foregroundStyle(Color.sift.inkPrimary)
                 .multilineTextAlignment(.center)
             VStack(alignment: .leading, spacing: Spacing.m) {
                 ForEach(reasons.indices, id: \.self) { index in
                     HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
-                        Image(systemName: "checkmark.circle.fill")
+                        Image(systemName: "checkmark")
+                            .font(.caption.weight(.heavy))
                             .foregroundStyle(Color.sift.accent)
+                            .frame(width: 22, height: 22)
+                            .background(Color.sift.accentSoft, in: Circle())
                             .accessibilityHidden(true)
                         reasons[index]
                             .font(Font.sift.body)
@@ -132,6 +133,10 @@ struct PermissionPrimer: View {
                     }
                 }
             }
+            .padding(Spacing.m)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.sift.surface, in: RoundedRectangle(cornerRadius: Radius.card, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: Radius.card, style: .continuous).strokeBorder(Color.sift.hairline))
             Spacer()
             VStack(spacing: Spacing.s) {
                 PrimaryButton(title: allowTitle, action: onAllow)
@@ -145,6 +150,20 @@ struct PermissionPrimer: View {
         }
         .padding(.horizontal, Spacing.xl)
         .padding(.bottom, Spacing.l)
-        .background(Color.sift.canvas.ignoresSafeArea())
+    }
+
+    @ViewBuilder private var heroView: some View {
+        switch hero {
+        case .brandMark:
+            SiftMarkTile(size: 112)
+        case .symbol(let name):
+            Image(systemName: name)
+                .font(.system(size: 48, weight: .medium))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(Color.sift.accent)
+                .frame(width: 112, height: 112)
+                .background(Color.sift.accentSoft, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
+                .accessibilityHidden(true)
+        }
     }
 }

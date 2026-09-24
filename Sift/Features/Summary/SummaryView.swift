@@ -9,14 +9,12 @@ struct SummaryView: View {
     @State private var shownBytes: Int64 = 0
     @State private var appeared = false
 
+    private var succeeded: Bool { result.failures.isEmpty }
+
     var body: some View {
         ScrollView {
             VStack(spacing: Spacing.xl) {
-                Image(systemName: result.failures.isEmpty ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
-                    .font(.system(size: 72))
-                    .foregroundStyle(result.failures.isEmpty ? Color.sift.success : Color.sift.warning)
-                    .symbolEffect(.bounce, value: appeared)
-                    .accessibilityHidden(true)
+                successMark
                     .padding(.top, Spacing.xxl)
 
                 VStack(spacing: Spacing.xxs) {
@@ -32,11 +30,17 @@ struct SummaryView: View {
 
                 VStack(spacing: 0) {
                     ForEach(CleanupCategory.allCases.filter { (result.countsByCategory[$0] ?? 0) > 0 }) { category in
-                        HStack {
-                            Image(systemName: category.symbol).foregroundStyle(category.color)
+                        HStack(spacing: Spacing.s) {
+                            Image(systemName: category.symbol)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 32, height: 32)
+                                .background(category.color, in: RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous))
                             Text(category.title)
                             Spacer()
-                            Text("\(result.countsByCategory[category] ?? 0)").font(Font.sift.metric)
+                            Text("^[\(result.countsByCategory[category] ?? 0) item](inflect: true)")
+                                .font(Font.sift.metric)
+                                .foregroundStyle(Color.sift.inkSecondary)
                         }
                         .font(Font.sift.body)
                         .foregroundStyle(Color.sift.inkPrimary)
@@ -44,8 +48,9 @@ struct SummaryView: View {
                     }
                 }
                 .background(Color.sift.surface, in: RoundedRectangle(cornerRadius: Radius.card, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: Radius.card, style: .continuous).strokeBorder(Color.sift.hairline))
 
-                if !result.failures.isEmpty {
+                if !succeeded {
                     InlineBanner(
                         style: .warning,
                         systemImage: "exclamationmark.triangle",
@@ -74,8 +79,33 @@ struct SummaryView: View {
         .navigationBarBackButtonHidden()
         .sensoryFeedback(.success, trigger: appeared)
         .onAppear {
-            appeared = true
-            withAnimation(reduceMotion ? nil : Motion.countUp) { shownBytes = result.bytesFreed }
+            withAnimation(reduceMotion ? nil : Motion.gentle) { appeared = true }
+            withAnimation(reduceMotion ? nil : Motion.countUp.delay(0.2)) { shownBytes = result.bytesFreed }
         }
+    }
+
+    /// Concentric rings that expand out from the check.
+    private var successMark: some View {
+        let color = succeeded ? Color.sift.success : Color.sift.warning
+        return ZStack {
+            ForEach(0..<3, id: \.self) { ring in
+                Circle()
+                    .stroke(color.opacity(0.22 - Double(ring) * 0.06), lineWidth: 1.5)
+                    .frame(width: 96 + CGFloat(ring) * 40, height: 96 + CGFloat(ring) * 40)
+                    .scaleEffect(appeared ? 1 : 0.6)
+                    .opacity(appeared ? 1 : 0)
+                    .animation(Motion.gentle.delay(Double(ring) * 0.08), value: appeared)
+            }
+            Circle()
+                .fill(color.opacity(0.14))
+                .frame(width: 96, height: 96)
+            Image(systemName: succeeded ? "checkmark" : "exclamationmark")
+                .font(.system(size: 40, weight: .bold))
+                .foregroundStyle(color)
+                .scaleEffect(appeared ? 1 : 0.4)
+                .animation(Motion.standard.delay(0.1), value: appeared)
+        }
+        .frame(height: 180)
+        .accessibilityHidden(true)
     }
 }

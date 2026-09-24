@@ -123,8 +123,8 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 
 | Component | Purpose | States / API |
 |---|---|---|
-| `StorageRing` | Dashboard hero: used vs free with category segments | `segments: [StorageSegment]`, `total: Int64`; loading shimmer |
-| `StorageLegend` | Legend rows under the ring | Colour dot + label + `metric` value |
+| `StorageHero` | Dashboard hero card: ring (used vs free, category segments with glow) + “Up to X can be freed” pill + legend | `snapshot: StorageSnapshot?`, `segments: [StorageSegment]`; loading spinner |
+| `SiftMark` / `SiftMarkTile` | Brand mark (three stacked cards, top one lifted with a check) and the mark on its gradient tile | `size`, `ink`, `check` |
 | `CategoryCard` | A dashboard entry per category | `.scanning(progress)`, `.ready(bytes, count)`, `.empty`, `.locked(reason)`, `.limited` |
 | `SelectableThumbnail` | A grid cell | `asset`, `isSelected`, `isBest`, `isCloudOnly`, size overlay; 44 pt minimum hit area for the check control |
 | `BestBadge` | “Best” pill on a thumbnail | teal fill, `star.fill` + text |
@@ -135,7 +135,7 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 | `PrimaryButton` | Capsule, accent fill, full width | `.normal`, `.loading`, `.disabled`; `role: .destructive` switches to the destructive colour (Review only) |
 | `SecondaryButton` | Capsule, `accentSoft` fill, accent text | |
 | `FilterChips` | Segmented chips (video size, screenshot age) | selected state uses `accent` fill |
-| `PermissionPrimer` | Full-screen explainer before the system prompt | icon, title, 2–3 reason bullets, Allow and Not now buttons |
+| `PermissionPrimer` | Full-screen explainer before the system prompt | `hero: .brandMark | .symbol(name)`, rounded display title, reasons in a surface card, Allow and Not now buttons; the onboarding container adds an accent glow and page dots |
 | `InlineBanner` | Limited access, Recently Deleted notes | `.info`, `.warning`; optional action |
 | `EmptyState` | Nothing found / all clean | illustration symbol, title, message, optional action |
 | `ScanProgressView` | Linear progress + “1,204 of 9,860 photos” | determinate or indeterminate |

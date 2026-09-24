@@ -3,6 +3,8 @@ import SwiftUI
 struct DashboardView: View {
     @State private var vm: DashboardViewModel
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var appeared = false
 
     init(env: AppEnvironment) {
         _vm = State(initialValue: DashboardViewModel(scanStore: env.scanStore, router: env.router, settings: env.settings))
@@ -10,25 +12,27 @@ struct DashboardView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: Spacing.xl) {
-                StorageRing(snapshot: vm.storage, segments: vm.segments)
-                    .padding(.top, Spacing.s)
+            VStack(spacing: Spacing.l) {
+                StorageHero(snapshot: vm.storage, segments: vm.segments)
+                    .padding(.top, Spacing.xs)
+                    .staggered(0, appeared: appeared)
 
-                if vm.showLimitedBanner { limitedBanner }
-                if vm.showPhotosLocked { lockedBanner }
+                if vm.showLimitedBanner { limitedBanner.staggered(1, appeared: appeared) }
+                if vm.showPhotosLocked { lockedBanner.staggered(1, appeared: appeared) }
 
-                LazyVGrid(columns: columns, spacing: Spacing.s) {
-                    ForEach(vm.categories) { category in
-                        CategoryCard(category: category, state: vm.cardState(for: category)) {
-                            vm.open(category)
-                        }
-                    }
-                }
+                sectionHeader
+                    .staggered(2, appeared: appeared)
+
+                cards
 
                 if vm.settings.lifetimeBytesFreed > 0 {
-                    Label("Sift has freed \(ByteFormatter.string(vm.settings.lifetimeBytesFreed)) so far", systemImage: "leaf")
-                        .font(Font.sift.caption)
-                        .foregroundStyle(Color.sift.inkSecondary)
+                    Label("Sift has freed \(ByteFormatter.string(vm.settings.lifetimeBytesFreed)) so far", systemImage: "leaf.fill")
+                        .font(Font.sift.caption.weight(.semibold))
+                        .foregroundStyle(Color.sift.success)
+                        .padding(.horizontal, Spacing.m)
+                        .padding(.vertical, Spacing.xs)
+                        .background(Color.sift.success.opacity(0.12), in: Capsule())
+                        .padding(.top, Spacing.xs)
                 }
             }
             .padding(.horizontal, Spacing.m)
@@ -37,13 +41,45 @@ struct DashboardView: View {
         .background(Color.sift.canvas)
         .navigationTitle("Sift")
         .refreshable { vm.rescan() }
-        .onAppear { vm.onAppear() }
+        .onAppear {
+            vm.onAppear()
+            withAnimation(reduceMotion ? nil : Motion.standard) { appeared = true }
+        }
     }
 
-    private var columns: [GridItem] {
-        typeSize.isAccessibilitySize
-            ? [GridItem(.flexible())]
-            : [GridItem(.flexible(), spacing: Spacing.s), GridItem(.flexible())]
+    private var sectionHeader: some View {
+        HStack {
+            Text("Ready to clean")
+                .font(Font.sift.title)
+                .foregroundStyle(Color.sift.inkPrimary)
+            Spacer()
+            Button {
+                vm.rescan()
+            } label: {
+                Label("Rescan", systemImage: "arrow.clockwise")
+                    .font(Font.sift.caption.weight(.semibold))
+                    .labelStyle(.titleAndIcon)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Color.sift.accent)
+            .frame(minHeight: Layout.minTouchTarget)
+        }
+    }
+
+    /// Two cards per row; a lone card takes the full width.
+    private var cards: some View {
+        let perRow = typeSize.isAccessibilitySize ? 1 : 2
+        let rows = stride(from: 0, to: vm.categories.count, by: perRow).map { Array(vm.categories[$0..<min($0 + perRow, vm.categories.count)]) }
+        return VStack(spacing: Spacing.s) {
+            ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
+                HStack(spacing: Spacing.s) {
+                    ForEach(row) { category in
+                        CategoryCard(category: category, state: vm.cardState(for: category)) { vm.open(category) }
+                    }
+                }
+                .staggered(3 + index, appeared: appeared)
+            }
+        }
     }
 
     private var limitedBanner: some View {
@@ -53,9 +89,7 @@ struct DashboardView: View {
             message: Text("Sift can only see the photos you chose. Anything outside that selection won't be scanned.")
         ) {
             HStack(spacing: Spacing.xs) {
-                SecondaryButton(title: "Add photos", systemImage: "plus") {
-                    Task { await vm.addMorePhotos() }
-                }
+                SecondaryButton(title: "Add photos", systemImage: "plus") { Task { await vm.addMorePhotos() } }
                 SecondaryButton(title: "Allow all") { SystemActions.openSettings() }
             }
         }
@@ -71,5 +105,25 @@ struct DashboardView: View {
                 Task { await vm.requestPhotosAccess() }
             }
         }
+    }
+}
+
+/// Fade-and-rise entrance, staggered by index. No-op under Reduce Motion.
+private struct Staggered: ViewModifier {
+    let index: Int
+    let appeared: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(appeared || reduceMotion ? 1 : 0)
+            .offset(y: appeared || reduceMotion ? 0 : 14)
+            .animation(Motion.standard.delay(Double(index) * 0.06), value: appeared)
+    }
+}
+
+private extension View {
+    func staggered(_ index: Int, appeared: Bool) -> some View {
+        modifier(Staggered(index: index, appeared: appeared))
     }
 }
