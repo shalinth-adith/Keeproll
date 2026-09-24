@@ -60,10 +60,11 @@ struct ReviewView: View {
 
     private var totalCard: some View {
         VStack(alignment: .leading, spacing: Spacing.xxs) {
-            Text("You'll free up to")
+            Text(vm.mediaCount > 0 ? "You'll free up to" : "You're about to tidy")
                 .font(Font.sift.caption)
                 .foregroundStyle(Color.sift.inkSecondary)
-            Text(ByteFormatter.string(vm.cart.totalBytes))
+            Text(vm.mediaCount > 0 ? ByteFormatter.string(vm.cart.totalBytes)
+                 : String(localized: "^[\(vm.contactActionCount) contact](inflect: true)"))
                 .font(Font.sift.heroNumber)
                 .foregroundStyle(Color.sift.inkPrimary)
                 .contentTransition(.numericText())
@@ -172,8 +173,10 @@ struct ReviewView: View {
         VStack(spacing: Spacing.s) {
             InlineBanner(
                 style: .info,
-                systemImage: "trash",
-                message: Text(vm.contactActionCount > 0
+                systemImage: vm.mediaCount == 0 ? "externaldrive.badge.checkmark" : "trash",
+                message: Text(vm.mediaCount == 0
+                    ? "Sift saves a backup of these contacts before merging or deleting them. Contacts have no Recently Deleted, so this is your undo."
+                    : vm.contactActionCount > 0
                     ? "Photos and videos go to Recently Deleted for 30 days. Contacts are backed up in Sift before they're merged or deleted."
                     : "Photos and videos go to Recently Deleted in the Photos app. The space comes back once you empty it, or automatically after 30 days.")
             )

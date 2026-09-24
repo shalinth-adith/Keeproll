@@ -5,13 +5,14 @@ import SwiftUI
 // Contacts objects (those are not Sendable).
 
 nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Identifiable {
-    case similar, screenshots, videos, contacts
+    case similar, screenshots, blurry, videos, contacts
     var id: String { rawValue }
 
     var title: LocalizedStringResource {
         switch self {
         case .similar: "Similar Photos"
         case .screenshots: "Screenshots"
+        case .blurry: "Blurry Photos"
         case .videos: "Large Videos"
         case .contacts: "Duplicate Contacts"
         }
@@ -21,6 +22,7 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         switch self {
         case .similar: "square.on.square"
         case .screenshots: "camera.viewfinder"
+        case .blurry: "camera.metering.unknown"
         case .videos: "video"
         case .contacts: "person.2"
         }
@@ -30,6 +32,7 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         switch self {
         case .similar: Color.sift.catSimilar
         case .screenshots: Color.sift.catScreenshots
+        case .blurry: Color.sift.catBlurry
         case .videos: Color.sift.catVideos
         case .contacts: Color.sift.catContacts
         }
@@ -43,6 +46,7 @@ nonisolated struct MediaItem: Identifiable, Hashable, Sendable {
     let id: String
     let kind: Kind
     let creationDate: Date?
+    var modificationDate: Date? = nil
     let pixelWidth: Int
     let pixelHeight: Int
     let duration: TimeInterval?
@@ -69,6 +73,16 @@ nonisolated struct SimilarGroup: Identifiable, Hashable, Sendable {
     /// Everything except the best shot.
     var freeableBytes: Int64 { totalBytes - (members.first { $0.id == bestID }?.byteSize ?? 0) }
     var othersThanBest: [MediaItem] { members.filter { $0.id != bestID } }
+}
+
+/// What the similarity scan reports while it runs. Groups are identified by `id`; a
+/// later `.upsert` with the same id replaces the earlier one (groups grow as the scan
+/// finds more members), and `.remove` drops a group that merged into another.
+nonisolated enum SimilarityEvent: Sendable {
+    case progress(processed: Int, total: Int)
+    case upsert(SimilarGroup)
+    case remove(UUID)
+    case blurry([MediaItem])
 }
 
 nonisolated struct ContactSummary: Identifiable, Hashable, Sendable {

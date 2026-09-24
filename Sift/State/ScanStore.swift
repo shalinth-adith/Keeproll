@@ -29,6 +29,8 @@ final class ScanStore {
     /// Groups stream in while the similarity scan runs; `similarProgress` is nil when idle.
     private(set) var similar: Loadable<[SimilarGroup]> = .idle
     private(set) var similarProgress: Double?
+    /// Photos the similarity scan scored as out of focus (bonus: blurry detection).
+    private(set) var blurry: Loadable<[MediaItem]> = .idle
     private(set) var contacts: Loadable<[DuplicateContactGroup]> = .idle
 
     private let permissions: PermissionServicing
@@ -57,7 +59,7 @@ final class ScanStore {
         CleanupCategory.allCases.filter { category in
             switch category {
             case .screenshots, .videos: true
-            case .similar: similarity != nil
+            case .similar, .blurry: similarity != nil
             case .contacts: contactsScanner != nil
             }
         }
@@ -66,6 +68,18 @@ final class ScanStore {
     var screenshotBytes: Int64 { screenshots.value?.reduce(0) { $0 + ($1.byteSize ?? 0) } ?? 0 }
     var videoBytes: Int64 { videos.value?.reduce(0) { $0 + ($1.byteSize ?? 0) } ?? 0 }
     var similarBytes: Int64 { similar.value?.reduce(0) { $0 + $1.freeableBytes } ?? 0 }
+    var blurryBytes: Int64 { blurry.value?.reduce(0) { $0 + ($1.byteSize ?? 0) } ?? 0 }
+
+    /// Everything that can be freed, counting each asset once even if it appears in
+    /// several categories (FR-DASH-6).
+    var totalFreeableBytes: Int64 {
+        var seen = Set<String>()
+        var total: Int64 = 0
+        let candidates = (screenshots.value ?? []) + (videos.value ?? []) + (blurry.value ?? [])
+            + (similar.value ?? []).flatMap(\.othersThanBest)
+        for item in candidates where seen.insert(item.id).inserted { total += item.byteSize ?? 0 }
+        return total
+    }
     var similarPhotoCount: Int { similar.value?.reduce(0) { $0 + $1.othersThanBest.count } ?? 0 }
     var duplicateContactCount: Int { contacts.value?.reduce(0) { $0 + $1.contacts.count } ?? 0 }
 
@@ -99,6 +113,8 @@ final class ScanStore {
             async let d: Void = loadContacts()
             async let e: Void = loadSimilar()
             _ = await (a, b, c, d, e)
+            guard !Task.isCancelled else { return }
+            WidgetBridge.update(freeableBytes: totalFreeableBytes)
             Log.scan.debug("Scan finished")
         }
     }
@@ -111,6 +127,9 @@ final class ScanStore {
         if case .loaded(let items) = videos {
             videos = .loaded(items.filter { !ids.contains($0.id) })
         }
+        if case .loaded(let items) = blurry {
+            blurry = .loaded(items.filter { !ids.contains($0.id) })
+        }
         if case .loaded(let groups) = similar {
             similar = .loaded(groups.compactMap { group in
                 var group = group
@@ -120,6 +139,7 @@ final class ScanStore {
                 return group
             })
         }
+        WidgetBridge.update(freeableBytes: totalFreeableBytes)
         Task { await loadStorage() }
     }
 
@@ -176,16 +196,45 @@ final class ScanStore {
     }
 
     private func loadSimilar() async {
-        guard let similarity, photosPermission.canRead else { similar = .idle; return }
-        similar = .loading
-        similarProgress = 0
-        var groups: [SimilarGroup] = []
-        for await group in similarity.scan() {
-            guard !Task.isCancelled else { return }
-            groups.append(group)
-            similar = .loaded(groups) // stream groups in as they're found (FR-SIM-2)
+        guard let similarity, photosPermission.canRead else {
+            similar = .idle
+            blurry = .idle
+            return
         }
-        similar = .loaded(groups)
+        if similar.value == nil { similar = .loading }
+        similarProgress = 0
+        var groups: [UUID: SimilarGroup] = [:]
+        var order: [UUID] = []
+        var blurryItems: [MediaItem] = []
+        var lastPublish = Date.distantPast
+
+        for await event in similarity.scan() {
+            guard !Task.isCancelled else { return }
+            switch event {
+            case .progress(let processed, let total):
+                similarProgress = total > 0 ? Double(processed) / Double(total) : 1
+            case .upsert(let group):
+                if groups[group.id] == nil { order.append(group.id) }
+                groups[group.id] = group
+            case .remove(let id):
+                groups[id] = nil
+                order.removeAll { $0 == id }
+            case .blurry(let items):
+                blurryItems.append(contentsOf: items)
+            }
+            // Publish at most ~8 times a second so the UI stays smooth (ARCHITECTURE §10).
+            if Date().timeIntervalSince(lastPublish) > 0.12 {
+                publish(order.compactMap { groups[$0] }, blurryItems)
+                lastPublish = Date()
+            }
+        }
+        publish(order.compactMap { groups[$0] }, blurryItems)
         similarProgress = nil
+    }
+
+    /// Newest groups first, as the list reads (FR-SIM-2).
+    private func publish(_ groups: [SimilarGroup], _ blurryItems: [MediaItem]) {
+        similar = .loaded(groups.sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) })
+        blurry = .loaded(blurryItems.sorted { ($0.creationDate ?? .distantPast) > ($1.creationDate ?? .distantPast) })
     }
 }

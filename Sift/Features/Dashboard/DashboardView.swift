@@ -74,11 +74,13 @@ struct DashboardView: View {
         let rows = stride(from: 0, to: vm.categories.count, by: perRow).map { Array(vm.categories[$0..<min($0 + perRow, vm.categories.count)]) }
         return VStack(spacing: Spacing.s) {
             ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
-                HStack(spacing: Spacing.s) {
+                HStack(alignment: .top, spacing: Spacing.s) {
                     ForEach(row) { category in
                         CategoryCard(category: category, state: vm.cardState(for: category)) { vm.open(category) }
+                            .frame(maxHeight: .infinity, alignment: .top)
                     }
                 }
+                .fixedSize(horizontal: false, vertical: true)
                 .staggered(3 + index, appeared: appeared)
             }
         }

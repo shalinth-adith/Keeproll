@@ -1,6 +1,16 @@
 import Foundation
 @testable import Sift
 
+nonisolated struct FakeSimilarity: SimilarityScanning {
+    let events: [SimilarityEvent]
+    func scan() -> AsyncStream<SimilarityEvent> {
+        AsyncStream { continuation in
+            for event in events { continuation.yield(event) }
+            continuation.finish()
+        }
+    }
+}
+
 nonisolated final class FakePermissions: PermissionServicing, @unchecked Sendable {
     var photos: PermissionState
     var contacts: PermissionState

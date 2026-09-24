@@ -7,13 +7,12 @@ nonisolated protocol PhotoLibraryProviding: Sendable {
     func fetchVideos() async -> [MediaItem]
 }
 
-/// Streams similar-photo groups as they're found. The live engine lands with the
-/// similarity work; until then only the demo source provides one.
+/// Streams similar-photo groups (and blurry candidates) as they're found.
 nonisolated protocol SimilarityScanning: Sendable {
-    func scan() -> AsyncStream<SimilarGroup>
+    func scan() -> AsyncStream<SimilarityEvent>
 }
 
-/// Finds duplicate contact groups. Live implementation lands with the contacts work.
+/// Finds duplicate contact groups.
 nonisolated protocol ContactsScanning: Sendable {
     func findDuplicates() async -> [DuplicateContactGroup]
 }
@@ -69,6 +68,7 @@ nonisolated final class PhotoLibraryService: PhotoLibraryProviding {
             id: asset.localIdentifier,
             kind: kind,
             creationDate: asset.creationDate,
+            modificationDate: asset.modificationDate,
             pixelWidth: asset.pixelWidth,
             pixelHeight: asset.pixelHeight,
             duration: asset.mediaType == .video ? asset.duration : nil,

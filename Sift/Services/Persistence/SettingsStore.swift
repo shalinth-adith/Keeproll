@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// Small persisted settings. Scan results live in ScanCache (Day 2), not here.
+/// Small persisted settings. Scan results live in `ScanCache`, not here.
 @Observable
 final class SettingsStore {
     private let defaults: UserDefaults
@@ -23,6 +23,7 @@ final class SettingsStore {
 
     func recordFreed(_ bytes: Int64) {
         lifetimeBytesFreed += max(bytes, 0)
+        WidgetBridge.update(lifetimeFreedBytes: lifetimeBytesFreed)
     }
 
     private enum Keys {

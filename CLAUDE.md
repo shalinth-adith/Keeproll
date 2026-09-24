@@ -33,8 +33,16 @@ swift scripts/make_screenshot_fixtures.swift SiftTests/Fixtures/Screenshots 12
 swift scripts/make_video_fixtures.swift SiftTests/Fixtures/Videos 3
 xcrun simctl addmedia <UDID> SiftTests/Fixtures/Screenshots/*.png SiftTests/Fixtures/Videos/*.mp4
 
-# Demo mode: fixture results for categories whose scanner isn't built (DEBUG only)
-SIMCTL_CHILD_SIFT_DEMO=1 xcrun simctl launch <UDID> me.adithyan.shalinth.Sift
+# Photo bursts / duplicates / blurry shots, and duplicate contacts
+swift scripts/make_photo_fixtures.swift SiftTests/Fixtures/Photos
+xcrun simctl addmedia <UDID> SiftTests/Fixtures/Photos/*.jpg SiftTests/Fixtures/Contacts/duplicates.vcf
+# Expected: 4 similar groups (3 bursts + 1 exact pair), 2 blurry, 3 contact pairs
+
+# Read the app's info-level logs (scan timings are in category "perf")
+xcrun simctl spawn <UDID> log show --last 5m --info --predicate 'subsystem == "me.adithyan.shalinth.Sift"' --style compact
+
+# A hung simulator app is a Mac process: sample its stacks
+sample <pid> 2
 
 # Privacy + safety gates (all must print nothing; see §5)
 grep -rnE "URLSession|URLRequest|NWConnection" Sift/
@@ -47,7 +55,11 @@ grep -rn "CNContactNoteKey" Sift/
 - `simctl privacy grant photos` doesn't grant `.readWrite` on iOS 27 (the status still reads `notDetermined`). Go through the real prompt instead.
 - `presentLimitedLibraryPicker` needs `import PhotosUI`.
 - Automatic grammar (`^[…](inflect: true)`) only works inside `Text(...)` literals. It renders as raw markup in `String(localized:)` concatenations, and it will pluralise verbs ("0 to removes"), so keep it to noun counts.
-- `ScanStore.availableCategories` hides a category until its scanner is injected. The live app never shows a fake "Scanning…" for an engine that doesn't exist.
+- `ScanStore.availableCategories` hides a category until its scanner is injected.
+- PhotoKit ignores `(mediaSubtypes & X) == 0` predicates (returned 1 of 22 photos). Filter in code.
+- Never call Vision's `perform` from a task group directly; it deadlocked the pool. Use `FeaturePrintService`.
+- `simctl privacy grant contacts` works; `grant photos` doesn't (see above).
+- macOS has no `timeout` command; run long `xcodebuild test` runs in the background instead.
 
 Performance and accuracy work happens **only on the real iPhone**, with the real library (the simulator has almost no photos). Use Instruments (Time Profiler, Allocations, Hitches) and the signposts in `Core/Logging/Log.swift`.
 
@@ -59,7 +71,7 @@ Performance and accuracy work happens **only on the real iPhone**, with the real
 - **Engines** (`SimilarityEngine`, `DHash`, `BestShotRanker`, `ContactDeduplicator`, `ContactMerger`): pure, deterministic, and unit-tested.
 - **Models**: `Sendable` value types carrying IDs, never `PHAsset`/`CNContact`/`CGImage`.
 - **Shared state**: `ScanStore` and `CleanupCart` are the only app-wide `@Observable`s. Don't create new globals or singletons.
-- **Concurrency**: Swift 6 strict mode with default MainActor isolation. Heavy work goes in actors or `@concurrent` functions; bound parallelism with task groups; check `Task.isCancelled`. No `DispatchQueue`, no `@unchecked Sendable` without a comment saying why it's safe.
+- **Concurrency**: Swift 6 strict mode with default MainActor isolation. Heavy work goes in actors or `@concurrent` functions; bound parallelism with task groups; check `Task.isCancelled`. No `DispatchQueue`, except to bridge a framework call that blocks its thread (Vision's `perform`: see `FeaturePrintService`). No `@unchecked Sendable` without a comment saying why it's safe.
 - **Observation only**: no `ObservableObject`, `@Published` or Combine.
 - **No third-party packages.** Apple frameworks only.
 

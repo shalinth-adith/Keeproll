@@ -2,8 +2,6 @@ import SwiftUI
 
 struct ScreenshotsView: View {
     @State private var vm: ScreenshotsViewModel
-    @Environment(\.dynamicTypeSize) private var typeSize
-    @Environment(\.horizontalSizeClass) private var sizeClass
 
     init(env: AppEnvironment) {
         _vm = State(initialValue: ScreenshotsViewModel(scanStore: env.scanStore, cart: env.cart))
@@ -77,30 +75,12 @@ struct ScreenshotsView: View {
     }
 
     private var grid: some View {
-        LazyVGrid(columns: columns, spacing: Layout.gridGutter) {
-            ForEach(vm.items) { item in
-                SelectableThumbnail(
-                    id: item.id,
-                    isSelected: vm.isSelected(item),
-                    caption: item.byteSize.map(ByteFormatter.string),
-                    accessibilityText: accessibilityText(for: item)
-                ) {
-                    vm.toggle(item)
-                }
-                .contextMenu {
-                    Button(vm.isSelected(item) ? "Deselect" : "Select", systemImage: "checkmark.circle") { vm.toggle(item) }
-                } preview: {
-                    ThumbnailView(id: item.id, pointSize: 400)
-                        .aspectRatio(CGFloat(max(item.pixelWidth, 1)) / CGFloat(max(item.pixelHeight, 1)), contentMode: .fit)
-                        .frame(idealWidth: 320)
-                }
-            }
-        }
-    }
-
-    private var columns: [GridItem] {
-        let count = typeSize.isAccessibilitySize ? 2 : (sizeClass == .regular ? 4 : 3)
-        return Array(repeating: GridItem(.flexible(), spacing: Layout.gridGutter), count: count)
+        SelectableMediaGrid(
+            items: vm.items,
+            isSelected: vm.isSelected,
+            setSelected: vm.setSelected,
+            accessibilityLabel: accessibilityText
+        )
     }
 
     private func accessibilityText(for item: MediaItem) -> Text {

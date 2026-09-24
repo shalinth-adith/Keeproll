@@ -22,6 +22,7 @@ final class ScreenshotsViewModel {
 
     var isLoading: Bool { scanStore.screenshots.isLoading }
 
+
     var items: [MediaItem] {
         let all = scanStore.screenshots.value ?? []
         switch filter {
@@ -45,6 +46,10 @@ final class ScreenshotsViewModel {
 
     func toggle(_ item: MediaItem) {
         cart.toggle(item.cartItem(in: .screenshots))
+    }
+
+    func setSelected(_ item: MediaItem, _ selected: Bool) {
+        if selected { cart.add([item.cartItem(in: .screenshots)]) } else { cart.removeAssets([item.id]) }
     }
 
     /// Selects every visible screenshot, or clears them if all are already selected.

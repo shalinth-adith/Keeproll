@@ -2,7 +2,7 @@ import Observation
 import Foundation
 
 enum Route: Hashable {
-    case similar, screenshots, videos, contacts, swipe
+    case similar, screenshots, blurry, videos, contacts, swipe
     case compare(groupID: UUID, startID: String)
 }
 

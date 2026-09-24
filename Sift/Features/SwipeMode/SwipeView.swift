@@ -15,13 +15,20 @@ final class SwipeViewModel {
         self.cart = cart
     }
 
-    /// Suggested photos: every non-best similar shot, then screenshots.
+    /// Suggested photos: non-best similar shots, then blurry photos, then screenshots.
+    /// Captured once, so the deck doesn't reshuffle while the user swipes.
     var deck: [MediaItem] {
+        if let frozenDeck { return frozenDeck }
         let similar = (scanStore.similar.value ?? []).flatMap(\.othersThanBest)
+        let blurry = scanStore.blurry.value ?? []
         let shots = scanStore.screenshots.value ?? []
         var seen = Set<String>()
-        return (similar + shots).filter { seen.insert($0.id).inserted }
+        let deck = (similar + blurry + shots).filter { seen.insert($0.id).inserted }
+        if !deck.isEmpty { frozenDeck = deck }
+        return deck
     }
+    @ObservationIgnored private var frozenDeck: [MediaItem]?
+    private var blurryIDs: Set<String> { Set((scanStore.blurry.value ?? []).map(\.id)) }
 
     var current: MediaItem? { index < deck.count ? deck[index] : nil }
     var next: MediaItem? { index + 1 < deck.count ? deck[index + 1] : nil }
@@ -30,7 +37,10 @@ final class SwipeViewModel {
     var keptCount: Int { reviewed.values.filter { !$0 }.count }
     var queuedBytes: Int64 { deck.filter { reviewed[$0.id] == true }.reduce(0) { $0 + ($1.byteSize ?? 0) } }
 
-    func category(for item: MediaItem) -> CleanupCategory { item.kind == .screenshot ? .screenshots : .similar }
+    func category(for item: MediaItem) -> CleanupCategory {
+        if item.kind == .screenshot { return .screenshots }
+        return blurryIDs.contains(item.id) ? .blurry : .similar
+    }
 
     func keep() {
         guard let current else { return }

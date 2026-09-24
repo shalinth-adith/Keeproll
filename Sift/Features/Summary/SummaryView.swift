@@ -10,6 +10,7 @@ struct SummaryView: View {
     @State private var appeared = false
 
     private var succeeded: Bool { result.failures.isEmpty }
+    private var photosRemoved: Bool { !result.deletedAssetIDs.isEmpty }
 
     var body: some View {
         ScrollView {
@@ -18,11 +19,17 @@ struct SummaryView: View {
                     .padding(.top, Spacing.xxl)
 
                 VStack(spacing: Spacing.xxs) {
-                    Text(ByteFormatter.string(shownBytes))
-                        .font(Font.sift.heroNumber)
-                        .foregroundStyle(Color.sift.inkPrimary)
-                        .contentTransition(.numericText())
-                    Text("cleaned up")
+                    if photosRemoved {
+                        Text(ByteFormatter.string(shownBytes))
+                            .font(Font.sift.heroNumber)
+                            .foregroundStyle(Color.sift.inkPrimary)
+                            .contentTransition(.numericText())
+                    } else {
+                        Text("^[\(result.countsByCategory[.contacts] ?? 0) contact](inflect: true)")
+                            .font(Font.sift.heroNumber)
+                            .foregroundStyle(Color.sift.inkPrimary)
+                    }
+                    Text(photosRemoved ? "cleaned up" : "tidied up")
                         .font(Font.sift.body)
                         .foregroundStyle(Color.sift.inkSecondary)
                 }
@@ -71,12 +78,14 @@ struct SummaryView: View {
                     }
                 }
 
-                InlineBanner(
-                    style: .info,
-                    systemImage: "trash",
-                    message: Text("Deleted photos stay in Recently Deleted for 30 days. Empty it in the Photos app to get the space back now.")
-                ) {
-                    SecondaryButton(title: "Open Photos", systemImage: "photo.on.rectangle") { SystemActions.openPhotos() }
+                if photosRemoved {
+                    InlineBanner(
+                        style: .info,
+                        systemImage: "trash",
+                        message: Text("Deleted photos stay in Recently Deleted for 30 days. Empty it in the Photos app to get the space back now.")
+                    ) {
+                        SecondaryButton(title: "Open Photos", systemImage: "photo.on.rectangle") { SystemActions.openPhotos() }
+                    }
                 }
             }
             .padding(.horizontal, Spacing.m)

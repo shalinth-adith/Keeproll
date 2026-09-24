@@ -56,3 +56,12 @@ A paid Apple Developer account is confirmed. **TestFlight (B3) is committed, not
 
 ### Amendment — 2026-09-24 (D3)
 The **outer local folder is kept** as `cleaner_storage ` for now, because renaming it mid-session would break the active Claude Code session. Everything inside has no spaces (`Sift/`, `Sift.xcodeproj`), and the GitHub repo is named `Sift`, so every clone is clean. Rename the local folder by hand between sessions if you want to.
+
+### Amendment — 2026-09-24 (D13)
+The scan cache is a **flat binary file** (`ScanCache`, an actor) instead of SwiftData. The cache is a pure key-value lookup keyed by `localIdentifier` + modification date; it needs no queries or relationships. A flat file loads ~10k records (feature prints included) in milliseconds and avoids SwiftData's `@Model`/`@ModelActor` friction under Swift 6 with default MainActor isolation. Feature prints **are** cached (not deferred as first planned), so a warm rescan does no Vision work at all. The file is written atomically with file protection; a corrupt or old-format file is ignored and rebuilt.
+
+### Amendment — 2026-09-24 (D6)
+- **Vision runs on one dedicated serial queue with a 4 s watchdog** (`FeaturePrintService`). Running `VNImageRequestHandler.perform` concurrently from the task group deadlocked the scan on the simulator: every cooperative-pool thread was parked in Vision's `dispatchGroupWait`. If Vision ever times out, it's disabled for the rest of the process and similar shots fall back to dHash (distance ≤ 10 inside the time window).
+- **Exact duplicates keep the highest-fidelity file** (most pixels, then the largest file, then the earliest), not the "sharpest": JPEG re-compression artefacts inflate the Laplacian score, so the worse copy looked sharper.
+- Screenshots are excluded in code, not with a `(mediaSubtypes & …) == 0` fetch predicate, which PhotoKit returned only 1 of 22 photos for.
+- Starting thresholds: feature distance 0.45, anchor slack 1.35, duplicate dHash ≤ 3, fallback dHash ≤ 10, blur (Laplacian variance) < 60. **Still to calibrate on the real iPhone library.**

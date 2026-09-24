@@ -15,6 +15,7 @@ struct RootView: View {
                             switch route {
                             case .similar: SimilarPhotosView(env: env)
                             case .screenshots: ScreenshotsView(env: env)
+                            case .blurry: BlurryPhotosView(env: env)
                             case .videos: LargeVideosView(env: env)
                             case .contacts: DuplicateContactsView(env: env)
                             case .swipe: SwipeView(env: env)

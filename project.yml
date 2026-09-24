@@ -23,6 +23,14 @@ targets:
     platform: iOS
     sources:
       - path: Sift
+      - path: Shared
+    dependencies:
+      - target: SiftWidget
+    entitlements:
+      path: Sift/Sift.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.me.adithyan.shalinth.Sift
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: me.adithyan.shalinth.Sift
@@ -48,6 +56,35 @@ targets:
         NSPhotoLibraryUsageDescription: "Sift looks at the photos and videos on this iPhone to find duplicates, screenshots and large videos. Nothing is uploaded."
         NSContactsUsageDescription: "Sift checks the contacts on this iPhone to find duplicates you can merge. Nothing is uploaded."
         PHPhotoLibraryPreventAutomaticLimitedAccessAlert: true
+
+  SiftWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: SiftWidget
+      - path: Shared
+    entitlements:
+      path: SiftWidget/SiftWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.me.adithyan.shalinth.Sift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: me.adithyan.shalinth.Sift.Widget
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: accent
+        SKIP_INSTALL: YES
+    info:
+      path: SiftWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Sift
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
 
   SiftTests:
     type: bundle.unit-test

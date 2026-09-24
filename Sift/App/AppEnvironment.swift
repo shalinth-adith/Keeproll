@@ -14,27 +14,18 @@ struct AppEnvironment {
 
     static func live() -> AppEnvironment {
         let permissions = PermissionService()
-        let sizes = AssetSizeService()
+        let cache = ScanCache()
+        let sizes = AssetSizeService(cache: cache)
         let photos = PhotoLibraryService(sizes: sizes)
-
-        var similarity: SimilarityScanning? = nil
-        var contactsScanner: ContactsScanning? = nil
-        #if DEBUG
-        // `SIFT_DEMO=1` in the scheme's environment feeds fixture results into the
-        // categories whose scanners aren't built yet, so the UI can be exercised.
-        if ProcessInfo.processInfo.environment["SIFT_DEMO"] == "1" {
-            similarity = DemoSimilarity(photos: photos)
-            contactsScanner = DemoContacts()
-        }
-        #endif
+        let contacts = ContactsService()
 
         return AppEnvironment(
             permissions: permissions,
             thumbnails: ThumbnailProvider(),
             videoPlayback: VideoPlaybackService(),
-            deletion: DeletionService(),
+            deletion: DeletionService(contacts: contacts),
             scanStore: ScanStore(permissions: permissions, storage: DeviceStorageService(), photos: photos,
-                                 similarity: similarity, contactsScanner: contactsScanner),
+                                 similarity: SimilarityEngine(sizes: sizes, cache: cache), contactsScanner: contacts),
             cart: CleanupCart(),
             settings: SettingsStore(),
             router: AppRouter()

@@ -4,24 +4,40 @@ import Photos
 ///
 /// PhotoKit has no public file-size API. `PHAssetResource`'s `fileSize` via KVC is widely
 /// used but undocumented, so it's read defensively; if it's missing, the size is
-/// estimated from the pixel count and flagged `sizeIsEstimated`. Results are memoised
-/// for the life of the process (the persistent cache arrives with the Day 2 ScanCache).
+/// estimated from the pixel count and flagged `sizeIsEstimated`. Real sizes are kept in
+/// the persistent `ScanCache`, so rescans don't re-read resources.
 actor AssetSizeService {
-    private var cache: [String: Int64] = [:]
+    private let cache: ScanCache?
+    private var memo: [String: Int64] = [:]
 
-    func fillSizes(_ items: [MediaItem]) -> [MediaItem] {
-        let missing = items.filter { cache[$0.id] == nil }.map(\.id)
+    init(cache: ScanCache? = nil) {
+        self.cache = cache
+    }
+
+    func fillSizes(_ items: [MediaItem]) async -> [MediaItem] {
+        var missing: [String] = []
+        for item in items where memo[item.id] == nil {
+            if let cached = await cache?.size(for: item.id, modified: item.modificationDate) {
+                memo[item.id] = cached
+            } else {
+                missing.append(item.id)
+            }
+        }
         if !missing.isEmpty {
-            let assets = PHAsset.fetchAssets(withLocalIdentifiers: missing, options: nil)
-            assets.enumerateObjects { asset, _, _ in
+            var found: [(String, Int64, Date?)] = []
+            PHAsset.fetchAssets(withLocalIdentifiers: missing, options: nil).enumerateObjects { asset, _, _ in
                 if let size = Self.fileSize(of: asset) {
-                    self.cache[asset.localIdentifier] = size
+                    found.append((asset.localIdentifier, size, asset.modificationDate))
                 }
+            }
+            for (id, size, modified) in found {
+                memo[id] = size
+                await cache?.storeSize(size, for: id, modified: modified)
             }
         }
         return items.map { item in
             var item = item
-            if let size = cache[item.id] {
+            if let size = memo[item.id] {
                 item.byteSize = size
             } else {
                 item.byteSize = Self.estimate(item)
@@ -32,7 +48,7 @@ actor AssetSizeService {
     }
 
     func forget(_ ids: some Sequence<String>) {
-        for id in ids { cache[id] = nil }
+        for id in ids { memo[id] = nil }
     }
 
     private static func fileSize(of asset: PHAsset) -> Int64? {

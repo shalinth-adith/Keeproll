@@ -3,7 +3,7 @@ import SwiftUI
 /// Dashboard entry for one category (FR-DASH-2).
 struct CategoryCard: View {
     enum State: Equatable {
-        case scanning
+        case scanning(progress: Double?)
         case ready(bytes: Int64, count: Int)
         case empty
         case locked
@@ -29,8 +29,9 @@ struct CategoryCard: View {
                         .fixedSize(horizontal: false, vertical: true)
                     detail
                 }
+                Spacer(minLength: 0)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(Spacing.m)
             .background(Color.sift.surface, in: RoundedRectangle(cornerRadius: Radius.card, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: Radius.card, style: .continuous).strokeBorder(Color.sift.hairline))
@@ -62,9 +63,15 @@ struct CategoryCard: View {
                 .foregroundStyle(Color.sift.warning)
                 .frame(width: 28, height: 28)
                 .background(Color.sift.warning.opacity(0.14), in: Circle())
-        case .scanning:
-            ProgressView().controlSize(.small)
-                .frame(width: 28, height: 28)
+        case .scanning(let progress):
+            if let progress {
+                ProgressView(value: progress)
+                    .progressViewStyle(.circular)
+                    .controlSize(.small)
+                    .frame(width: 28, height: 28)
+            } else {
+                ProgressView().controlSize(.small).frame(width: 28, height: 28)
+            }
         default:
             Image(systemName: "chevron.right")
                 .font(Font.sift.caption.weight(.bold))
@@ -76,10 +83,11 @@ struct CategoryCard: View {
 
     @ViewBuilder private var detail: some View {
         switch state {
-        case .scanning:
-            Text("Scanning…")
-                .font(Font.sift.caption)
+        case .scanning(let progress):
+            Text(progress.map { "Scanning… \(Int(($0 * 100).rounded()))%" } ?? String(localized: "Scanning…"))
+                .font(Font.sift.caption.monospacedDigit())
                 .foregroundStyle(Color.sift.inkSecondary)
+                .contentTransition(.numericText())
         case .ready(let bytes, let count):
             if category == .contacts {
                 Text("\(count)")
@@ -113,7 +121,7 @@ struct CategoryCard: View {
 #Preview {
     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Spacing.s) {
         CategoryCard(category: .screenshots, state: .ready(bytes: 2_100_000_000, count: 834)) {}
-        CategoryCard(category: .similar, state: .scanning) {}
+        CategoryCard(category: .similar, state: .scanning(progress: 0.42)) {}
         CategoryCard(category: .videos, state: .empty) {}
         CategoryCard(category: .contacts, state: .locked) {}
     }

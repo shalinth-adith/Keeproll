@@ -6,9 +6,8 @@ nonisolated protocol DeletionServicing: Sendable {
     func execute(_ plan: CleanupPlan) async -> CleanupResult
 }
 
-/// Applies contact merges and deletes. The live implementation ships with the
-/// contacts scanner; until then contact actions are reported as failures, never
-/// silently dropped.
+/// Applies contact merges and deletes (live: `ContactsService`). Without one, contact
+/// actions are reported as failures, never silently dropped.
 nonisolated protocol ContactsMutating: Sendable {
     /// Returns the backup file URL and the keys of actions that failed with a reason.
     func apply(_ actions: [CleanupPlan.ContactAction]) async -> (backup: URL?, failures: [CleanupFailure])
@@ -66,7 +65,7 @@ nonisolated final class DeletionService: DeletionServicing {
                 contactsChanged = plan.contactActions.count - outcome.failures.count
             } else {
                 failures += plan.contactActions.map {
-                    CleanupFailure(itemKey: $0.key, reason: String(localized: "Contact changes aren't available in this build yet."))
+                    CleanupFailure(itemKey: $0.key, reason: String(localized: "Contact changes aren't available."))
                 }
             }
         }
