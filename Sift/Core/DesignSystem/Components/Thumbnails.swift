@@ -4,6 +4,8 @@ import SwiftUI
 struct ThumbnailView: View {
     let id: String
     var pointSize: CGFloat = 120
+    /// Single-photo views the user opened may load the sharp copy from their iCloud.
+    var allowsNetwork = false
     @Environment(\.thumbnails) private var thumbnails
     @Environment(\.displayScale) private var displayScale
     @State private var image: UIImage?
@@ -22,7 +24,7 @@ struct ThumbnailView: View {
             .clipped()
             .task(id: id) {
                 let side = pointSize * displayScale
-                image = await thumbnails.thumbnail(for: id, targetSize: CGSize(width: side, height: side))
+                image = await thumbnails.thumbnail(for: id, targetSize: CGSize(width: side, height: side), allowsNetwork: allowsNetwork)
             }
     }
 }

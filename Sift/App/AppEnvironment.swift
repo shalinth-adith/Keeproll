@@ -14,6 +14,12 @@ struct AppEnvironment {
 
     static func live() -> AppEnvironment {
         let permissions = PermissionService()
+        #if DEBUG
+        // `-SiftResetCache` launch argument: measure a cold scan without reinstalling.
+        if ProcessInfo.processInfo.arguments.contains("-SiftResetCache") {
+            try? FileManager.default.removeItem(at: ScanCache.defaultURL)
+        }
+        #endif
         let cache = ScanCache()
         let sizes = AssetSizeService(cache: cache)
         let photos = PhotoLibraryService(sizes: sizes)

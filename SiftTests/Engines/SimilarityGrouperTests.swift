@@ -43,7 +43,7 @@ struct SimilarityGrouperTests {
         // Each shot is close to the previous one, but the fourth has drifted too far
         // from the first. Without the anchor check all five would chain together.
         let grouper = SimilarityGrouper()
-        for (i, angle) in [0, 0.3, 0.6, 0.9, 1.2].enumerated() {
+        for (i, angle) in [0, 0.35, 0.7, 1.05, 1.4].enumerated() {
             grouper.add(features("s\(i)", at: Double(i), hash: hash(), print: unitPrint(Float(angle))))
         }
         let groups = grouper.groups().map { Set($0.memberIDs) }
@@ -58,6 +58,22 @@ struct SimilarityGrouperTests {
         let groups = grouper.groups()
         #expect(groups.count == 1)
         #expect(!groups[0].isExactDuplicate)
+    }
+
+    @Test mutating func drainReportsOnlyChangesAndRetiresMergedAnchors() {
+        let grouper = SimilarityGrouper()
+        let dup = hash()
+        grouper.add(features("a", at: 0, hash: hash(), print: unitPrint(0)))
+        grouper.add(features("b", at: 1, hash: hash(), print: unitPrint(0.05)))
+        #expect(grouper.drainChanges().changed.map(\.anchorID) == ["a"])
+        #expect(grouper.drainChanges().changed.isEmpty) // nothing new since
+
+        // A separate duplicate pair far away in time, then a copy that bridges it into "a".
+        grouper.add(features("x", at: 10_000, hash: dup))
+        grouper.add(features("y", at: 20_000, hash: dup))
+        let second = grouper.drainChanges()
+        #expect(second.changed.map(\.anchorID) == ["x"])
+        #expect(second.vanishedAnchorIDs.isEmpty)
     }
 
     @Test mutating func groupsNeverExceedTheSizeCap() {

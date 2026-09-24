@@ -27,7 +27,7 @@ actor ScanCache {
     private var dirty = false
 
     private static let magic: UInt32 = 0x5346_5443 // "SFTC"
-    private static let version: UInt32 = 1
+    private static let version: UInt32 = 2 // 2: sharpness measured at a fixed 160 px
     private static let emptyPrint = UInt32.max
 
     init(url: URL = ScanCache.defaultURL) {

@@ -65,3 +65,32 @@ The scan cache is a **flat binary file** (`ScanCache`, an actor) instead of Swif
 - **Exact duplicates keep the highest-fidelity file** (most pixels, then the largest file, then the earliest), not the "sharpest": JPEG re-compression artefacts inflate the Laplacian score, so the worse copy looked sharper.
 - Screenshots are excluded in code, not with a `(mediaSubtypes & …) == 0` fetch predicate, which PhotoKit returned only 1 of 22 photos for.
 - Starting thresholds: feature distance 0.45, anchor slack 1.35, duplicate dHash ≤ 3, fallback dHash ≤ 10, blur (Laplacian variance) < 60. **Still to calibrate on the real iPhone library.**
+
+### Amendment — 2026-09-24 (D7, first real-device run: iPhone 15, 7,724 photos, iCloud "Optimize Storage")
+- **Thumbnails use opportunistic delivery.** `.highQualityFormat` with network off returned *nothing* for photos whose original lives in iCloud, so grids and the calibration screen showed black squares. Opportunistic delivery shows the local small copy first and upgrades when it can.
+- **Single-photo views the user opens (Compare, Calibrate) may load from the owner's iCloud**, like video preview. Grids and the scan never touch the network.
+- **The scan asks for `.fastFormat` first** (PhotoKit's cached thumbnail, no decode), falling back to a local `.highQualityFormat` decode when the fast copy doesn't exist (error 3303 on freshly imported media).
+- **Sharpness is measured at a fixed 160 px long edge** so scores are comparable whatever size PhotoKit returns. Cache format bumped to v2.
+- First device numbers (before these fixes): cold scan 81 s for 7,724 photos (too slow vs. PRD target); at feature threshold 0.45, 39 % of photos were grouped (too loose; distance histogram peaks at 0.45–0.55). Thresholds to be set from on-device labels.
+
+### Amendment — 2026-09-24 (D6, thresholds calibrated on device)
+Calibrated with the DEBUG Calibrate screen on the owner's iPhone 15 (7,724 photos). Labels stayed on the device; only aggregate numbers were read from the console.
+- **Feature threshold 0.45 → 0.75.** 22 labelled time-window pairs (21 "same moment", 1 "different"). At 0.45: precision 100 %, recall 52 %. At 0.75: precision 100 %, recall 95 % (20 pairs). The single "different" pair sits between 0.75 and 0.80, so 0.75 is the loosest value with no false matches. The tool's own pick (0.85, 95 % precision) was rejected: it rests on one negative example.
+- **Anchor slack 1.35 → 1.15** (anchor distance ≤ 0.86), so a looser pair threshold doesn't let chains drift.
+- **Blur threshold 60 → 45** on the fixed 160 px scale. 12 labelled photos: blurry at 33, sharp at 57 and above; 45 separates them and flags about the softest 1 % of the library (sharpness p1 = 57, p50 = 601).
+- **Caveat:** 22 pairs and 12 photos from one library. Enough to fix gross mis-settings (the old 0.45 missed half of true duplicates), not a benchmark. Nothing is pre-selected (D9), so the cost of a borderline suggestion is one tap.
+- **Warm rescan on device: 7,724 photos in 2.04 s** (all features from the cache).
+
+### Amendment — 2026-09-24 (D6, scan speed on device)
+Cold scans of the same 7,724-photo library on iPhone 15 (Debug build), each with the cache cleared via the DEBUG `-SiftResetCache` launch argument:
+
+| Change | Cold scan |
+|---|---|
+| First run (high-quality thumbnails, 1 Vision queue, batches of 48) | 81 s |
+| Fast-format thumbnails, calibrated thresholds | 59.5 s |
+| 3 Vision lanes | 62 s (no gain: the Neural Engine serialises) |
+| Sizes read in parallel in the workers; PHAsset passed, not re-fetched | 50 s |
+| Continuous pipeline + reorder buffer instead of batches; emit once a second | **43.5 s** (≈ 56 s per 10k: inside the PRD target) |
+| Grouper reports only changed groups to emit | pending measurement |
+
+Vision is now the floor: 4,753 prints, ~98 s of Vision execution across the lanes. Warm rescan: 2.04 s. Group results were identical across all speed changes (1,213 groups, 4,249 photos), and the simulator fixture still yields exactly 4 groups.

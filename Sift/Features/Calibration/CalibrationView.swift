@@ -206,9 +206,9 @@ struct CalibrationScreen: View {
             VStack(spacing: Spacing.s) {
                 Text("Were these taken as the same moment?").font(Font.sift.headline)
                 HStack(spacing: Spacing.xs) {
-                    ThumbnailView(id: pair.a, pointSize: 200).aspectRatio(1, contentMode: .fill)
+                    ThumbnailView(id: pair.a, pointSize: 200, allowsNetwork: true).aspectRatio(1, contentMode: .fill)
                         .clipShape(RoundedRectangle(cornerRadius: Radius.control, style: .continuous))
-                    ThumbnailView(id: pair.b, pointSize: 200).aspectRatio(1, contentMode: .fill)
+                    ThumbnailView(id: pair.b, pointSize: 200, allowsNetwork: true).aspectRatio(1, contentMode: .fill)
                         .clipShape(RoundedRectangle(cornerRadius: Radius.control, style: .continuous))
                 }
                 Text(String(format: "distance %.2f · %.0f s apart", pair.featureDistance ?? 0, pair.seconds))
@@ -233,7 +233,7 @@ struct CalibrationScreen: View {
         if let next = vm.blurQueue.first {
             VStack(spacing: Spacing.s) {
                 Text("Is this photo blurry?").font(Font.sift.headline)
-                ThumbnailView(id: next.id, pointSize: 400)
+                ThumbnailView(id: next.id, pointSize: 400, allowsNetwork: true)
                     .aspectRatio(1, contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: Radius.card, style: .continuous))
                 Text(String(format: "sharpness %.0f", next.value))

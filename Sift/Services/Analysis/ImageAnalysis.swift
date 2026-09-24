@@ -37,10 +37,11 @@ nonisolated enum ImageAnalysis {
 
     static func hamming(_ a: UInt64, _ b: UInt64) -> Int { (a ^ b).nonzeroBitCount }
 
-    /// Variance of the Laplacian on a ≤`maxSide` grayscale copy. Sharp photos have
-    /// strong edges (high variance); blurry ones don't.
-    static func sharpness(_ image: CGImage, maxSide: Int = 256) -> Float {
-        let scale = min(1, Double(maxSide) / Double(max(image.width, image.height)))
+    /// Variance of the Laplacian on a grayscale copy scaled to `maxSide` on its long edge.
+    /// Sharp photos have strong edges (high variance); blurry ones don't. Always measured
+    /// at the same size, so scores compare across photos whatever size PhotoKit returned.
+    static func sharpness(_ image: CGImage, maxSide: Int = 160) -> Float {
+        let scale = Double(maxSide) / Double(max(image.width, image.height))
         let width = max(3, Int(Double(image.width) * scale))
         let height = max(3, Int(Double(image.height) * scale))
         guard let pixels = grayscale(image, width: width, height: height) else { return 0 }
@@ -71,21 +72,41 @@ nonisolated enum ImageAnalysis {
 /// Runs Vision feature prints off Swift's cooperative thread pool.
 ///
 /// `VNImageRequestHandler.perform` blocks its thread until Vision's own queue finishes.
-/// With several running at once on the cooperative pool, every pool thread ended up
-/// parked in `dispatchGroupWait` and the scan deadlocked. So requests run one at a time
-/// on a dedicated serial queue (the Neural Engine serialises them anyway), and a
-/// watchdog gives up after `timeout`. If Vision ever hangs, it's switched off for the
-/// rest of the process and the scan falls back to dHash comparisons.
+/// Called from the task group, every cooperative-pool thread ended up parked in
+/// `dispatchGroupWait` and the scan deadlocked. So requests run on a few dedicated
+/// serial queues ("lanes"), never on the pool, and a watchdog gives up after `timeout`.
+/// If Vision ever hangs, it's switched off for the rest of the process and the scan
+/// falls back to dHash comparisons.
 ///
-/// `@unchecked Sendable`: the only mutable state (`disabled`) is guarded by `lock`.
+/// One lane made Vision the bottleneck on a real library (7,724 photos: 106 s of queued
+/// Vision time in a 60 s scan); three lanes keep the Neural Engine busy.
+///
+/// `@unchecked Sendable`: the mutable state (`disabled`, `next`) is guarded by `lock`.
 nonisolated final class FeaturePrintService: @unchecked Sendable {
-    private let queue = DispatchQueue(label: "me.adithyan.shalinth.Sift.vision", qos: .userInitiated)
+    private let lanes: [DispatchQueue]
     private let lock = NSLock()
     private var disabled = false
+    private var next = 0
+    private var exec = 0.0
+    private var count = 0
     private let timeout: TimeInterval
 
-    init(timeout: TimeInterval = 4) {
+    /// Time spent inside Vision itself (not queued), for the calibration log.
+    var execSeconds: Double { lock.withLock { exec } }
+    var printCount: Int { lock.withLock { count } }
+
+    init(lanes: Int = 3, timeout: TimeInterval = 4) {
+        self.lanes = (0..<max(1, lanes)).map {
+            DispatchQueue(label: "me.adithyan.shalinth.Sift.vision.\($0)", qos: .userInitiated)
+        }
         self.timeout = timeout
+    }
+
+    private func nextLane() -> DispatchQueue {
+        lock.withLock {
+            defer { next = (next + 1) % lanes.count }
+            return lanes[next]
+        }
     }
 
     var isAvailable: Bool { lock.withLock { !disabled } }
@@ -94,8 +115,11 @@ nonisolated final class FeaturePrintService: @unchecked Sendable {
         guard isAvailable else { return nil }
         return await withCheckedContinuation { continuation in
             let once = ResumeOnce()
-            queue.async {
+            nextLane().async { [self] in
+                let started = Date()
                 let print = FeaturePrinter.featurePrint(for: image)
+                let elapsed = Date().timeIntervalSince(started)
+                lock.withLock { exec += elapsed; count += 1 }
                 if once.claim() { continuation.resume(returning: print) }
             }
             DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + timeout) { [self] in

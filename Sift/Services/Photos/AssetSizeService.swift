@@ -51,7 +51,9 @@ actor AssetSizeService {
         for id in ids { memo[id] = nil }
     }
 
-    private static func fileSize(of asset: PHAsset) -> Int64? {
+    /// Sum of the original resources' sizes. Static (no actor hop), so the scan's worker
+    /// tasks can read sizes in parallel.
+    static func fileSize(of asset: PHAsset) -> Int64? {
         let resources = PHAssetResource.assetResources(for: asset)
         // Count the original resources; ignore adjustment data and derived renders.
         let originals = resources.filter {

@@ -22,7 +22,7 @@ struct CompareView: View {
             if let group {
                 TabView(selection: $currentID) {
                     ForEach(group.members) { item in
-                        ThumbnailView(id: item.id, pointSize: 800)
+                        ThumbnailView(id: item.id, pointSize: 800, allowsNetwork: true)
                             .aspectRatio(CGFloat(max(item.pixelWidth, 1)) / CGFloat(max(item.pixelHeight, 1)), contentMode: .fit)
                             .tag(item.id)
                             .padding(.horizontal, Spacing.xs)

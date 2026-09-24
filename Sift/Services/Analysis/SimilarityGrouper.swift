@@ -40,6 +40,10 @@ nonisolated final class SimilarityGrouper {
     /// Root → members, kept only for groups of two or more, so `groups()` costs
     /// O(groups) rather than O(library) and can run after every batch.
     private var memberLists: [Int: [Int]] = [:]
+    /// Roots whose group changed since the last `drainChanges()`, and anchors of groups
+    /// that were merged into another (so their old identity must be retired).
+    private var dirtyRoots: Set<Int> = []
+    private var vanishedAnchors: [String] = []
 
     /// Called for every time-window comparison with the two asset ids, the feature
     /// distance, the dHash distance and seconds apart. DEBUG calibration only.
@@ -98,6 +102,22 @@ nonisolated final class SimilarityGrouper {
         .map(\.1)
     }
 
+    /// Groups that changed since the last call, plus anchors of groups that merged away.
+    /// Lets the engine stream updates in O(changes) instead of re-diffing every group.
+    func drainChanges() -> (changed: [Group], vanishedAnchorIDs: [String]) {
+        var changed: [Group] = []
+        for root in dirtyRoots where sets.find(root) == root {
+            guard let indices = memberLists[root], indices.count > 1 else { continue }
+            let anchorIndex = anchor[root] ?? indices.min()!
+            changed.append(Group(anchorID: features[anchorIndex].id, memberIDs: indices.map { features[$0].id },
+                                 isExactDuplicate: !hasSimilarEdge.contains(root)))
+        }
+        let vanished = vanishedAnchors
+        dirtyRoots.removeAll()
+        vanishedAnchors.removeAll()
+        return (changed, vanished)
+    }
+
     // MARK: - Private
 
     private func areSimilar(_ a: Int, _ b: Int, slack: Float) -> Bool {
@@ -125,10 +145,17 @@ nonisolated final class SimilarityGrouper {
             guard anchorsMatch else { return }
         }
 
+        let sizeA = sets.size(of: ra), sizeB = sets.size(of: rb)
         let root = sets.union(ra, rb)
         let merged = (memberLists.removeValue(forKey: ra) ?? [ra]) + (memberLists.removeValue(forKey: rb) ?? [rb])
         memberLists[root] = merged
-        anchor[root] = min(anchorA, anchorB)
+        let newAnchor = min(anchorA, anchorB)
+        // A real group (2+) whose anchor lost the merge no longer exists under that anchor.
+        if anchorA != newAnchor && sizeA > 1 { vanishedAnchors.append(features[anchorA].id) }
+        if anchorB != newAnchor && sizeB > 1 { vanishedAnchors.append(features[anchorB].id) }
+        anchor[root] = newAnchor
+        dirtyRoots.remove(root == ra ? rb : ra)
+        dirtyRoots.insert(root)
         if similarEdge || hasSimilarEdge.contains(ra) || hasSimilarEdge.contains(rb) { hasSimilarEdge.insert(root) }
         hasSimilarEdge.remove(root == ra ? rb : ra)
     }
