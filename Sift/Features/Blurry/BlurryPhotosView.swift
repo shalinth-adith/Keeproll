@@ -81,7 +81,7 @@ struct BlurryPhotosView: View {
                         .font(Font.sift.heroNumber)
                         .foregroundStyle(Color.sift.inkPrimary)
                         .contentTransition(.numericText())
-                    Text("^[\(vm.items.count) photo](inflect: true) look out of focus")
+                    Text("^[\(vm.items.count) photo](inflect: true) out of focus")
                         .font(Font.sift.caption)
                         .foregroundStyle(Color.sift.inkSecondary)
                 }

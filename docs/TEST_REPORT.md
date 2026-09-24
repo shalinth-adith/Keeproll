@@ -28,12 +28,12 @@ The core loop (scan → review → delete → summary) works end to end, the del
 |---|---|---|---|---|
 | **F1** ✅ fixed | 🔴 High | **Swipe card shows a stale photo.** When the card advances, the image stays on the previous photo if the new one is already in the memory cache; labels (size/date) change but the picture doesn't. A user can Keep/Remove while looking at the wrong photo. Regression from today's thumbnail cache (`ThumbnailView` keeps `@State image` across id changes and the task exits early on a cache hit). | `Core/DesignSystem/Components/Thumbnails.swift` · Swipe to sort | 12-swipe.png: "63 KB · 12 Sep" (a screenshot) and "107 KB · 6 Aug" both render the same mountain photo |
 | **F2** ✅ fixed | 🔴 High | **Manual "Make Best" is lost after a rescan — and a delete triggers one.** iOS's delete prompt sends the app inactive→active; the deletion itself marks the library "changed", so the quiet foreground rescan runs and re-ranks Best from scratch. The photo the user chose to keep became the suggested deletion ("168 KB · 1 item"). Two fixes: persist Best overrides across rescans; don't mark the library stale for Sift's own deletions. | `State/ScanStore.swift` (`apply`, `setBest`), `App/RootView.swift` | log: rescan at 16:26:20 immediately after delete; dashboard card after delete |
-| F3 | 🟠 Medium | **AX5 (largest text) breaks the dashboard hero:** free-space number truncates ("24.89…"), "free of 494.33 GB" spills outside the ring, legend labels truncate ("Us…", "Si…"). Category icons overflow their fixed 44 pt tiles. Cards themselves reflow correctly to one column. | `StorageRing.swift`, `CategoryCard.swift` | 11-ax5-dashboard.png |
+| F3 ✅ fixed | 🟠 Medium | **AX5 (largest text) breaks the dashboard hero:** free-space number truncates ("24.89…"), "free of 494.33 GB" spills outside the ring, legend labels truncate ("Us…", "Si…"). Category icons overflow their fixed 44 pt tiles. Cards themselves reflow correctly to one column. | `StorageRing.swift`, `CategoryCard.swift` | 11-ax5-dashboard.png |
 | F4 | 🟠 Medium | **Blur threshold misses a clearly blurred photo.** At the calibrated 45, 1 of 2 deliberately blurred fixtures is found (the dark scene is missed). The threshold rests on a single "blurry" label from the owner's phone. Needs ~5+ blurry labels, or a contrast-normalised measure. | `SimilarityConfig.blurThreshold` | 07-blurry.png |
-| F5 | 🟡 Low | Copy: **"7 photo or videos will be removed"** — automatic grammar pluralises the wrong word. | `ReviewView.swift` | 08-review.png |
-| F6 | 🟡 Low | Copy: **"1 photo look out of focus"** — verb doesn't agree. | `BlurryPhotosView.swift` | 07-blurry.png |
-| F7 | 🟡 Low | Copy: hero says **"Looking for things to clean…"** when Photos access is denied (nothing is being looked for). Should say access is needed. | `StorageRing.swift` | 02-denied-dashboard.png |
-| F8 | 🟡 Low | Copy: empty totals render as **"Zero KB"** (system formatter). Prefer "0 MB" or hide the number. | `ByteFormatter` | Large Videos with "Over 100 MB" filter |
+| F5 ✅ fixed | 🟡 Low | Copy: **"7 photo or videos will be removed"** — automatic grammar pluralises the wrong word. | `ReviewView.swift` | 08-review.png |
+| F6 ✅ fixed | 🟡 Low | Copy: **"1 photo look out of focus"** — verb doesn't agree. | `BlurryPhotosView.swift` | 07-blurry.png |
+| F7 ✅ fixed | 🟡 Low | Copy: hero says **"Looking for things to clean…"** when Photos access is denied (nothing is being looked for). Should say access is needed. | `StorageRing.swift` | 02-denied-dashboard.png |
+| F8 ✅ fixed | 🟡 Low | Copy: empty totals render as **"Zero KB"** (system formatter). Prefer "0 MB" or hide the number. | `ByteFormatter` | Large Videos with "Over 100 MB" filter |
 
 ---
 
@@ -112,3 +112,15 @@ Measured earlier today via the device console (Debug build). A fresh re-measurem
 | F2 | User Best choices stored (persisted in UserDefaults) and re-applied to every rescan; one choice per group; removed ids dropped. Sift's own deletions no longer mark results stale (10 s window set just before deleting) | Unit tests `manualBestSurvivesARescan` (incl. relaunch), `choosingAgainInTheSameGroupReplacesTheEarlierChoice`, `siftsOwnDeletionDoesNotTriggerARescan`; on simulator: Make Best on 168 KB → delete a screenshot via Review (no rescan logged) → forced full rescan at 16:36:39 → 168 KB still Best | ✅ (13-f2-best-kept-after-rescan.png) |
 
 Tests: **44/44 pass** (4 new regression tests).
+
+### Re-test of F3, F5–F8
+
+| Finding | Fix | Verified on simulator |
+|---|---|---|
+| F3 | At accessibility sizes the free-space numbers move below the ring (smaller ring), the legend becomes one column with full labels, the "can be freed" pill becomes a rounded rectangle, and category icon tiles scale with `@ScaledMetric` | AX5: "25 GB · free of 494.33 GB" below the ring, legend "Used / Similar" untruncated, icons inside their tiles; default size unchanged |
+| F5 | "N items from Photos will be removed" | "1 item from Photos will be removed" |
+| F6 | "N photos out of focus" (no verb to agree) | "1 photo out of focus" |
+| F7 | Hero shows a lock and "Photo access needed to scan" when access is denied | Denied state after fresh install |
+| F8 | Zero bytes formatted numerically (MB unit, non-numeric formatting off) | "0 MB" on the Over 100 MB filter; unit test `zeroBytesIsNumeric` |
+
+Tests: **45/45 pass**. Remaining open: **F4** (blur threshold needs more device labels).

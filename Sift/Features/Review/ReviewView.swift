@@ -93,7 +93,7 @@ struct ReviewView: View {
     /// Built from `Text` pieces so automatic grammar agreement applies to each count.
     private var summaryLine: Text {
         var line = Text("")
-        if vm.mediaCount > 0 { line = Text("^[\(vm.mediaCount) photo or video](inflect: true) will be removed") }
+        if vm.mediaCount > 0 { line = Text("^[\(vm.mediaCount) item](inflect: true) from Photos will be removed") }
         if vm.contactActionCount > 0 {
             let contacts = Text("^[\(vm.contactActionCount) contact change](inflect: true)")
             line = vm.mediaCount > 0 ? line + Text(" · ") + contacts : contacts

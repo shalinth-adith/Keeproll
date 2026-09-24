@@ -11,6 +11,8 @@ struct CategoryCard: View {
 
     let category: CleanupCategory
     let state: State
+    /// The icon tile grows with Dynamic Type so the glyph never overflows it (F3).
+    @ScaledMetric(relativeTo: .title2) private var tileSide: CGFloat = 44
     /// Showing last-known numbers while a new scan runs.
     var refreshing = false
     let action: () -> Void
@@ -48,7 +50,7 @@ struct CategoryCard: View {
         Image(systemName: category.symbol)
             .font(.title2.weight(.semibold))
             .foregroundStyle(.white)
-            .frame(width: 44, height: 44)
+            .frame(width: tileSide, height: tileSide)
             .background(
                 LinearGradient(colors: [category.color, category.color.opacity(0.72)],
                                startPoint: .topLeading, endPoint: .bottomTrailing),

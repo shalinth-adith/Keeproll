@@ -85,3 +85,14 @@ struct RegressionTests {
         #expect(store.isStale)
     }
 }
+
+struct CopyRegressionTests {
+    // F8: never "Zero KB".
+    @Test func zeroBytesIsNumeric() {
+        let text = ByteFormatter.string(0)
+        #expect(text.first?.isNumber == true, "got \(text)")
+        #expect(!text.localizedCaseInsensitiveContains("zero"))
+        #expect(ByteFormatter.string(-5) == text)
+        #expect(ByteFormatter.string(1_400_000_000).contains("1.4"))
+    }
+}

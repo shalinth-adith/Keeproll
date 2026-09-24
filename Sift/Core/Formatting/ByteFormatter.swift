@@ -3,7 +3,15 @@ import Foundation
 nonisolated enum ByteFormatter {
     /// "1.4 GB" style, matching how the Settings app counts file sizes.
     static func string(_ bytes: Int64) -> String {
-        ByteCountFormatter.string(fromByteCount: max(bytes, 0), countStyle: .file)
+        guard bytes > 0 else {
+            // The system formatter spells zero out as "Zero KB" (test report F8).
+            let zero = ByteCountFormatter()
+            zero.countStyle = .file
+            zero.allowedUnits = .useMB
+            zero.allowsNonnumericFormatting = false
+            return zero.string(fromByteCount: 0)
+        }
+        return ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file)
     }
 }
 

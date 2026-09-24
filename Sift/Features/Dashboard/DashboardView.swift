@@ -13,7 +13,8 @@ struct DashboardView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Spacing.l) {
-                StorageHero(snapshot: vm.storage, segments: vm.segments, freeable: vm.totalFreeable, scanProgress: vm.scanProgress)
+                StorageHero(snapshot: vm.storage, segments: vm.segments, freeable: vm.totalFreeable, scanProgress: vm.scanProgress,
+                            photosLocked: vm.showPhotosLocked)
                     .padding(.top, Spacing.xs)
                     .staggered(0, appeared: appeared)
 

@@ -16,7 +16,10 @@ struct StorageHero: View {
     var freeable: Int64? = nil
     /// Photo-scan progress 0…1 while scanning, nil when idle.
     var scanProgress: Double? = nil
+    /// Photos access is missing, so nothing is being looked for (test report F7).
+    var photosLocked = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var progress: Double = 0
 
     private let lineWidth: CGFloat = 22
@@ -48,43 +51,59 @@ struct StorageHero: View {
                         .shadow(color: arc.isCategory ? arc.segment.color.opacity(0.45) : .clear, radius: 8)
                 }
             }
-            VStack(spacing: Spacing.xxs) {
-                if let snapshot {
-                    Text(ByteFormatter.string(snapshot.availableBytes))
-                        .font(Font.sift.heroNumber)
-                        .foregroundStyle(Color.sift.inkPrimary)
-                        .minimumScaleFactor(0.6)
-                        .lineLimit(1)
-                        .contentTransition(.numericText())
-                    Text("free of \(ByteFormatter.string(snapshot.totalBytes))")
-                        .font(Font.sift.caption)
-                        .foregroundStyle(Color.sift.inkSecondary)
-                } else {
-                    ProgressView()
-                }
+            if !typeSize.isAccessibilitySize {
+                freeSpaceText.padding(Spacing.xxl)
             }
-            .padding(Spacing.xxl)
         }
-        .frame(maxWidth: 220)
+        .frame(maxWidth: typeSize.isAccessibilitySize ? 160 : 220)
         .aspectRatio(1, contentMode: .fit)
         .padding(lineWidth / 2)
+        .modifier(StackedBelow(active: typeSize.isAccessibilitySize) { freeSpaceText })
+    }
+
+    /// "38.2 GB · free of 128 GB". Inside the ring normally; below it at accessibility
+    /// text sizes, where it can't fit inside (test report F3).
+    private var freeSpaceText: some View {
+        VStack(spacing: Spacing.xxs) {
+            if let snapshot {
+                Text(ByteFormatter.string(snapshot.availableBytes))
+                    .font(Font.sift.heroNumber)
+                    .foregroundStyle(Color.sift.inkPrimary)
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
+                    .contentTransition(.numericText())
+                Text("free of \(ByteFormatter.string(snapshot.totalBytes))")
+                    .font(Font.sift.caption)
+                    .foregroundStyle(Color.sift.inkSecondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                ProgressView()
+            }
+        }
     }
 
     private var legend: some View {
         VStack(spacing: Spacing.s) {
             HStack(spacing: Spacing.xs) {
-                Image(systemName: "sparkles")
-                    .foregroundStyle(Color.sift.accent)
-                Text(freeableBytes > 0
+                Image(systemName: photosLocked ? "lock" : "sparkles")
+                    .foregroundStyle(photosLocked ? Color.sift.warning : Color.sift.accent)
+                Text(photosLocked
+                     ? "Photo access needed to scan"
+                     : freeableBytes > 0
                      ? "Up to \(ByteFormatter.string(freeableBytes)) can be freed"
                      : "Looking for things to clean…")
+                    .multilineTextAlignment(.center)
                     .font(Font.sift.headline)
                     .foregroundStyle(Color.sift.inkPrimary)
                     .contentTransition(.numericText())
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, Spacing.s)
-            .background(Color.sift.accentSoft, in: Capsule())
+            .padding(.horizontal, typeSize.isAccessibilitySize ? Spacing.m : 0)
+            // A capsule turns into an oval once the text wraps at large sizes.
+            .background(Color.sift.accentSoft,
+                        in: RoundedRectangle(cornerRadius: typeSize.isAccessibilitySize ? Radius.card : 100, style: .continuous))
 
             if let scanProgress {
                 VStack(spacing: Spacing.xxs) {
@@ -97,7 +116,9 @@ struct StorageHero: View {
                 .transition(.opacity)
             }
 
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 96), spacing: Spacing.s, alignment: .leading)],
+            LazyVGrid(columns: typeSize.isAccessibilitySize
+                      ? [GridItem(.flexible(), alignment: .leading)]
+                      : [GridItem(.adaptive(minimum: 96), spacing: Spacing.s, alignment: .leading)],
                       alignment: .leading, spacing: Spacing.s) {
                 LegendItem(color: Color.sift.catFree, label: Text("Free"),
                            value: snapshot.map { ByteFormatter.string($0.availableBytes) })
@@ -123,7 +144,8 @@ struct StorageHero: View {
                     Circle().fill(color)
                         .overlay(Circle().strokeBorder(Color.sift.inkTertiary.opacity(0.5), lineWidth: 0.5))
                         .frame(width: 8, height: 8)
-                    label.font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary).lineLimit(1)
+                    label.font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
+                        .lineLimit(1).minimumScaleFactor(0.8)
                 }
                 Text(value ?? "—")
                     .font(Font.sift.metric)
@@ -132,6 +154,20 @@ struct StorageHero: View {
                     .contentTransition(.numericText())
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    /// Puts `content` in a column under the ring when active.
+    private struct StackedBelow<Below: View>: ViewModifier {
+        let active: Bool
+        @ViewBuilder let below: () -> Below
+
+        func body(content: Content) -> some View {
+            if active {
+                VStack(spacing: Spacing.m) { content; below() }
+            } else {
+                content
+            }
         }
     }
 
