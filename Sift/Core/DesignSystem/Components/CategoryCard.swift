@@ -11,6 +11,8 @@ struct CategoryCard: View {
 
     let category: CleanupCategory
     let state: State
+    /// Showing last-known numbers while a new scan runs.
+    var refreshing = false
     let action: () -> Void
 
     var body: some View {
@@ -73,11 +75,16 @@ struct CategoryCard: View {
                 ProgressView().controlSize(.small).frame(width: 28, height: 28)
             }
         default:
+            if refreshing {
+                ProgressView().controlSize(.mini).frame(width: 28, height: 28)
+                    .accessibilityLabel(Text("Updating"))
+            } else {
             Image(systemName: "chevron.right")
                 .font(Font.sift.caption.weight(.bold))
                 .foregroundStyle(Color.sift.inkTertiary)
                 .frame(width: 28, height: 28)
                 .background(Color.sift.canvas, in: Circle())
+            }
         }
     }
 

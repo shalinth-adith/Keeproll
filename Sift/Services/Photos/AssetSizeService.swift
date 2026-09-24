@@ -24,12 +24,9 @@ actor AssetSizeService {
             }
         }
         if !missing.isEmpty {
-            var found: [(String, Int64, Date?)] = []
-            PHAsset.fetchAssets(withLocalIdentifiers: missing, options: nil).enumerateObjects { asset, _, _ in
-                if let size = Self.fileSize(of: asset) {
-                    found.append((asset.localIdentifier, size, asset.modificationDate))
-                }
-            }
+            // Resource reads are slow (~ms each) and independent: do them in parallel,
+            // off this actor, so other callers aren't queued behind a big first read.
+            let found = await Self.readSizes(missing)
             for (id, size, modified) in found {
                 memo[id] = size
                 await cache?.storeSize(size, for: id, modified: modified)
@@ -44,6 +41,29 @@ actor AssetSizeService {
                 item.sizeIsEstimated = true
             }
             return item
+        }
+    }
+
+    private struct Boxed: @unchecked Sendable { let assets: [PHAsset] } // immutable snapshots
+
+    @concurrent
+    private static func readSizes(_ ids: [String]) async -> [(String, Int64, Date?)] {
+        var assets: [PHAsset] = []
+        PHAsset.fetchAssets(withLocalIdentifiers: ids, options: nil).enumerateObjects { asset, _, _ in assets.append(asset) }
+        let lanes = max(2, ProcessInfo.processInfo.activeProcessorCount)
+        let chunk = max(1, (assets.count + lanes - 1) / lanes)
+        let chunks = stride(from: 0, to: assets.count, by: chunk).map { Boxed(assets: Array(assets[$0..<min($0 + chunk, assets.count)])) }
+        return await withTaskGroup(of: [(String, Int64, Date?)].self) { group in
+            for box in chunks {
+                group.addTask {
+                    box.assets.compactMap { asset in
+                        fileSize(of: asset).map { (asset.localIdentifier, $0, asset.modificationDate) }
+                    }
+                }
+            }
+            var all: [(String, Int64, Date?)] = []
+            for await part in group { all += part }
+            return all
         }
     }
 

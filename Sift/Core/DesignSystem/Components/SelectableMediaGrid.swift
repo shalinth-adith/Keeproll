@@ -12,6 +12,8 @@ struct SelectableMediaGrid: View {
     let setSelected: (MediaItem, Bool) -> Void
     let accessibilityLabel: (MediaItem) -> Text
 
+    @Environment(\.thumbnails) private var thumbnails
+    @Environment(\.displayScale) private var displayScale
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var gridWidth: CGFloat = 0
@@ -38,7 +40,7 @@ struct SelectableMediaGrid: View {
     var body: some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Layout.gridGutter), count: columnCount),
                   spacing: Layout.gridGutter) {
-            ForEach(items) { item in
+            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                 SelectableThumbnail(
                     id: item.id,
                     isSelected: isSelected(item),
@@ -47,6 +49,7 @@ struct SelectableMediaGrid: View {
                 ) {
                     setSelected(item, !isSelected(item))
                 }
+                .onAppear { prefetch(after: index) }
                 .contextMenu {
                     Button(isSelected(item) ? "Deselect" : "Select", systemImage: "checkmark.circle") {
                         setSelected(item, !isSelected(item))
@@ -85,6 +88,14 @@ struct SelectableMediaGrid: View {
                 drag = nil
                 dragIsSelecting = nil
             }
+    }
+
+    /// Warms the next few rows so they're decoded before they scroll into view.
+    private func prefetch(after index: Int) {
+        guard index % columnCount == 0 else { return } // once per row
+        let upcoming = items.dropFirst(index + columnCount).prefix(columnCount * 6).map(\.id)
+        let side = 120 * displayScale // ThumbnailView's default point size
+        thumbnails.prefetch(Array(upcoming), targetSize: CGSize(width: side, height: side))
     }
 
     /// Cells in the dragged range take the target state; the rest revert.

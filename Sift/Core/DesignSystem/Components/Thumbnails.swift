@@ -10,11 +10,18 @@ struct ThumbnailView: View {
     @Environment(\.displayScale) private var displayScale
     @State private var image: UIImage?
 
+    private var targetSize: CGSize {
+        let side = pointSize * displayScale
+        return CGSize(width: side, height: side)
+    }
+
     var body: some View {
+        // A memory-cached image draws in the first frame, so revisited cells never flash.
+        let shown = image ?? thumbnails.cachedThumbnail(for: id, targetSize: targetSize)
         Rectangle()
             .fill(Color.sift.hairline)
             .overlay {
-                if let image {
+                if let image = shown {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
@@ -23,8 +30,8 @@ struct ThumbnailView: View {
             }
             .clipped()
             .task(id: id) {
-                let side = pointSize * displayScale
-                image = await thumbnails.thumbnail(for: id, targetSize: CGSize(width: side, height: side), allowsNetwork: allowsNetwork)
+                guard thumbnails.cachedThumbnail(for: id, targetSize: targetSize) == nil || allowsNetwork else { return }
+                image = await thumbnails.thumbnail(for: id, targetSize: targetSize, allowsNetwork: allowsNetwork)
             }
     }
 }

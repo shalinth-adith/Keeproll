@@ -13,7 +13,7 @@ struct DashboardView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Spacing.l) {
-                StorageHero(snapshot: vm.storage, segments: vm.segments)
+                StorageHero(snapshot: vm.storage, segments: vm.segments, freeable: vm.totalFreeable, scanProgress: vm.scanProgress)
                     .padding(.top, Spacing.xs)
                     .staggered(0, appeared: appeared)
 
@@ -85,7 +85,7 @@ struct DashboardView: View {
             ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
                 HStack(alignment: .top, spacing: Spacing.s) {
                     ForEach(row) { category in
-                        CategoryCard(category: category, state: vm.cardState(for: category)) { vm.open(category) }
+                        CategoryCard(category: category, state: vm.cardState(for: category), refreshing: vm.isRefreshing(category)) { vm.open(category) }
                             .frame(maxHeight: .infinity, alignment: .top)
                     }
                 }

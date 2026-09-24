@@ -12,11 +12,15 @@ struct StorageSegment: Identifiable {
 struct StorageHero: View {
     let snapshot: StorageSnapshot?
     let segments: [StorageSegment]
+    /// Freeable total with each photo counted once (segments can overlap).
+    var freeable: Int64? = nil
+    /// Photo-scan progress 0…1 while scanning, nil when idle.
+    var scanProgress: Double? = nil
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var progress: Double = 0
 
     private let lineWidth: CGFloat = 22
-    private var freeable: Int64 { segments.reduce(0) { $0 + $1.bytes } }
+    private var freeableBytes: Int64 { freeable ?? segments.reduce(0) { $0 + $1.bytes } }
 
     var body: some View {
         VStack(spacing: Spacing.l) {
@@ -71,9 +75,9 @@ struct StorageHero: View {
             HStack(spacing: Spacing.xs) {
                 Image(systemName: "sparkles")
                     .foregroundStyle(Color.sift.accent)
-                Text(freeable > 0
-                     ? "Up to \(ByteFormatter.string(freeable)) can be freed"
-                     : "Scanning for things to clean…")
+                Text(freeableBytes > 0
+                     ? "Up to \(ByteFormatter.string(freeableBytes)) can be freed"
+                     : "Looking for things to clean…")
                     .font(Font.sift.headline)
                     .foregroundStyle(Color.sift.inkPrimary)
                     .contentTransition(.numericText())
@@ -81,6 +85,17 @@ struct StorageHero: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, Spacing.s)
             .background(Color.sift.accentSoft, in: Capsule())
+
+            if let scanProgress {
+                VStack(spacing: Spacing.xxs) {
+                    ProgressView(value: scanProgress).tint(Color.sift.accent)
+                    Text("Checking photos · \(Int((scanProgress * 100).rounded()))%")
+                        .font(Font.sift.caption.monospacedDigit())
+                        .foregroundStyle(Color.sift.inkSecondary)
+                        .contentTransition(.numericText())
+                }
+                .transition(.opacity)
+            }
 
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 96), spacing: Spacing.s, alignment: .leading)],
                       alignment: .leading, spacing: Spacing.s) {
@@ -93,7 +108,8 @@ struct StorageHero: View {
                 }
             }
         }
-        .animation(Motion.standard, value: freeable)
+        .animation(Motion.standard, value: freeableBytes)
+        .animation(Motion.standard, value: scanProgress == nil)
     }
 
     private struct LegendItem: View {
@@ -143,7 +159,7 @@ struct StorageHero: View {
     private var accessibilityText: Text {
         guard let snapshot else { return Text("Loading storage") }
         let base = "\(ByteFormatter.string(snapshot.availableBytes)) free of \(ByteFormatter.string(snapshot.totalBytes))"
-        return freeable > 0 ? Text("\(base). Up to \(ByteFormatter.string(freeable)) can be freed.") : Text(base)
+        return freeableBytes > 0 ? Text("\(base). Up to \(ByteFormatter.string(freeableBytes)) can be freed.") : Text(base)
     }
 }
 

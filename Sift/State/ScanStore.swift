@@ -17,6 +17,24 @@ enum Loadable<Value> {
     }
 }
 
+/// What the dashboard showed after the last completed scan, so the next launch can show
+/// it instantly while a fresh scan runs.
+nonisolated struct ScanSummary: Codable, Sendable, Equatable {
+    var bytes: [String: Int64] = [:]
+    var counts: [String: Int] = [:]
+    var totalFreeable: Int64 = 0
+
+    private static let key = "lastScanSummary"
+
+    static func load(from defaults: UserDefaults = .standard) -> ScanSummary? {
+        defaults.data(forKey: key).flatMap { try? JSONDecoder().decode(ScanSummary.self, from: $0) }
+    }
+
+    func save(to defaults: UserDefaults = .standard) {
+        if let data = try? JSONEncoder().encode(self) { defaults.set(data, forKey: Self.key) }
+    }
+}
+
 /// App-wide scan results and permission state, shared by the dashboard and every
 /// category screen.
 @Observable
@@ -37,6 +55,11 @@ final class ScanStore {
     private(set) var calibration: CalibrationData?
     #endif
 
+    /// The previous scan's numbers, shown until this scan's arrive.
+    private(set) var lastSummary: ScanSummary?
+    /// A scan is running (results may still change).
+    private(set) var isScanning = false
+
     private let permissions: PermissionServicing
     private let storageService: DeviceStorageProviding
     private let photos: PhotoLibraryProviding
@@ -56,6 +79,7 @@ final class ScanStore {
         self.contactsScanner = contactsScanner
         self.photosPermission = permissions.photosState()
         self.contactsPermission = permissions.contactsState()
+        self.lastSummary = ScanSummary.load()
     }
 
     /// Categories that have a scanner in this build, in dashboard order.
@@ -110,7 +134,9 @@ final class ScanStore {
     func scan() {
         scanTask?.cancel()
         Log.scan.debug("Scan started (photos: \(String(describing: self.photosPermission), privacy: .public), contacts: \(String(describing: self.contactsPermission), privacy: .public))")
+        isScanning = true
         scanTask = Task {
+            defer { if !Task.isCancelled { isScanning = false } }
             async let a: Void = loadStorage()
             async let b: Void = loadScreenshots()
             async let c: Void = loadVideos()
@@ -118,6 +144,7 @@ final class ScanStore {
             async let e: Void = loadSimilar()
             _ = await (a, b, c, d, e)
             guard !Task.isCancelled else { return }
+            saveSummary()
             WidgetBridge.update(freeableBytes: totalFreeableBytes)
             Log.scan.debug("Scan finished")
         }
@@ -143,8 +170,61 @@ final class ScanStore {
                 return group
             })
         }
+        saveSummary()
         WidgetBridge.update(freeableBytes: totalFreeableBytes)
         Task { await loadStorage() }
+    }
+
+    /// Live number for a category if its scan has finished, else the last known one.
+    func displayBytes(_ category: CleanupCategory) -> Int64? {
+        if isLoaded(category) { return liveBytes(category) }
+        return lastSummary?.bytes[category.rawValue]
+    }
+
+    func displayCount(_ category: CleanupCategory) -> Int? {
+        if isLoaded(category) { return liveCount(category) }
+        return lastSummary?.counts[category.rawValue]
+    }
+
+    func isLoaded(_ category: CleanupCategory) -> Bool {
+        switch category {
+        case .screenshots: screenshots.value != nil
+        case .videos: videos.value != nil
+        case .similar: similar.value != nil && similarProgress == nil
+        case .blurry: blurry.value != nil && similarProgress == nil
+        case .contacts: contacts.value != nil
+        }
+    }
+
+    private func liveBytes(_ category: CleanupCategory) -> Int64 {
+        switch category {
+        case .screenshots: screenshotBytes
+        case .videos: videoBytes
+        case .similar: similarBytes
+        case .blurry: blurryBytes
+        case .contacts: 0
+        }
+    }
+
+    private func liveCount(_ category: CleanupCategory) -> Int {
+        switch category {
+        case .screenshots: screenshots.value?.count ?? 0
+        case .videos: videos.value?.count ?? 0
+        case .similar: similarPhotoCount
+        case .blurry: blurry.value?.count ?? 0
+        case .contacts: duplicateContactCount
+        }
+    }
+
+    private func saveSummary() {
+        var summary = ScanSummary()
+        for category in availableCategories where isLoaded(category) {
+            summary.bytes[category.rawValue] = liveBytes(category)
+            summary.counts[category.rawValue] = liveCount(category)
+        }
+        summary.totalFreeable = totalFreeableBytes
+        summary.save()
+        lastSummary = summary
     }
 
     /// Removes contacts that were merged away or deleted.
@@ -230,8 +310,9 @@ final class ScanStore {
                 calibration = data
             #endif
             }
-            // Publish at most ~8 times a second so the UI stays smooth (ARCHITECTURE §10).
-            if Date().timeIntervalSince(lastPublish) > 0.12 {
+            // Publish at most twice a second: re-sorting and re-diffing a thousand groups
+            // more often than that makes scrolling stutter on big libraries.
+            if Date().timeIntervalSince(lastPublish) > 0.5 {
                 publish(order.compactMap { groups[$0] }, blurryItems)
                 lastPublish = Date()
             }

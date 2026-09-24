@@ -25,22 +25,39 @@ final class DashboardViewModel {
         scanStore.similarPhotoCount + (scanStore.screenshots.value?.count ?? 0) + (scanStore.blurry.value?.count ?? 0) > 0
     }
 
-    /// Freeable total with each asset counted once (FR-DASH-6).
-    var totalFreeable: Int64 { scanStore.totalFreeableBytes }
+    /// Freeable total with each asset counted once (FR-DASH-6); the last scan's total
+    /// until this one finishes.
+    var totalFreeable: Int64 {
+        scanStore.isScanning ? max(scanStore.totalFreeableBytes, scanStore.lastSummary?.totalFreeable ?? 0)
+                             : scanStore.totalFreeableBytes
+    }
+
+    /// Progress of the long photo scan, for the hero (nil when idle).
+    var scanProgress: Double? { scanStore.similarProgress }
+
+    /// The card shows last-known numbers while a fresh scan runs.
+    func isRefreshing(_ category: CleanupCategory) -> Bool {
+        scanStore.isScanning && !scanStore.isLoaded(category) && scanStore.lastSummary?.counts[category.rawValue] != nil
+    }
 
     var segments: [StorageSegment] {
         categories.compactMap { category in
             switch category {
-            case .similar: StorageSegment(id: "similar", label: "Similar", bytes: scanStore.similarBytes, color: Color.sift.catSimilar)
-            case .screenshots: StorageSegment(id: "screenshots", label: "Screenshots", bytes: scanStore.screenshotBytes, color: Color.sift.catScreenshots)
-            case .blurry: StorageSegment(id: "blurry", label: "Blurry", bytes: scanStore.blurryBytes, color: Color.sift.catBlurry)
-            case .videos: StorageSegment(id: "videos", label: "Videos", bytes: scanStore.videoBytes, color: Color.sift.catVideos)
+            case .similar: StorageSegment(id: "similar", label: "Similar", bytes: scanStore.displayBytes(.similar) ?? 0, color: Color.sift.catSimilar)
+            case .screenshots: StorageSegment(id: "screenshots", label: "Screenshots", bytes: scanStore.displayBytes(.screenshots) ?? 0, color: Color.sift.catScreenshots)
+            case .blurry: StorageSegment(id: "blurry", label: "Blurry", bytes: scanStore.displayBytes(.blurry) ?? 0, color: Color.sift.catBlurry)
+            case .videos: StorageSegment(id: "videos", label: "Videos", bytes: scanStore.displayBytes(.videos) ?? 0, color: Color.sift.catVideos)
             case .contacts: nil // bytes are negligible (FR-DASH-2)
             }
         }
     }
 
     func cardState(for category: CleanupCategory) -> CategoryCard.State {
+        // While refreshing, keep showing the last scan's numbers instead of a spinner.
+        if isRefreshing(category), let bytes = scanStore.displayBytes(category), let count = scanStore.displayCount(category) {
+            let permitted = category == .contacts ? scanStore.contactsPermission.canRead : scanStore.photosPermission.canRead
+            if permitted { return count == 0 ? .empty : .ready(bytes: bytes, count: count) }
+        }
         switch category {
         case .screenshots:
             guard scanStore.photosPermission.canRead else { return .locked }
