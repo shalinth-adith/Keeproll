@@ -66,8 +66,11 @@ enum Fixtures {
     }
 
     @MainActor
-    static func scanStore(screenshots: [MediaItem], photos: PermissionState = .authorized) -> ScanStore {
-        ScanStore(permissions: FakePermissions(photos: photos), storage: FakeStorage(), photos: FakePhotos(screenshots: screenshots))
+    static func scanStore(screenshots: [MediaItem], photos: PermissionState = .authorized,
+                          similarity: SimilarityScanning? = nil, defaults: UserDefaults? = nil) -> ScanStore {
+        ScanStore(permissions: FakePermissions(photos: photos), storage: FakeStorage(), photos: FakePhotos(screenshots: screenshots),
+                  similarity: similarity,
+                  defaults: defaults ?? UserDefaults(suiteName: "SiftTests-\(UUID().uuidString)")!)
     }
 
     @MainActor

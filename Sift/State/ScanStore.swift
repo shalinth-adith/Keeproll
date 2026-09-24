@@ -61,6 +61,15 @@ final class ScanStore {
     private(set) var isScanning = false
     /// Photos were added or edited in the library since the last scan finished.
     private(set) var isStale = false
+    /// Photos the user explicitly chose as Best. A rescan recomputes groups from scratch,
+    /// so without this their choice would silently revert and the photo they meant to
+    /// keep would be offered for deletion (test report F2).
+    private(set) var bestOverrides: Set<String>
+    /// Library changes arriving before this moment were caused by Sift's own deletions
+    /// and don't mean the results are out of date.
+    private var ownChangesUntil = Date.distantPast
+    private let defaults: UserDefaults
+    private static let bestOverridesKey = "bestOverrides"
 
     private let permissions: PermissionServicing
     private let storageService: DeviceStorageProviding
@@ -73,7 +82,10 @@ final class ScanStore {
          storage: DeviceStorageProviding,
          photos: PhotoLibraryProviding,
          similarity: SimilarityScanning? = nil,
-         contactsScanner: ContactsScanning? = nil) {
+         contactsScanner: ContactsScanning? = nil,
+         defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        self.bestOverrides = Set(defaults.stringArray(forKey: Self.bestOverridesKey) ?? [])
         self.permissions = permissions
         self.storageService = storage
         self.photos = photos
@@ -81,7 +93,7 @@ final class ScanStore {
         self.contactsScanner = contactsScanner
         self.photosPermission = permissions.photosState()
         self.contactsPermission = permissions.contactsState()
-        self.lastSummary = ScanSummary.load()
+        self.lastSummary = ScanSummary.load(from: defaults)
     }
 
     /// Categories that have a scanner in this build, in dashboard order.
@@ -155,6 +167,10 @@ final class ScanStore {
 
     /// Removes deleted assets from every result list without a rescan.
     func removeAssets(_ ids: Set<String>) {
+        if !bestOverrides.isDisjoint(with: ids) {
+            bestOverrides.subtract(ids)
+            saveBestOverrides()
+        }
         if case .loaded(let items) = screenshots {
             screenshots = .loaded(items.filter { !ids.contains($0.id) })
         }
@@ -234,12 +250,21 @@ final class ScanStore {
     /// (cheap, and never pull a list out from under the user); additions and edits only
     /// mark results stale, to be picked up by a rescan. Returns the ids to drop from the cart.
     @discardableResult
-    func apply(_ delta: LibraryDelta) -> Set<String> {
+    func apply(_ delta: LibraryDelta, now: Date = Date()) -> Set<String> {
         let known = knownAssetIDs
         let removed = delta.removedIDs.intersection(known)
         if !removed.isEmpty { removeAssets(removed) }
-        if delta.hasAdditionsOrEdits && !isScanning { isStale = true }
+        // Deleting assets also "changes" albums and moments; after our own delete that
+        // isn't new content, so don't trigger a rescan for it.
+        let causedBySift = now < ownChangesUntil
+        if delta.hasAdditionsOrEdits && !isScanning && !causedBySift { isStale = true }
         return removed
+    }
+
+    /// Called just before Sift itself deletes, so the resulting library notifications
+    /// aren't mistaken for new photos.
+    func expectOwnChanges(for seconds: TimeInterval = 10, now: Date = Date()) {
+        ownChangesUntil = now.addingTimeInterval(seconds)
     }
 
     /// Every asset id currently shown in any category.
@@ -272,9 +297,30 @@ final class ScanStore {
     /// Changes which member of a group is marked best (FR-SIM-3).
     func setBest(_ id: String, in groupID: UUID) {
         guard case .loaded(var groups) = similar, let index = groups.firstIndex(where: { $0.id == groupID }) else { return }
-        groups[index].bestID = id
-        groups[index].members.sort { ($0.id == id ? 0 : 1) < ($1.id == id ? 0 : 1) }
+        // One choice per group: the new pick replaces any earlier pick in the same group.
+        bestOverrides.subtract(groups[index].members.map(\.id))
+        bestOverrides.insert(id)
+        saveBestOverrides()
+        groups[index] = Self.applyingBest(id, to: groups[index])
         similar = .loaded(groups)
+    }
+
+    /// Re-applies the user's Best choices to freshly scanned groups.
+    private func applyingOverrides(_ group: SimilarGroup) -> SimilarGroup {
+        guard let chosen = group.members.first(where: { bestOverrides.contains($0.id) }),
+              chosen.id != group.bestID else { return group }
+        return Self.applyingBest(chosen.id, to: group)
+    }
+
+    private static func applyingBest(_ id: String, to group: SimilarGroup) -> SimilarGroup {
+        var group = group
+        group.bestID = id
+        group.members.sort { ($0.id == id ? 0 : 1) < ($1.id == id ? 0 : 1) }
+        return group
+    }
+
+    private func saveBestOverrides() {
+        defaults.set(Array(bestOverrides), forKey: Self.bestOverridesKey)
     }
 
     private func loadStorage() async {
@@ -354,7 +400,7 @@ final class ScanStore {
 
     /// Newest groups first, as the list reads (FR-SIM-2).
     private func publish(_ groups: [SimilarGroup], _ blurryItems: [MediaItem]) {
-        similar = .loaded(groups.sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) })
+        similar = .loaded(groups.map(applyingOverrides).sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) })
         blurry = .loaded(blurryItems.sorted { ($0.creationDate ?? .distantPast) > ($1.creationDate ?? .distantPast) })
     }
 }

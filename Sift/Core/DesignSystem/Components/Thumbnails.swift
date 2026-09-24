@@ -8,7 +8,10 @@ struct ThumbnailView: View {
     var allowsNetwork = false
     @Environment(\.thumbnails) private var thumbnails
     @Environment(\.displayScale) private var displayScale
-    @State private var image: UIImage?
+    /// The loaded image *and the photo it belongs to*. SwiftUI keeps `@State` when the
+    /// same view is reused for another photo (the swipe card), so an image must never
+    /// be shown unless it was loaded for the current `id`.
+    @State private var loaded: LoadedThumbnail?
 
     private var targetSize: CGSize {
         let side = pointSize * displayScale
@@ -17,7 +20,8 @@ struct ThumbnailView: View {
 
     var body: some View {
         // A memory-cached image draws in the first frame, so revisited cells never flash.
-        let shown = image ?? thumbnails.cachedThumbnail(for: id, targetSize: targetSize)
+        let shown = LoadedThumbnail.image(for: id, loaded: loaded,
+                                          cached: thumbnails.cachedThumbnail(for: id, targetSize: targetSize))
         Rectangle()
             .fill(Color.sift.hairline)
             .overlay {
@@ -30,9 +34,24 @@ struct ThumbnailView: View {
             }
             .clipped()
             .task(id: id) {
-                guard thumbnails.cachedThumbnail(for: id, targetSize: targetSize) == nil || allowsNetwork else { return }
-                image = await thumbnails.thumbnail(for: id, targetSize: targetSize, allowsNetwork: allowsNetwork)
+                let requested = id
+                guard thumbnails.cachedThumbnail(for: requested, targetSize: targetSize) == nil || allowsNetwork else { return }
+                let image = await thumbnails.thumbnail(for: requested, targetSize: targetSize, allowsNetwork: allowsNetwork)
+                loaded = image.map { LoadedThumbnail(id: requested, image: $0) }
             }
+    }
+}
+
+/// An image tagged with the photo it was loaded for.
+struct LoadedThumbnail {
+    let id: String
+    let image: UIImage
+
+    /// What a thumbnail for `id` should display: its own loaded image, else the cache,
+    /// else nothing. Never an image loaded for a different photo.
+    static func image(for id: String, loaded: LoadedThumbnail?, cached: UIImage?) -> UIImage? {
+        if let loaded, loaded.id == id { return loaded.image }
+        return cached
     }
 }
 

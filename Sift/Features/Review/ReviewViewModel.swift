@@ -126,6 +126,9 @@ final class ReviewViewModel {
         let plan = CleanupPlan(cartItems: Array(cart.items.values))
         Log.cleanup.debug("Review confirmed: \(plan.items.count) assets, \(plan.contactActions.count) contact actions, \(plan.totalBytes) bytes")
         phase = .deleting
+        // The iOS delete prompt backgrounds the app, and the delete itself posts library
+        // changes: neither should trigger a rescan.
+        scanStore.expectOwnChanges()
         let result = await deletion.execute(plan)
 
         if result.wasCancelled {
