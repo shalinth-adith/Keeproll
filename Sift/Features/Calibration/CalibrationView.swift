@@ -76,10 +76,12 @@ final class CalibrationViewModel {
 
     // MARK: Blur
 
-    /// Photos at spread-out points of the sharpness distribution (denser at the soft end).
+    /// Photos from the soft end of the sharpness distribution, where blurry photos are,
+    /// plus a few from higher up so there are sharp examples too. (Sampling evenly gave
+    /// 1 blurry photo out of 12 labels: not enough to set a threshold.)
     var blurQueue: [(id: String, value: Float)] {
         guard let all = data?.sharpness, !all.isEmpty else { return [] }
-        let percentiles = [0.5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 22, 26, 30, 40, 50, 65]
+        let percentiles = [0.1, 0.3, 0.5, 0.8, 1, 1.3, 1.6, 2, 2.5, 3, 4, 5, 6, 8, 10, 15, 25, 40]
         var seen = Set<String>()
         return percentiles.map { all[min(all.count - 1, Int(Double(all.count) * $0 / 100))] }
             .filter { seen.insert($0.id).inserted && blurLabels[$0.id] == nil }
@@ -116,7 +118,7 @@ final class CalibrationViewModel {
 
     func applyBlurThreshold(_ value: Float) {
         UserDefaults.standard.set(Double(value), forKey: CalibrationKeys.blurThreshold)
-        print(String(format: "[calibration] applied blurThreshold=%.1f", value))
+        print(String(format: "[calibration] applied blurThreshold=%.3f", value))
         scanStore.scan()
     }
 
@@ -134,9 +136,9 @@ final class CalibrationViewModel {
     private func logBlur() {
         guard let all = data?.sharpness else { return }
         let scores = Dictionary(all.map { ($0.id, $0.value) }, uniquingKeysWith: { a, _ in a })
-        let points = blurLabels.compactMap { id, blurry in scores[id].map { String(format: "%.0f:%@", $0, blurry ? "B" : "S") } }.sorted()
+        let points = blurLabels.compactMap { id, blurry in scores[id].map { String(format: "%.3f:%@", $0, blurry ? "B" : "S") } }.sorted()
         print("[calibration] blur labels (score:B=blurry/S=sharp) " + points.joined(separator: " "))
-        print("[calibration] blur recommended=\(recommendedBlurThreshold.map { String(format: "%.1f", $0) } ?? "none")")
+        print("[calibration] blur recommended=\(recommendedBlurThreshold.map { String(format: "%.3f", $0) } ?? "none")")
     }
 }
 
@@ -184,7 +186,7 @@ struct CalibrationScreen: View {
                 .font(Font.sift.headline)
             Text("\(d.comparisons) time-window comparisons, \(d.comparisonsWithPrints) with Vision prints")
                 .font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
-            Text(String(format: "Current: similar ≤ %.2f · blur < %.0f", vm.currentFeatureThreshold, vm.currentBlurThreshold))
+            Text(String(format: "Current: similar ≤ %.2f · blur < %.2f", vm.currentFeatureThreshold, vm.currentBlurThreshold))
                 .font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
         }
     }
@@ -236,7 +238,7 @@ struct CalibrationScreen: View {
                 ThumbnailView(id: next.id, pointSize: 400, allowsNetwork: true)
                     .aspectRatio(1, contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: Radius.card, style: .continuous))
-                Text(String(format: "sharpness %.0f", next.value))
+                Text(String(format: "focus score %.2f", next.value))
                     .font(Font.sift.caption.monospacedDigit()).foregroundStyle(Color.sift.inkSecondary)
                 HStack(spacing: Spacing.xs) {
                     SecondaryButton(title: "Sharp") { vm.labelBlur(next.id, blurry: false) }
@@ -249,7 +251,7 @@ struct CalibrationScreen: View {
             Text("All sample photos labelled.").font(Font.sift.caption)
         }
         if let recommended = vm.recommendedBlurThreshold {
-            PrimaryButton(title: "Apply blur < \(Int(recommended))") { vm.applyBlurThreshold(recommended) }
+            PrimaryButton(title: "Apply blur < \(String(format: "%.2f", recommended))") { vm.applyBlurThreshold(recommended) }
         } else {
             Text("Label at least 8 photos, including a blurry one, for a recommendation.")
                 .font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)

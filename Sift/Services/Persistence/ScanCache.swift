@@ -29,7 +29,7 @@ actor ScanCache {
     private var dirty = false
 
     private static let magic: UInt32 = 0x5346_5443 // "SFTC"
-    private static let version: UInt32 = 3 // 2: sharpness at a fixed 160 px; 3: iCloud-only flag
+    private static let version: UInt32 = 4 // 2: sharpness at 160 px; 3: iCloud-only flag; 4: contrast-normalised sharpness
     private static let emptyPrint = UInt32.max
 
     init(url: URL = ScanCache.defaultURL) {

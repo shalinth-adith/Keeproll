@@ -22,9 +22,10 @@ nonisolated struct SimilarityConfig: Sendable {
     var fallbackHashDistance = 10
     /// Groups never grow past this.
     var maxGroupSize = 30
-    /// Laplacian variance (on a 160 px grayscale copy) below which a photo is suggested
-    /// as blurry. Roughly the softest 1 % of a typical library.
-    var blurThreshold: Float = 45
+    /// Focus score (edge-to-contrast ratio, see `ImageAnalysis.sharpness`) below which a
+    /// photo is suggested as blurry. Fixtures: blurred 0.10–0.14, sharp ≥ 0.25. To be
+    /// re-calibrated from owner labels on device (test report F4).
+    var blurThreshold: Float = 0.18
     /// Thumbnail edge used for every per-photo computation.
     var thumbnailSide: CGFloat = 256
 

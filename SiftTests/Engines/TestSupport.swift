@@ -35,6 +35,28 @@ enum TestImages {
         }
     }
 
+    /// The same scene squeezed into a narrower brightness range (0…1 of full contrast).
+    static func scene(scale: Double) -> CGImage {
+        make { x, y in
+            let base = (x + y) % 256
+            let block = ((x / 32 + y / 32) % 2 == 0) ? 60 : 0
+            let v = Double(base / 2 + block)
+            return UInt8(clamping: Int(128 + (v - 94) * scale))
+        }
+    }
+
+    /// Out-of-focus version: shrink to 1/16 and scale back up with smoothing.
+    static func blurred(_ image: CGImage) -> CGImage {
+        func draw(_ img: CGImage, _ w: Int, _ h: Int) -> CGImage {
+            let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w,
+                                space: CGColorSpaceCreateDeviceGray(), bitmapInfo: 0)!
+            ctx.interpolationQuality = .high
+            ctx.draw(img, in: CGRect(x: 0, y: 0, width: w, height: h))
+            return ctx.makeImage()!
+        }
+        return draw(draw(image, image.width / 16, image.height / 16), image.width, image.height)
+    }
+
     static func checkerboard(cell: Int = 4) -> CGImage {
         make { x, y in ((x / cell + y / cell) % 2 == 0) ? 255 : 0 }
     }

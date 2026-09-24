@@ -37,15 +37,37 @@ nonisolated enum ImageAnalysis {
 
     static func hamming(_ a: UInt64, _ b: UInt64) -> Int { (a ^ b).nonzeroBitCount }
 
-    /// Variance of the Laplacian on a grayscale copy scaled to `maxSide` on its long edge.
-    /// Sharp photos have strong edges (high variance); blurry ones don't. Always measured
-    /// at the same size, so scores compare across photos whatever size PhotoKit returned.
+    /// Focus score: edge strength divided by the photo's contrast, on a grayscale copy
+    /// scaled to `maxSide` on its long edge (so scores compare whatever size PhotoKit
+    /// returned).
+    ///
+    /// Raw Laplacian variance also grows with contrast, so a blurred high-contrast photo
+    /// can outscore a sharp photo of fog or a dim room (test report F4: a dark blurred
+    /// photo scored 47.6 and was missed). Dividing its square root by the pixel standard
+    /// deviation leaves a dimensionless edge-to-contrast ratio: blurred fixtures score
+    /// 0.10–0.14, sharp ones 0.25–0.33. Near-flat frames (std < 8) are floored so noise
+    /// can't produce a huge ratio.
     static func sharpness(_ image: CGImage, maxSide: Int = 160) -> Float {
         let scale = Double(maxSide) / Double(max(image.width, image.height))
         let width = max(3, Int(Double(image.width) * scale))
         let height = max(3, Int(Double(image.height) * scale))
         guard let pixels = grayscale(image, width: width, height: height) else { return 0 }
-        return laplacianVariance(pixels, width: width, height: height)
+        let edges = laplacianVariance(pixels, width: width, height: height)
+        let contrast = max(standardDeviation(pixels), 8)
+        return edges.squareRoot() / contrast
+    }
+
+    static func standardDeviation(_ pixels: [UInt8]) -> Float {
+        guard !pixels.isEmpty else { return 0 }
+        var sum = 0.0, sumSquares = 0.0
+        for p in pixels {
+            let v = Double(p)
+            sum += v
+            sumSquares += v * v
+        }
+        let n = Double(pixels.count)
+        let mean = sum / n
+        return Float(max(sumSquares / n - mean * mean, 0).squareRoot())
     }
 
     static func laplacianVariance(_ pixels: [UInt8], width: Int, height: Int) -> Float {

@@ -94,3 +94,6 @@ Cold scans of the same 7,724-photo library on iPhone 15 (Debug build), each with
 | Grouper reports only changed groups to emit | pending measurement |
 
 Vision is now the floor: 4,753 prints, ~98 s of Vision execution across the lanes. Warm rescan: 2.04 s. Group results were identical across all speed changes (1,213 groups, 4,249 photos), and the simulator fixture still yields exactly 4 groups.
+
+### Amendment — 2026-09-24 (blur detection, test report F4)
+**Focus score = √(Laplacian variance) ÷ pixel standard deviation** (contrast-normalised), replacing raw Laplacian variance. Raw variance scales with contrast, so a blurred dark photo scored 47.6 and slipped past the 45 threshold, while sharp low-contrast photos (fog, dim rooms) would be flagged. Measured on the fixture library: blurred 0.10–0.14, sharp 0.25–0.33, so a 2× gap. **Threshold 0.18** (between the two). Cache format v4 (scores changed meaning). The Calibrate screen's blur queue now samples mostly the softest 3 % of the library, since even sampling produced only 1 blurry photo in 12 labels. **Still to confirm with owner labels on the device.**

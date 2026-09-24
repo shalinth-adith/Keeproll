@@ -78,7 +78,7 @@ nonisolated enum CalibrationReport {
         let values = d.sharpness.map(\.value)
         if !values.isEmpty {
             let pct = [1, 5, 10, 25, 50, 75, 90].map { p in
-                String(format: "p%d=%.0f", p, values[min(values.count - 1, values.count * p / 100)])
+                String(format: "p%d=%.3f", p, values[min(values.count - 1, values.count * p / 100)])
             }
             lines.append("[calibration] sharpness " + pct.joined(separator: " "))
         }
