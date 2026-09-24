@@ -14,10 +14,13 @@ struct SelectionBar: View {
                         Text("^[\(cart.count) item](inflect: true) selected")
                             .font(Font.sift.headline)
                             .foregroundStyle(Color.sift.inkPrimary)
-                        Text(ByteFormatter.string(cart.totalBytes))
-                            .font(Font.sift.metric)
-                            .foregroundStyle(Color.sift.inkSecondary)
-                            .contentTransition(.numericText())
+                        // Contacts and events have no size; "0 MB" would suggest nothing happens.
+                        if cart.totalBytes > 0 {
+                            Text(ByteFormatter.string(cart.totalBytes))
+                                .font(Font.sift.metric)
+                                .foregroundStyle(Color.sift.inkSecondary)
+                                .contentTransition(.numericText())
+                        }
                     }
                     Spacer(minLength: Spacing.s)
                     Button(action: onReview) {

@@ -1,4 +1,5 @@
 import Contacts
+import EventKit
 import Photos
 import PhotosUI
 import UIKit
@@ -8,6 +9,8 @@ nonisolated protocol PermissionServicing: Sendable {
     func requestPhotos() async -> PermissionState
     func contactsState() -> PermissionState
     func requestContacts() async -> PermissionState
+    func calendarState() -> PermissionState
+    func requestCalendar() async -> PermissionState
 }
 
 nonisolated final class PermissionService: PermissionServicing {
@@ -32,6 +35,26 @@ nonisolated final class PermissionService: PermissionServicing {
             Log.contacts.error("Contacts access request failed: \(error.localizedDescription, privacy: .public)")
         }
         return contactsState()
+    }
+
+    func calendarState() -> PermissionState {
+        switch EKEventStore.authorizationStatus(for: .event) {
+        case .notDetermined: .notDetermined
+        case .restricted: .restricted
+        case .fullAccess: .authorized
+        // Write-only can't read events, so for cleanup it's the same as denied.
+        case .denied, .writeOnly: .denied
+        @unknown default: .denied
+        }
+    }
+
+    func requestCalendar() async -> PermissionState {
+        do {
+            _ = try await EKEventStore().requestFullAccessToEvents()
+        } catch {
+            Log.scan.error("Calendar access request failed: \(error.localizedDescription, privacy: .public)")
+        }
+        return calendarState()
     }
 
     private static func map(_ status: PHAuthorizationStatus) -> PermissionState {

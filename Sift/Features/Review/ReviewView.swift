@@ -45,7 +45,7 @@ struct ReviewView: View {
                     EmptyState(systemImage: "checklist", title: Text("Nothing selected"), message: Text("Pick items to remove from any category."))
                 } else {
                     ForEach(vm.sections) { category in
-                        if category == .contacts { contactSection } else { section(for: category) }
+                        if category == .contacts || category == .calendar { recordSection(category) } else { section(for: category) }
                     }
                 }
             }
@@ -63,8 +63,14 @@ struct ReviewView: View {
             Text(vm.mediaCount > 0 ? "You'll free up to" : "You're about to tidy")
                 .font(Font.sift.caption)
                 .foregroundStyle(Color.sift.inkSecondary)
-            Text(vm.mediaCount > 0 ? ByteFormatter.string(vm.cart.totalBytes)
-                 : String(localized: "^[\(vm.contactActionCount) contact](inflect: true)"))
+            // Separate literals: inflection only renders inside a `Text` literal, not a String.
+            Group {
+                if vm.mediaCount > 0 {
+                    Text(ByteFormatter.string(vm.cart.totalBytes))
+                } else {
+                    Text("^[\(vm.recordChangeCount) change](inflect: true)")
+                }
+            }
                 .font(Font.sift.heroNumber)
                 .foregroundStyle(Color.sift.inkPrimary)
                 .contentTransition(.numericText())
@@ -98,19 +104,25 @@ struct ReviewView: View {
             let contacts = Text("^[\(vm.contactActionCount) contact change](inflect: true)")
             line = vm.mediaCount > 0 ? line + Text(" · ") + contacts : contacts
         }
+        if vm.calendarEventCount > 0 {
+            let events = Text("^[\(vm.calendarEventCount) calendar event](inflect: true) to remove")
+            line = vm.mediaCount + vm.contactActionCount > 0 ? line + Text(" · ") + events : events
+        }
         return line + Text(". ") + Text("Tap an item to keep it.")
     }
 
-    private var contactSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
+    /// Contacts and calendar events: rows, not thumbnails, and backed up before changes.
+    private func recordSection(_ category: CleanupCategory) -> some View {
+        let rows = vm.recordItems(in: category)
+        return VStack(alignment: .leading, spacing: Spacing.s) {
             HStack {
-                Circle().fill(CleanupCategory.contacts.color).frame(width: 10, height: 10)
-                Text(CleanupCategory.contacts.title).font(Font.sift.headline).foregroundStyle(Color.sift.inkPrimary)
+                Circle().fill(category.color).frame(width: 10, height: 10)
+                Text(category.title).font(Font.sift.headline).foregroundStyle(Color.sift.inkPrimary)
                 Spacer()
                 Text("Backed up first").font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
             }
             VStack(spacing: 0) {
-                ForEach(Array(vm.contactItems.enumerated()), id: \.element.key) { index, item in
+                ForEach(Array(rows.enumerated()), id: \.element.key) { index, item in
                     HStack(spacing: Spacing.s) {
                         switch item {
                         case .contactMerge(_, _, let mergedIDs, let name):
@@ -124,6 +136,14 @@ struct ReviewView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(name).font(Font.sift.headline).foregroundStyle(Color.sift.inkPrimary)
                                 Text("Delete contact").font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
+                            }
+                        case .calendarEvent(_, let title, let start):
+                            Image(systemName: "calendar.badge.minus").foregroundStyle(Color.sift.destructive).frame(width: 24)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(title.isEmpty ? String(localized: "Untitled event") : title)
+                                    .font(Font.sift.headline).foregroundStyle(Color.sift.inkPrimary).lineLimit(2)
+                                Text(start?.formatted(date: .abbreviated, time: .shortened) ?? String(localized: "Unknown date"))
+                                    .font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
                             }
                         case .asset: EmptyView()
                         }
@@ -139,7 +159,7 @@ struct ReviewView: View {
                         .accessibilityLabel(Text("Keep as is"))
                     }
                     .padding(.horizontal, Spacing.m).padding(.vertical, Spacing.xs)
-                    if index < vm.contactItems.count - 1 { Divider().overlay(Color.sift.hairline).padding(.leading, Spacing.m) }
+                    if index < rows.count - 1 { Divider().overlay(Color.sift.hairline).padding(.leading, Spacing.m) }
                 }
             }
             .background(Color.sift.surface, in: RoundedRectangle(cornerRadius: Radius.card, style: .continuous))
@@ -156,6 +176,12 @@ struct ReviewView: View {
                 Text(ByteFormatter.string(vm.cart.bytes(in: category)))
                     .font(Font.sift.metric)
                     .foregroundStyle(Color.sift.inkSecondary)
+            }
+            if category == .vault {
+                Label("Copies of these are safe in your vault. This removes the originals from your library.", systemImage: "lock.shield")
+                    .font(Font.sift.caption)
+                    .foregroundStyle(Color.sift.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             LazyVGrid(columns: columns, spacing: Layout.gridGutter) {
                 ForEach(vm.assetIDs(in: category), id: \.self) { id in
@@ -185,15 +211,15 @@ struct ReviewView: View {
                 style: .info,
                 systemImage: vm.mediaCount == 0 ? "externaldrive.badge.checkmark" : "trash",
                 message: Text(vm.mediaCount == 0
-                    ? "Sift saves a backup of these contacts before merging or deleting them. Contacts have no Recently Deleted, so this is your undo."
-                    : vm.contactActionCount > 0
-                    ? "Photos and videos go to Recently Deleted for 30 days. Contacts are backed up in Sift before they're merged or deleted."
+                    ? "Sift saves a backup before changing any contact or event. They have no Recently Deleted, so the backup is your undo."
+                    : vm.recordChangeCount > 0
+                    ? "Photos and videos go to Recently Deleted for 30 days. Contacts and events are backed up in Sift before they change."
                     : "Photos and videos go to Recently Deleted in the Photos app. The space comes back once you empty it, or automatically after 30 days.")
             )
             PrimaryButton(
                 title: vm.mediaCount > 0
                     ? "Confirm ^[\(vm.cart.count) item](inflect: true) · \(ByteFormatter.string(vm.cart.totalBytes))"
-                    : "Confirm ^[\(vm.cart.count) contact change](inflect: true)",
+                    : "Confirm ^[\(vm.cart.count) change](inflect: true)",
                 systemImage: "trash",
                 role: .destructive,
                 isLoading: vm.phase == .deleting

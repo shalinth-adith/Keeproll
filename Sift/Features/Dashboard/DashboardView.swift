@@ -34,6 +34,7 @@ struct DashboardView: View {
                 cards
 
                 if vm.showSwipeEntry { swipeEntry.staggered(6, appeared: appeared) }
+                vaultEntry.staggered(7, appeared: appeared)
 
                 #if DEBUG
                 Button { vm.openCalibration() } label: {
@@ -104,17 +105,29 @@ struct DashboardView: View {
     }
 
     private var swipeEntry: some View {
-        Button { vm.openSwipe() } label: {
+        toolEntry(symbol: "hand.draw.fill", title: "Swipe to sort",
+                  subtitle: "Go through suggestions one by one. Right to keep, left to remove.") { vm.openSwipe() }
+    }
+
+    private var vaultEntry: some View {
+        toolEntry(symbol: "lock.shield.fill", title: "Private Vault",
+                  subtitle: "Move private photos out of your library, behind Face ID or your passcode.") { vm.openVault() }
+    }
+
+    /// A full-width row for tools that aren't scan categories.
+    private func toolEntry(symbol: String, title: LocalizedStringKey, subtitle: LocalizedStringKey,
+                           action: @escaping () -> Void) -> some View {
+        Button(action: action) {
             HStack(spacing: Spacing.s) {
-                Image(systemName: "hand.draw.fill")
+                Image(systemName: symbol)
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(Color.sift.onAccent)
                     .frame(width: 44, height: 44)
                     .background(LinearGradient(colors: [Color.sift.accent, Color.sift.accent.opacity(0.72)], startPoint: .topLeading, endPoint: .bottomTrailing),
                                 in: RoundedRectangle(cornerRadius: Radius.control, style: .continuous))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Swipe to sort").font(Font.sift.headline).foregroundStyle(Color.sift.inkPrimary)
-                    Text("Go through suggestions one by one. Right to keep, left to remove.")
+                    Text(title).font(Font.sift.headline).foregroundStyle(Color.sift.inkPrimary)
+                    Text(subtitle)
                         .font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }

@@ -46,7 +46,7 @@ sample <pid> 2
 
 # Privacy + safety gates (all must print nothing; see §5)
 grep -rnE "URLSession|URLRequest|NWConnection" Sift/
-grep -rnE "deleteAssets|CNSaveRequest" Sift/ | grep -vE "Sift/Services/(Cleanup|Contacts)/"
+grep -rnE "deleteAssets|CNSaveRequest|span: \.thisEvent" Sift/ | grep -vE "Sift/Services/(Cleanup|Contacts|Calendar)/"
 grep -rn "CNContactNoteKey" Sift/
 ```
 
@@ -86,7 +86,7 @@ Performance and accuracy work happens **only on the real iPhone**, with the real
 
 ## 5. Safety & privacy invariants (a violation is a blocker)
 
-1. **Deletion only through Review.** `PHAssetChangeRequest.deleteAssets` and `CNSaveRequest` appear only in `Services/Cleanup/` and `Services/Contacts/ContactsService.swift`. `CleanupPlan` is built only by `ReviewViewModel`. Bonus features (swipe mode, compress) **add to the cart**; they never delete.
+1. **Deletion only through Review.** `PHAssetChangeRequest.deleteAssets`, `CNSaveRequest` and `EKEventStore.remove` appear only in `Services/Cleanup/`, `Services/Contacts/ContactsService.swift` and `Services/Calendar/CalendarService.swift`, and the latter two are called only by `DeletionService`. `CleanupPlan` is built only by `ReviewViewModel`. Bonus features (swipe mode, compress, vault) **add to the cart**; they never delete. The vault removes only its own copies, after a confirmation.
 2. **Contacts backup first.** `DeletionService` writes the vCard backup before any contact mutation. Never request `CNContactNoteKey`.
 3. **No network.** No `URLSession`, sockets, analytics or crash SDKs. Thumbnails use `isNetworkAccessAllowed = false`.
 4. **No personal data in logs.** Log counts and `privacy: .private` identifiers only; never names, numbers, emails or file names.

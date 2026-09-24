@@ -56,6 +56,8 @@ targets:
         NSPhotoLibraryUsageDescription: "Sift looks at the photos and videos on this iPhone to find duplicates, screenshots and large videos. Nothing is uploaded."
         NSContactsUsageDescription: "Sift checks the contacts on this iPhone to find duplicates you can merge. Nothing is uploaded."
         PHPhotoLibraryPreventAutomaticLimitedAccessAlert: true
+        NSCalendarsFullAccessUsageDescription: "Sift looks for duplicate events and events over a year old in your calendars on this iPhone. Nothing is uploaded, and nothing is removed until you confirm."
+        NSFaceIDUsageDescription: "Sift uses Face ID to unlock your private vault."
 
   SiftWidget:
     type: app-extension

@@ -67,6 +67,9 @@ struct VideoRow: View {
     let isSelected: Bool
     let onToggle: () -> Void
     let onPreview: () -> Void
+    /// Estimated saving from compressing this video; nil hides the action.
+    var compressSaving: Int64? = nil
+    var onCompress: (() -> Void)? = nil
 
     var body: some View {
         HStack(spacing: Spacing.s) {
@@ -105,6 +108,19 @@ struct VideoRow: View {
                 }
                 .font(Font.sift.caption)
                 .foregroundStyle(Color.sift.inkSecondary)
+                if let compressSaving, let onCompress {
+                    Button(action: onCompress) {
+                        // Short so it fits on one line next to the thumbnail; the icon says "compress".
+                        Label("Save ~\(ByteFormatter.string(compressSaving))", systemImage: "arrow.down.right.and.arrow.up.left")
+                            .font(Font.sift.badge)
+                            .foregroundStyle(Color.sift.accent)
+                            .padding(.horizontal, Spacing.xs).padding(.vertical, 5)
+                            .background(Color.sift.accentSoft, in: Capsule())
+                    }
+                    .accessibilityLabel(Text("Compress to save about \(ByteFormatter.string(compressSaving))"))
+                    .buttonStyle(.plain)
+                    .padding(.top, 2)
+                }
             }
             Spacer(minLength: Spacing.xs)
 

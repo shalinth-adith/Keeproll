@@ -98,12 +98,12 @@ struct CategoryCard: View {
                 .foregroundStyle(Color.sift.inkSecondary)
                 .contentTransition(.numericText())
         case .ready(let bytes, let count):
-            if category == .contacts {
+            if category == .contacts || category == .calendar {
                 Text("\(count)")
                     .font(Font.sift.title.monospacedDigit())
                     .foregroundStyle(Color.sift.inkPrimary)
                     .contentTransition(.numericText())
-                Text("look like duplicates")
+                Text(category == .contacts ? "look like duplicates" : "old or duplicate events")
                     .font(Font.sift.caption)
                     .foregroundStyle(Color.sift.inkSecondary)
             } else {

@@ -41,4 +41,11 @@ final class LargeVideosViewModel {
     func isSelected(_ item: MediaItem) -> Bool { cart.contains(assetID: item.id) }
     func toggle(_ item: MediaItem) { cart.toggle(item.cartItem(in: .videos)) }
     func preview(_ item: MediaItem) { router.previewVideo(item.id) }
+    func compress(_ item: MediaItem) { router.sheet = .compress(item) }
+
+    /// Estimated saving, or nil when compressing isn't worth offering (too small, already
+    /// compact, or already compressed once).
+    func compressSaving(for item: MediaItem) -> Int64? {
+        scanStore.compressedVideos.contains(item.id) ? nil : VideoCompressionService.worthCompressing(item)
+    }
 }

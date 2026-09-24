@@ -12,6 +12,15 @@ struct SummaryView: View {
     private var succeeded: Bool { result.failures.isEmpty }
     private var photosRemoved: Bool { !result.deletedAssetIDs.isEmpty }
 
+    /// Contacts and events have no size, so the hero counts them instead.
+    private var recordCount: Text {
+        let contacts = result.countsByCategory[.contacts] ?? 0
+        let events = result.countsByCategory[.calendar] ?? 0
+        if events == 0 { return Text("^[\(contacts) contact](inflect: true)") }
+        if contacts == 0 { return Text("^[\(events) event](inflect: true)") }
+        return Text("^[\(contacts + events) change](inflect: true)")
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: Spacing.xl) {
@@ -25,7 +34,7 @@ struct SummaryView: View {
                             .foregroundStyle(Color.sift.inkPrimary)
                             .contentTransition(.numericText())
                     } else {
-                        Text("^[\(result.countsByCategory[.contacts] ?? 0) contact](inflect: true)")
+                        recordCount
                             .font(Font.sift.heroNumber)
                             .foregroundStyle(Color.sift.inkPrimary)
                     }
@@ -65,10 +74,10 @@ struct SummaryView: View {
                     )
                 }
 
-                if let backup = result.backupURL {
+                if !result.backupURLs.isEmpty {
                     InlineBanner(style: .info, systemImage: "externaldrive.badge.checkmark",
-                                 message: Text("A backup of the changed contacts was saved before merging.")) {
-                        ShareLink(item: backup) {
+                                 message: Text("A backup of the changed contacts and events was saved before anything changed.")) {
+                        ShareLink(items: result.backupURLs) {
                             Label("Share backup", systemImage: "square.and.arrow.up")
                                 .font(Font.sift.headline)
                                 .frame(maxWidth: .infinity, minHeight: 48)

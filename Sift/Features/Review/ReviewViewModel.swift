@@ -33,16 +33,23 @@ nonisolated struct CleanupPlan: Sendable {
         }
     }
 
+    nonisolated struct CalendarEvent: Hashable, Sendable {
+        let key: String
+        let id: String
+    }
+
     let items: [Item]
     let contactActions: [ContactAction]
+    let calendarEvents: [CalendarEvent]
 
     var assetIDs: [String] { items.map(\.assetID) }
     var totalBytes: Int64 { items.reduce(0) { $0 + $1.bytes } }
-    var isEmpty: Bool { items.isEmpty && contactActions.isEmpty }
+    var isEmpty: Bool { items.isEmpty && contactActions.isEmpty && calendarEvents.isEmpty }
 
     fileprivate init(cartItems: [CartItem]) {
         var items: [Item] = []
         var actions: [ContactAction] = []
+        var events: [CalendarEvent] = []
         for item in cartItems {
             switch item {
             case .asset(let id, let category, let bytes):
@@ -51,10 +58,13 @@ nonisolated struct CleanupPlan: Sendable {
                 actions.append(.merge(key: item.key, primaryID: primaryID, mergedIDs: mergedIDs))
             case .contactDelete(let id, _):
                 actions.append(.delete(key: item.key, id: id))
+            case .calendarEvent(let id, _, _):
+                events.append(CalendarEvent(key: item.key, id: id))
             }
         }
         self.items = items
         self.contactActions = actions
+        self.calendarEvents = events
     }
 }
 
@@ -87,6 +97,9 @@ final class ReviewViewModel {
 
     var mediaCount: Int { cart.items.values.filter { if case .asset = $0 { true } else { false } }.count }
     var contactActionCount: Int { cart.count(in: .contacts) }
+    var calendarEventCount: Int { cart.count(in: .calendar) }
+    /// Contact and calendar changes: things with no byte size.
+    var recordChangeCount: Int { contactActionCount + calendarEventCount }
 
     func assetIDs(in category: CleanupCategory) -> [String] {
         cart.items(in: category).compactMap {
@@ -94,12 +107,14 @@ final class ReviewViewModel {
         }.sorted()
     }
 
-    /// Contact rows, merges first, then deletes.
-    var contactItems: [CartItem] {
-        cart.items(in: .contacts).sorted { a, b in
+    /// Rows for record categories (contacts: merges first; calendar: oldest first).
+    func recordItems(in category: CleanupCategory) -> [CartItem] {
+        cart.items(in: category).sorted { a, b in
             switch (a, b) {
             case (.contactMerge, .contactDelete): return true
             case (.contactDelete, .contactMerge): return false
+            case (.calendarEvent(_, _, let da), .calendarEvent(_, _, let db)):
+                return (da ?? .distantPast) < (db ?? .distantPast)
             default: return a.key < b.key
             }
         }
@@ -150,6 +165,10 @@ final class ReviewViewModel {
             }
         })
         scanStore.removeContacts(goneContacts)
+
+        let doneEvents = plan.calendarEvents.filter { !failedKeys.contains($0.key) }
+        for event in doneEvents { cart.remove(key: event.key) }
+        scanStore.removeCalendarEvents(Set(doneEvents.map(\.id)))
 
         settings.recordFreed(result.bytesFreed)
         phase = .finished(result)

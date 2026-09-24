@@ -5,7 +5,10 @@ import SwiftUI
 // Contacts objects (those are not Sendable).
 
 nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Identifiable {
-    case similar, screenshots, blurry, videos, contacts
+    case similar, screenshots, blurry, videos, contacts, calendar
+    /// Originals of photos copied into the private vault. Never a dashboard card; it
+    /// only appears on Review, so the user sees exactly what leaves the library.
+    case vault
     var id: String { rawValue }
 
     var title: LocalizedStringResource {
@@ -15,6 +18,8 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .blurry: "Blurry Photos"
         case .videos: "Large Videos"
         case .contacts: "Duplicate Contacts"
+        case .calendar: "Old Calendar Events"
+        case .vault: "Moved to Vault"
         }
     }
 
@@ -25,6 +30,8 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .blurry: "camera.metering.unknown"
         case .videos: "video"
         case .contacts: "person.2"
+        case .calendar: "calendar"
+        case .vault: "lock.shield"
         }
     }
 
@@ -35,6 +42,8 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .blurry: Color.sift.catBlurry
         case .videos: Color.sift.catVideos
         case .contacts: Color.sift.catContacts
+        case .calendar: Color.sift.catCalendar
+        case .vault: Color.sift.catVault
         }
     }
 }
@@ -195,12 +204,14 @@ nonisolated enum CartItem: Hashable, Sendable {
     case asset(id: String, category: CleanupCategory, bytes: Int64)
     case contactMerge(groupID: UUID, primaryID: String, mergedIDs: [String], displayName: String)
     case contactDelete(id: String, displayName: String)
+    case calendarEvent(id: String, title: String, start: Date?)
 
     var key: String {
         switch self {
         case .asset(let id, _, _): "asset:\(id)"
         case .contactMerge(let groupID, _, _, _): "merge:\(groupID.uuidString)"
         case .contactDelete(let id, _): "contact:\(id)"
+        case .calendarEvent(let id, _, _): "event:\(id)"
         }
     }
 
@@ -208,13 +219,14 @@ nonisolated enum CartItem: Hashable, Sendable {
         switch self {
         case .asset(_, let category, _): category
         case .contactMerge, .contactDelete: .contacts
+        case .calendarEvent: .calendar
         }
     }
 
     var bytes: Int64 {
         switch self {
         case .asset(_, _, let bytes): bytes
-        case .contactMerge, .contactDelete: 0
+        case .contactMerge, .contactDelete, .calendarEvent: 0
         }
     }
 }
@@ -229,8 +241,8 @@ nonisolated struct CleanupResult: Hashable, Sendable {
     let bytesFreed: Int64
     let countsByCategory: [CleanupCategory: Int]
     let failures: [CleanupFailure]
-    /// Where the vCard backup was written, if any contacts were changed.
-    var backupURL: URL? = nil
+    /// Backups written before contacts or calendar events were changed (.vcf, .ics).
+    var backupURLs: [URL] = []
     /// The user dismissed the iOS confirmation; nothing was deleted.
     let wasCancelled: Bool
 

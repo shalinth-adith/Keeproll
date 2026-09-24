@@ -2,18 +2,20 @@ import Observation
 import Foundation
 
 enum Route: Hashable {
-    case similar, screenshots, blurry, videos, contacts, swipe, calibration
+    case similar, screenshots, blurry, videos, contacts, calendar, vault, swipe, calibration
     case compare(groupID: UUID, startID: String)
 }
 
 enum Sheet: Identifiable {
     case review
     case videoPreview(id: String)
+    case compress(MediaItem)
 
     var id: String {
         switch self {
         case .review: "review"
         case .videoPreview(let id): "video:\(id)"
+        case .compress(let item): "compress:\(item.id)"
         }
     }
 }

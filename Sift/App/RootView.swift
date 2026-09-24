@@ -29,6 +29,8 @@ struct RootView: View {
                             case .blurry: BlurryPhotosView(env: env)
                             case .videos: LargeVideosView(env: env)
                             case .contacts: DuplicateContactsView(env: env)
+                            case .calendar: CalendarCleanupView(env: env)
+                            case .vault: VaultView(env: env)
                             case .swipe: SwipeView(env: env)
                             case .calibration: CalibrationScreen(env: env)
                             case .compare(let groupID, let startID): CompareView(env: env, groupID: groupID, startID: startID)
@@ -44,6 +46,7 @@ struct RootView: View {
                     switch sheet {
                     case .review: ReviewFlowView(env: env)
                     case .videoPreview(let id): VideoPreviewView(id: id, playback: env.videoPlayback)
+                    case .compress(let item): CompressVideoSheet(item: item, env: env).environment(\.thumbnails, env.thumbnails)
                     }
                 }
             } else {

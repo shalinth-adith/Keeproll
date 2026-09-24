@@ -13,11 +13,18 @@ nonisolated protocol ContactsMutating: Sendable {
     func apply(_ actions: [CleanupPlan.ContactAction]) async -> (backup: URL?, failures: [CleanupFailure])
 }
 
+/// Deletes approved calendar events (live: `CalendarService`), after an .ics backup.
+nonisolated protocol CalendarMutating: Sendable {
+    func delete(_ events: [CleanupPlan.CalendarEvent]) async -> (backup: URL?, failures: [CleanupFailure])
+}
+
 nonisolated final class DeletionService: DeletionServicing {
     private let contacts: ContactsMutating?
+    private let calendar: CalendarMutating?
 
-    init(contacts: ContactsMutating? = nil) {
+    init(contacts: ContactsMutating? = nil, calendar: CalendarMutating? = nil) {
         self.contacts = contacts
+        self.calendar = calendar
     }
 
     @concurrent
@@ -55,12 +62,12 @@ nonisolated final class DeletionService: DeletionServicing {
         }
 
         // 2. Contacts, after a backup (FR-CON-4). A failure here never rolls back step 1.
-        var backupURL: URL?
+        var backupURLs: [URL] = []
         var contactsChanged = 0
         if !plan.contactActions.isEmpty {
             if let contacts {
                 let outcome = await contacts.apply(plan.contactActions)
-                backupURL = outcome.backup
+                if let backup = outcome.backup { backupURLs.append(backup) }
                 failures += outcome.failures
                 contactsChanged = plan.contactActions.count - outcome.failures.count
             } else {
@@ -70,8 +77,24 @@ nonisolated final class DeletionService: DeletionServicing {
             }
         }
 
+        // 3. Calendar events, after an .ics backup. Independent of steps 1 and 2.
+        var eventsDeleted = 0
+        if !plan.calendarEvents.isEmpty {
+            if let calendar {
+                let outcome = await calendar.delete(plan.calendarEvents)
+                if let backup = outcome.backup { backupURLs.append(backup) }
+                failures += outcome.failures
+                eventsDeleted = plan.calendarEvents.count - outcome.failures.count
+            } else {
+                failures += plan.calendarEvents.map {
+                    CleanupFailure(itemKey: $0.key, reason: String(localized: "Calendar changes aren't available."))
+                }
+            }
+        }
+
         var counts = Dictionary(grouping: deleted, by: \.category).mapValues(\.count)
         if contactsChanged > 0 { counts[.contacts] = contactsChanged }
+        if eventsDeleted > 0 { counts[.calendar] = eventsDeleted }
         let bytes = deleted.reduce(Int64(0)) { $0 + $1.bytes }
         Log.cleanup.debug("Deleted \(deleted.count) assets, \(contactsChanged) contact actions, \(failures.count) failures, \(bytes) bytes")
         return CleanupResult(
@@ -79,7 +102,7 @@ nonisolated final class DeletionService: DeletionServicing {
             bytesFreed: bytes,
             countsByCategory: counts,
             failures: failures,
-            backupURL: backupURL,
+            backupURLs: backupURLs,
             wasCancelled: false
         )
     }

@@ -6,6 +6,9 @@ struct AppEnvironment {
     let permissions: PermissionServicing
     let thumbnails: ThumbnailProviding
     let videoPlayback: VideoPlaybackProviding
+    let compression: VideoCompressing
+    let vault: VaultStoring
+    let vaultAuth: VaultAuthenticating
     let deletion: DeletionServicing
     let libraryMonitor: LibraryChangeMonitoring
     let scanStore: ScanStore
@@ -25,15 +28,20 @@ struct AppEnvironment {
         let sizes = AssetSizeService(cache: cache)
         let photos = PhotoLibraryService(sizes: sizes)
         let contacts = ContactsService()
+        let calendar = CalendarService()
 
         return AppEnvironment(
             permissions: permissions,
             thumbnails: ThumbnailProvider(),
             videoPlayback: VideoPlaybackService(),
-            deletion: DeletionService(contacts: contacts),
+            compression: VideoCompressionService(),
+            vault: VaultStore(),
+            vaultAuth: DeviceOwnerAuthenticator(),
+            deletion: DeletionService(contacts: contacts, calendar: calendar),
             libraryMonitor: LibraryChangeMonitor(),
             scanStore: ScanStore(permissions: permissions, storage: DeviceStorageService(), photos: photos,
-                                 similarity: SimilarityEngine(sizes: sizes, cache: cache), contactsScanner: contacts),
+                                 similarity: SimilarityEngine(sizes: sizes, cache: cache), contactsScanner: contacts,
+                                 calendarScanner: calendar),
             cart: CleanupCart(),
             settings: SettingsStore(),
             router: AppRouter()

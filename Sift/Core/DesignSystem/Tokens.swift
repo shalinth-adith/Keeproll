@@ -28,6 +28,8 @@ enum SiftColor {
     static let catBlurry = Color(.catBlurry)
     static let catVideos = Color(.catVideos)
     static let catContacts = Color(.catContacts)
+    static let catCalendar = Color(.catCalendar)
+    static let catVault = Color(.catVault)
     static let catOther = Color(.catOther)
     static let catFree = Color(.catFree)
 }

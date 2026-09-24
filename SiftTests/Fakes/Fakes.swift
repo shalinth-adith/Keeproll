@@ -22,6 +22,8 @@ nonisolated final class FakePermissions: PermissionServicing, @unchecked Sendabl
     func requestPhotos() async -> PermissionState { photos }
     func contactsState() -> PermissionState { contacts }
     func requestContacts() async -> PermissionState { contacts }
+    func calendarState() -> PermissionState { .denied }
+    func requestCalendar() async -> PermissionState { .denied }
 }
 
 nonisolated struct FakeStorage: DeviceStorageProviding {

@@ -50,7 +50,7 @@ final class DashboardViewModel {
             case .screenshots: StorageSegment(id: "screenshots", label: "Screenshots", bytes: scanStore.displayBytes(.screenshots) ?? 0, color: Color.sift.catScreenshots)
             case .blurry: StorageSegment(id: "blurry", label: "Blurry", bytes: scanStore.displayBytes(.blurry) ?? 0, color: Color.sift.catBlurry)
             case .videos: StorageSegment(id: "videos", label: "Videos", bytes: scanStore.displayBytes(.videos) ?? 0, color: Color.sift.catVideos)
-            case .contacts: nil // bytes are negligible (FR-DASH-2)
+            case .contacts, .calendar, .vault: nil // no meaningful bytes (FR-DASH-2)
             }
         }
     }
@@ -76,6 +76,16 @@ final class DashboardViewModel {
             guard scanStore.photosPermission.canRead else { return .locked }
             if let progress = scanStore.similarProgress, (scanStore.blurry.value ?? []).isEmpty { return .scanning(progress: progress) }
             return state(scanStore.blurry, bytes: scanStore.blurryBytes) { $0.count }
+        case .calendar:
+            guard scanStore.calendarPermission.canRead else { return .locked }
+            switch scanStore.calendar {
+            case .idle, .loading: return .scanning(progress: nil)
+            case .failed: return .empty
+            case .loaded(let findings):
+                return findings.isEmpty ? .empty : .ready(bytes: 0, count: findings.suggestionCount)
+            }
+        case .vault:
+            return .empty
         case .contacts:
             guard scanStore.contactsPermission.canRead else { return .locked }
             return state(scanStore.contacts, bytes: 0) { _ in scanStore.duplicateContactCount }
@@ -92,8 +102,9 @@ final class DashboardViewModel {
     }
 
     func open(_ category: CleanupCategory) {
-        let permission = category == .contacts ? scanStore.contactsPermission : scanStore.photosPermission
-        guard permission.canRead || category == .contacts else {
+        // Contacts and Calendar screens explain and ask for their own access.
+        let asksForItsOwnAccess = category == .contacts || category == .calendar
+        guard scanStore.photosPermission.canRead || asksForItsOwnAccess else {
             SystemActions.openSettings()
             return
         }
@@ -103,10 +114,13 @@ final class DashboardViewModel {
         case .blurry: router.open(.blurry)
         case .videos: router.open(.videos)
         case .contacts: router.open(.contacts)
+        case .calendar: router.open(.calendar)
+        case .vault: router.open(.vault)
         }
     }
 
     func openSwipe() { router.open(.swipe) }
+    func openVault() { router.open(.vault) }
     func openCalibration() { router.open(.calibration) }
 
     func onAppear() {

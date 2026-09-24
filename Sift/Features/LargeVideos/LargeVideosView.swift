@@ -28,7 +28,8 @@ struct LargeVideosView: View {
                                message: Text(vm.filter == .all ? "You have no videos." : "No videos match this size."))
                 } else {
                     ForEach(vm.items) { item in
-                        VideoRow(item: item, isSelected: vm.isSelected(item), onToggle: { vm.toggle(item) }, onPreview: { vm.preview(item) })
+                        VideoRow(item: item, isSelected: vm.isSelected(item), onToggle: { vm.toggle(item) }, onPreview: { vm.preview(item) },
+                                 compressSaving: vm.compressSaving(for: item), onCompress: { vm.compress(item) })
                     }
                 }
             }

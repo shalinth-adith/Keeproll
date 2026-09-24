@@ -41,6 +41,9 @@ nonisolated struct ScanSummary: Codable, Sendable, Equatable {
 final class ScanStore {
     private(set) var photosPermission: PermissionState
     private(set) var contactsPermission: PermissionState
+    private(set) var calendarPermission: PermissionState
+    /// Old and duplicate calendar events (bonus: calendar cleanup).
+    private(set) var calendar: Loadable<CalendarFindings> = .idle
     private(set) var storage: Loadable<StorageSnapshot> = .idle
     private(set) var screenshots: Loadable<[MediaItem]> = .idle
     private(set) var videos: Loadable<[MediaItem]> = .idle
@@ -68,14 +71,19 @@ final class ScanStore {
     /// Library changes arriving before this moment were caused by Sift's own deletions
     /// and don't mean the results are out of date.
     private var ownChangesUntil = Date.distantPast
+    /// Videos that already have a compressed copy (and the copies themselves), so
+    /// compressing isn't offered twice for the same clip.
+    private(set) var compressedVideos: Set<String>
     private let defaults: UserDefaults
     private static let bestOverridesKey = "bestOverrides"
+    private static let compressedVideosKey = "compressedVideos"
 
     private let permissions: PermissionServicing
     private let storageService: DeviceStorageProviding
     private let photos: PhotoLibraryProviding
     private let similarity: SimilarityScanning?
     private let contactsScanner: ContactsScanning?
+    private let calendarScanner: CalendarScanning?
     private var scanTask: Task<Void, Never>?
 
     init(permissions: PermissionServicing,
@@ -83,14 +91,18 @@ final class ScanStore {
          photos: PhotoLibraryProviding,
          similarity: SimilarityScanning? = nil,
          contactsScanner: ContactsScanning? = nil,
+         calendarScanner: CalendarScanning? = nil,
          defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.bestOverrides = Set(defaults.stringArray(forKey: Self.bestOverridesKey) ?? [])
+        self.compressedVideos = Set(defaults.stringArray(forKey: Self.compressedVideosKey) ?? [])
         self.permissions = permissions
         self.storageService = storage
         self.photos = photos
         self.similarity = similarity
         self.contactsScanner = contactsScanner
+        self.calendarScanner = calendarScanner
+        self.calendarPermission = permissions.calendarState()
         self.photosPermission = permissions.photosState()
         self.contactsPermission = permissions.contactsState()
         self.lastSummary = ScanSummary.load(from: defaults)
@@ -103,6 +115,8 @@ final class ScanStore {
             case .screenshots, .videos: true
             case .similar, .blurry: similarity != nil
             case .contacts: contactsScanner != nil
+            case .calendar: calendarScanner != nil
+            case .vault: false // reached from its own entry, never a scan card
             }
         }
     }
@@ -130,7 +144,9 @@ final class ScanStore {
     func refreshPermissions() {
         let newPhotos = permissions.photosState()
         let newContacts = permissions.contactsState()
-        let changed = newPhotos != photosPermission || newContacts != contactsPermission
+        let newCalendar = permissions.calendarState()
+        let changed = newPhotos != photosPermission || newContacts != contactsPermission || newCalendar != calendarPermission
+        calendarPermission = newCalendar
         photosPermission = newPhotos
         contactsPermission = newContacts
         if changed { scan() }
@@ -138,6 +154,10 @@ final class ScanStore {
 
     func requestPhotos() async {
         photosPermission = await permissions.requestPhotos()
+    }
+
+    func requestCalendar() async {
+        calendarPermission = await permissions.requestCalendar()
     }
 
     func requestContacts() async {
@@ -156,8 +176,9 @@ final class ScanStore {
             async let b: Void = loadScreenshots()
             async let c: Void = loadVideos()
             async let d: Void = loadContacts()
+            async let f: Void = loadCalendar()
             async let e: Void = loadSimilar()
-            _ = await (a, b, c, d, e)
+            _ = await (a, b, c, d, e, f)
             guard !Task.isCancelled else { return }
             saveSummary()
             WidgetBridge.update(freeableBytes: totalFreeableBytes)
@@ -212,6 +233,8 @@ final class ScanStore {
         case .similar: similar.value != nil && similarProgress == nil
         case .blurry: blurry.value != nil && similarProgress == nil
         case .contacts: contacts.value != nil
+        case .calendar: calendar.value != nil
+        case .vault: false
         }
     }
 
@@ -221,7 +244,7 @@ final class ScanStore {
         case .videos: videoBytes
         case .similar: similarBytes
         case .blurry: blurryBytes
-        case .contacts: 0
+        case .contacts, .calendar, .vault: 0
         }
     }
 
@@ -232,6 +255,8 @@ final class ScanStore {
         case .similar: similarPhotoCount
         case .blurry: blurry.value?.count ?? 0
         case .contacts: duplicateContactCount
+        case .calendar: calendar.value?.suggestionCount ?? 0
+        case .vault: 0
         }
     }
 
@@ -319,6 +344,11 @@ final class ScanStore {
         return group
     }
 
+    func markCompressed(original: String, copy: String) {
+        compressedVideos.formUnion([original, copy])
+        defaults.set(Array(compressedVideos), forKey: Self.compressedVideosKey)
+    }
+
     private func saveBestOverrides() {
         defaults.set(Array(bestOverrides), forKey: Self.bestOverridesKey)
     }
@@ -346,6 +376,20 @@ final class ScanStore {
         let items = await photos.fetchVideos()
         guard !Task.isCancelled else { return }
         videos = .loaded(items)
+    }
+
+    private func loadCalendar() async {
+        guard let calendarScanner, calendarPermission.canRead else { calendar = .idle; return }
+        if calendar.value == nil { calendar = .loading }
+        let findings = await calendarScanner.findCleanup()
+        guard !Task.isCancelled else { return }
+        calendar = .loaded(findings)
+    }
+
+    /// Removes calendar events that were deleted.
+    func removeCalendarEvents(_ ids: Set<String>) {
+        guard !ids.isEmpty, case .loaded(let findings) = calendar else { return }
+        calendar = .loaded(findings.removing(ids))
     }
 
     private func loadContacts() async {
