@@ -15,7 +15,7 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
     private let config: SimilarityConfig
     private let printer = FeaturePrintService()
 
-    init(sizes: AssetSizeService, cache: ScanCache, config: SimilarityConfig = .standard) {
+    init(sizes: AssetSizeService, cache: ScanCache, config: SimilarityConfig = .current) {
         self.sizes = sizes
         self.cache = cache
         self.config = config
@@ -67,9 +67,16 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
         let grouper = SimilarityGrouper(config: config)
         var items: [MediaItem] = []
         items.reserveCapacity(total)
+        var itemsByID: [String: MediaItem] = [:]  // grown per batch, never rebuilt
+        var sharpnessByID: [String: Float] = [:]
         var groupIDs: [String: UUID] = [:]        // anchor asset id → stable group id
         var emitted: [UUID: [String]] = [:]       // group id → member ids last sent
         var cacheHits = 0
+        var lastEmit = Date.distantPast
+        #if DEBUG
+        let probe = CalibrationProbe()
+        grouper.onCompare = { probe.record(a: $0, b: $1, featureDistance: $2, hashDistance: $3, seconds: $4) }
+        #endif
 
         var start = 0
         while start < total {
@@ -78,6 +85,7 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
             let assets = Array(photos[start..<end])
             let batchItems = assets.map { PhotoLibraryService.item(from: $0, kind: .photo) }
             items.append(contentsOf: batchItems)
+            for item in batchItems { itemsByID[item.id] = item }
 
             let loaded = await loadBatch(assets, items: batchItems, offset: start, needsPrint: needsPrint)
             var blurry: [MediaItem] = []
@@ -85,12 +93,19 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
                 guard let features = entry.features else { continue } // no local thumbnail (iCloud-only)
                 if entry.fromCache { cacheHits += 1 }
                 grouper.add(features)
+                sharpnessByID[features.id] = features.sharpness
                 let item = items[entry.index]
                 if features.sharpness < config.blurThreshold, !item.isFavorite { blurry.append(item) }
             }
 
             if !blurry.isEmpty { out.yield(.blurry(await sizes.fillSizes(blurry))) }
-            await emitChanges(grouper: grouper, items: items, groupIDs: &groupIDs, emitted: &emitted, out: out)
+            // Emit at most ~4 times a second (and always at the end): diffing groups is
+            // cheap, but sending hundreds of UI updates on a big library isn't.
+            if end == total || Date().timeIntervalSince(lastEmit) > 0.25 {
+                await emitChanges(grouper: grouper, itemsByID: itemsByID, sharpnessByID: sharpnessByID,
+                                  groupIDs: &groupIDs, emitted: &emitted, out: out)
+                lastEmit = Date()
+            }
             out.yield(.progress(processed: end, total: total))
             start = end
         }
@@ -99,6 +114,11 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
         if !printer.isAvailable { Log.perf.info("Vision unavailable this run; similar shots matched by hash") }
         let seconds = Date().timeIntervalSince(started)
         Log.perf.info("Similarity scan: \(total) photos, \(emitted.count) groups, \(cacheHits) cached, \(seconds, format: .fixed(precision: 2))s")
+        #if DEBUG
+        let calibration = probe.finish(sharpness: sharpnessByID, groups: grouper.groups().map(\.memberIDs),
+                                       photos: total, seconds: seconds)
+        out.yield(.calibration(calibration))
+        #endif
     }
 
     /// Loads features for one batch with bounded parallelism.
@@ -126,11 +146,13 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
 
     private func features(for id: String, item: MediaItem, index: Int, wantsPrint: Bool) async -> Loaded {
         // Reuse the cache unless a print is wanted, missing, and Vision can still make one.
+        // An empty cached print means "Vision tried and couldn't": don't retry every scan.
         if let cached = await cache.feature(for: id, modified: item.modificationDate),
            !wantsPrint || cached.print != nil || !printer.isAvailable {
+            let print = wantsPrint && cached.print?.isEmpty == false ? cached.print : nil
             return Loaded(index: index, features: AssetFeatures(
                 id: id, date: item.creationDate, dHash: cached.dHash, sharpness: cached.sharpness,
-                print: wantsPrint ? cached.print : nil, isFavorite: item.isFavorite,
+                print: print, isFavorite: item.isFavorite,
                 pixelCount: item.pixelWidth * item.pixelHeight
             ), fromCache: true)
         }
@@ -145,8 +167,11 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
             return Loaded(index: index, features: nil, fromCache: false)
         }
         let print = wantsPrint ? await printer.featurePrint(for: image) : nil
+        // Record a Vision failure as an empty print, unless Vision was switched off by the
+        // watchdog (then a later run should try again).
+        let cachedPrint: [Float]? = wantsPrint && print == nil && printer.isAvailable ? [] : print
         await cache.store(.init(modified: item.modificationDate?.timeIntervalSinceReferenceDate ?? 0,
-                                dHash: hash, sharpness: sharpness, print: print), for: id)
+                                dHash: hash, sharpness: sharpness, print: cachedPrint), for: id)
         return Loaded(index: index, features: AssetFeatures(
             id: id, date: item.creationDate, dHash: hash, sharpness: sharpness, print: print,
             isFavorite: item.isFavorite, pixelCount: item.pixelWidth * item.pixelHeight
@@ -171,11 +196,9 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
     }
 
     /// Sends upserts for new or grown groups and removes for groups that merged away.
-    private func emitChanges(grouper: SimilarityGrouper, items: [MediaItem],
+    private func emitChanges(grouper: SimilarityGrouper, itemsByID: [String: MediaItem], sharpnessByID: [String: Float],
                              groupIDs: inout [String: UUID], emitted: inout [UUID: [String]],
                              out: AsyncStream<SimilarityEvent>.Continuation) async {
-        let itemsByID = Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
-        let featuresByID = Dictionary(grouper.features.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
         var live = Set<UUID>()
 
         for group in grouper.groups() {
@@ -187,8 +210,8 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
 
             let sized = await sizes.fillSizes(members.compactMap { itemsByID[$0] })
             let ranked = BestShotRanker.rank(sized.compactMap { item -> BestShotRanker.Candidate? in
-                guard let features = featuresByID[item.id] else { return nil }
-                return .init(id: item.id, isFavorite: item.isFavorite, sharpness: features.sharpness,
+                guard let sharpness = sharpnessByID[item.id] else { return nil }
+                return .init(id: item.id, isFavorite: item.isFavorite, sharpness: sharpness,
                              pixelCount: item.pixelWidth * item.pixelHeight, date: item.creationDate,
                              bytes: item.byteSize ?? 0)
             }, exactDuplicates: group.isExactDuplicate)

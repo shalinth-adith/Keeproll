@@ -69,3 +69,28 @@ struct SimilarityGrouperTests {
         #expect(grouper.groups().allSatisfy { $0.memberIDs.count <= 4 })
     }
 }
+
+/// Scale check for "fast on a large library" (PRD §4): the grouping stage alone must
+/// stay near-linear. 20k photos with realistic 768-float prints, in bursts.
+struct SimilarityScaleTests {
+    @Test func twentyThousandPhotosGroupQuickly() {
+        var rng = SplitMix64(seed: 99)
+        let grouper = SimilarityGrouper()
+        var time: TimeInterval = 0
+        let start = Date()
+        for i in 0..<20_000 {
+            // Bursts of 4 shots 1 s apart, then a gap; prints nearly equal within a burst.
+            time += i % 4 == 0 ? 3_600 : 1
+            var print = [Float](repeating: 0, count: 768)
+            let base = (i / 4) % 768
+            print[base] = 1
+            print[(base + 1) % 768] = Float(i % 4) * 0.05
+            grouper.add(features("p\(i)", at: time, hash: rng.next(), print: print))
+        }
+        let groups = grouper.groups()
+        let elapsed = Date().timeIntervalSince(start)
+        #expect(groups.count == 5_000)
+        #expect(groups.allSatisfy { $0.memberIDs.count == 4 })
+        #expect(elapsed < 20, "Grouping 20k photos took \(elapsed) s")
+    }
+}

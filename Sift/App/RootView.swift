@@ -19,6 +19,7 @@ struct RootView: View {
                             case .videos: LargeVideosView(env: env)
                             case .contacts: DuplicateContactsView(env: env)
                             case .swipe: SwipeView(env: env)
+                            case .calibration: CalibrationScreen(env: env)
                             case .compare(let groupID, let startID): CompareView(env: env, groupID: groupID, startID: startID)
                             }
                         }

@@ -37,6 +37,13 @@ nonisolated final class SimilarityGrouper {
     private var anchor: [Int: Int] = [:]
     /// Roots whose group contains at least one "similar" (not duplicate) edge.
     private var hasSimilarEdge: Set<Int> = []
+    /// Root → members, kept only for groups of two or more, so `groups()` costs
+    /// O(groups) rather than O(library) and can run after every batch.
+    private var memberLists: [Int: [Int]] = [:]
+
+    /// Called for every time-window comparison with the two asset ids, the feature
+    /// distance, the dHash distance and seconds apart. DEBUG calibration only.
+    var onCompare: ((String, String, Float?, Int, TimeInterval) -> Void)?
 
     init(config: SimilarityConfig = .standard) {
         self.config = config
@@ -64,19 +71,21 @@ nonisolated final class SimilarityGrouper {
             window.removeFirst()
             releasePrintIfUnneeded(first)
         }
-        for other in window.suffix(config.maxNeighbours).reversed() where areSimilar(index, other, slack: 1) {
-            join(index, other, similarEdge: true)
+        for other in window.suffix(config.maxNeighbours).reversed() {
+            if let onCompare {
+                let distance = features[index].print.flatMap { a in features[other].print.map { FeaturePrinter.distance(a, $0) } }
+                let seconds = features[other].date.map { date.timeIntervalSince($0) } ?? 0
+                onCompare(features[index].id, features[other].id, distance,
+                          ImageAnalysis.hamming(features[index].dHash, features[other].dHash), seconds)
+            }
+            if areSimilar(index, other, slack: 1) { join(index, other, similarEdge: true) }
         }
         window.append(index)
     }
 
     /// Current groups of two or more, in the order their anchors were added.
     func groups() -> [Group] {
-        var members: [Int: [Int]] = [:]
-        for index in 0..<features.count {
-            members[sets.find(index), default: []].append(index)
-        }
-        return members.compactMap { root, indices -> (Int, Group)? in
+        memberLists.compactMap { root, indices -> (Int, Group)? in
             guard indices.count > 1 else { return nil }
             let anchorIndex = anchor[root] ?? indices.min()!
             return (anchorIndex, Group(
@@ -117,6 +126,8 @@ nonisolated final class SimilarityGrouper {
         }
 
         let root = sets.union(ra, rb)
+        let merged = (memberLists.removeValue(forKey: ra) ?? [ra]) + (memberLists.removeValue(forKey: rb) ?? [rb])
+        memberLists[root] = merged
         anchor[root] = min(anchorA, anchorB)
         if similarEdge || hasSimilarEdge.contains(ra) || hasSimilarEdge.contains(rb) { hasSimilarEdge.insert(root) }
         hasSimilarEdge.remove(root == ra ? rb : ra)

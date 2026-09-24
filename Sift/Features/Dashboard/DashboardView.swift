@@ -27,6 +27,15 @@ struct DashboardView: View {
 
                 if vm.showSwipeEntry { swipeEntry.staggered(6, appeared: appeared) }
 
+                #if DEBUG
+                Button { vm.openCalibration() } label: {
+                    Label("Calibrate thresholds (debug)", systemImage: "gauge.with.dots.needle.33percent")
+                        .font(Font.sift.caption.weight(.semibold))
+                        .frame(minHeight: Layout.minTouchTarget)
+                }
+                .foregroundStyle(Color.sift.inkSecondary)
+                #endif
+
                 if vm.settings.lifetimeBytesFreed > 0 {
                     Label("Sift has freed \(ByteFormatter.string(vm.settings.lifetimeBytesFreed)) so far", systemImage: "leaf.fill")
                         .font(Font.sift.caption.weight(.semibold))

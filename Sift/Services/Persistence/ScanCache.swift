@@ -28,6 +28,7 @@ actor ScanCache {
 
     private static let magic: UInt32 = 0x5346_5443 // "SFTC"
     private static let version: UInt32 = 1
+    private static let emptyPrint = UInt32.max
 
     init(url: URL = ScanCache.defaultURL) {
         self.url = url
@@ -85,8 +86,14 @@ actor ScanCache {
             writer.append(record.modified)
             writer.append(record.dHash)
             writer.append(record.sharpness)
-            writer.append(UInt32(record.print?.count ?? 0))
-            if let print = record.print { writer.append(print) }
+            // 0 = no print wanted, emptyPrint = Vision tried and failed, n = n floats.
+            switch record.print {
+            case nil: writer.append(UInt32(0))
+            case let print? where print.isEmpty: writer.append(Self.emptyPrint)
+            case let print?:
+                writer.append(UInt32(print.count))
+                writer.append(print)
+            }
         }
         writer.append(UInt32(sizes.count))
         for (id, record) in sizes {
@@ -121,7 +128,9 @@ actor ScanCache {
                   let hash = reader.read(UInt64.self), let sharpness = reader.read(Float.self),
                   let printCount = reader.read(UInt32.self) else { return }
             var print: [Float]?
-            if printCount > 0 {
+            if printCount == Self.emptyPrint {
+                print = []
+            } else if printCount > 0 {
                 guard let values = reader.readFloats(Int(printCount)) else { return }
                 print = values
             }

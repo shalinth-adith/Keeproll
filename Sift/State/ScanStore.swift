@@ -32,6 +32,10 @@ final class ScanStore {
     /// Photos the similarity scan scored as out of focus (bonus: blurry detection).
     private(set) var blurry: Loadable<[MediaItem]> = .idle
     private(set) var contacts: Loadable<[DuplicateContactGroup]> = .idle
+    #if DEBUG
+    /// Statistics from the last similar-photo scan, for the calibration screen.
+    private(set) var calibration: CalibrationData?
+    #endif
 
     private let permissions: PermissionServicing
     private let storageService: DeviceStorageProviding
@@ -221,6 +225,10 @@ final class ScanStore {
                 order.removeAll { $0 == id }
             case .blurry(let items):
                 blurryItems.append(contentsOf: items)
+            #if DEBUG
+            case .calibration(let data):
+                calibration = data
+            #endif
             }
             // Publish at most ~8 times a second so the UI stays smooth (ARCHITECTURE §10).
             if Date().timeIntervalSince(lastPublish) > 0.12 {

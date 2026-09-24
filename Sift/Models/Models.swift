@@ -83,6 +83,9 @@ nonisolated enum SimilarityEvent: Sendable {
     case upsert(SimilarGroup)
     case remove(UUID)
     case blurry([MediaItem])
+    #if DEBUG
+    case calibration(CalibrationData)
+    #endif
 }
 
 nonisolated struct ContactSummary: Identifiable, Hashable, Sendable {

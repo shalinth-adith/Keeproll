@@ -87,6 +87,7 @@ final class DashboardViewModel {
     }
 
     func openSwipe() { router.open(.swipe) }
+    func openCalibration() { router.open(.calibration) }
 
     func onAppear() {
         if case .idle = scanStore.storage { scanStore.scan() }

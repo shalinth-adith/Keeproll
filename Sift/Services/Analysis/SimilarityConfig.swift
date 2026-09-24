@@ -30,4 +30,20 @@ nonisolated struct SimilarityConfig: Sendable {
     var batchSize = 48
 
     static let standard = SimilarityConfig()
+
+    /// `standard`, plus any thresholds applied from the DEBUG calibration screen.
+    static var current: SimilarityConfig {
+        var config = SimilarityConfig.standard
+        #if DEBUG
+        let defaults = UserDefaults.standard
+        if let value = defaults.object(forKey: CalibrationKeys.featureThreshold) as? Double { config.featureThreshold = Float(value) }
+        if let value = defaults.object(forKey: CalibrationKeys.blurThreshold) as? Double { config.blurThreshold = Float(value) }
+        #endif
+        return config
+    }
+}
+
+nonisolated enum CalibrationKeys {
+    static let featureThreshold = "calibration.featureThreshold"
+    static let blurThreshold = "calibration.blurThreshold"
 }
