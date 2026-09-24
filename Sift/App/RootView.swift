@@ -5,6 +5,17 @@ struct RootView: View {
     let env: AppEnvironment
     @Environment(\.scenePhase) private var scenePhase
 
+    /// Watches the library once Photos access exists. Deleted photos disappear from every
+    /// list and from the cart straight away.
+    private func startLibraryMonitor() {
+        guard env.scanStore.photosPermission.canRead else { return }
+        let store = env.scanStore, cart = env.cart
+        env.libraryMonitor.start { delta in
+            let removed = store.apply(delta)
+            cart.removeAssets(removed)
+        }
+    }
+
     var body: some View {
         @Bindable var router = env.router
         Group {
@@ -41,7 +52,13 @@ struct RootView: View {
         }
         .background(Color.sift.canvas)
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { env.scanStore.refreshPermissions() }
+            guard phase == .active else { return }
+            env.scanStore.refreshPermissions()
+            startLibraryMonitor()
+            // Back from the Camera or Photos with new or edited shots: refresh quietly.
+            // The cache makes this a warm rescan (seconds, not a full re-analysis).
+            if env.scanStore.isStale && !env.scanStore.isScanning { env.scanStore.scan() }
         }
+        .task { startLibraryMonitor() }
     }
 }

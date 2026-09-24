@@ -15,13 +15,13 @@ struct ScanCacheTests {
         let first = ScanCache(url: url)
         await first.store(record, for: "asset/1")
         await first.store(.init(modified: 5, dHash: 7, sharpness: 1, print: nil), for: "asset/2")
-        await first.storeSize(4_200_000, for: "asset/1", modified: modified)
+        await first.store(AssetStorageInfo(bytes: 4_200_000, isLocal: false), for: "asset/1", modified: modified)
         await first.save()
 
         let second = ScanCache(url: url)
         #expect(await second.feature(for: "asset/1", modified: modified) == record)
         #expect(await second.feature(for: "asset/2", modified: Date(timeIntervalSinceReferenceDate: 5))?.print == nil)
-        #expect(await second.size(for: "asset/1", modified: modified) == 4_200_000)
+        #expect(await second.storage(for: "asset/1", modified: modified) == AssetStorageInfo(bytes: 4_200_000, isLocal: false))
         try? FileManager.default.removeItem(at: url)
     }
 

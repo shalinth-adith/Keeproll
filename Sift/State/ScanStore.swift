@@ -59,6 +59,8 @@ final class ScanStore {
     private(set) var lastSummary: ScanSummary?
     /// A scan is running (results may still change).
     private(set) var isScanning = false
+    /// Photos were added or edited in the library since the last scan finished.
+    private(set) var isStale = false
 
     private let permissions: PermissionServicing
     private let storageService: DeviceStorageProviding
@@ -135,6 +137,7 @@ final class ScanStore {
         scanTask?.cancel()
         Log.scan.debug("Scan started (photos: \(String(describing: self.photosPermission), privacy: .public), contacts: \(String(describing: self.contactsPermission), privacy: .public))")
         isScanning = true
+        isStale = false
         scanTask = Task {
             defer { if !Task.isCancelled { isScanning = false } }
             async let a: Void = loadStorage()
@@ -225,6 +228,34 @@ final class ScanStore {
         summary.totalFreeable = totalFreeableBytes
         summary.save()
         lastSummary = summary
+    }
+
+    /// Applies a photo-library change (ARCHITECTURE §6.4). Removals take effect at once
+    /// (cheap, and never pull a list out from under the user); additions and edits only
+    /// mark results stale, to be picked up by a rescan. Returns the ids to drop from the cart.
+    @discardableResult
+    func apply(_ delta: LibraryDelta) -> Set<String> {
+        let known = knownAssetIDs
+        let removed = delta.removedIDs.intersection(known)
+        if !removed.isEmpty { removeAssets(removed) }
+        if delta.hasAdditionsOrEdits && !isScanning { isStale = true }
+        return removed
+    }
+
+    /// Every asset id currently shown in any category.
+    var knownAssetIDs: Set<String> {
+        var ids = Set<String>()
+        for item in (screenshots.value ?? []) + (videos.value ?? []) + (blurry.value ?? []) { ids.insert(item.id) }
+        for group in similar.value ?? [] { for member in group.members { ids.insert(member.id) } }
+        return ids
+    }
+
+    /// Assets whose original is only in iCloud, across every category.
+    var cloudOnlyIDs: Set<String> {
+        var ids = Set<String>()
+        for item in (screenshots.value ?? []) + (videos.value ?? []) + (blurry.value ?? []) where item.isCloudOnly { ids.insert(item.id) }
+        for group in similar.value ?? [] { for member in group.members where member.isCloudOnly { ids.insert(member.id) } }
+        return ids
     }
 
     /// Removes contacts that were merged away or deleted.

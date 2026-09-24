@@ -32,6 +32,9 @@ final class DashboardViewModel {
                              : scanStore.totalFreeableBytes
     }
 
+    /// New or edited photos arrived while the app was open.
+    var showStaleBanner: Bool { scanStore.isStale && !scanStore.isScanning }
+
     /// Progress of the long photo scan, for the hero (nil when idle).
     var scanProgress: Double? { scanStore.similarProgress }
 

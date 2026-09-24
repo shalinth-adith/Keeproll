@@ -165,9 +165,9 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
         let id = item.id
         // File size, read here in parallel (and cached) rather than later, one at a time,
         // inside AssetSizeService when groups are emitted.
-        if await cache.size(for: id, modified: item.modificationDate) == nil,
-           let bytes = AssetSizeService.fileSize(of: box.asset) {
-            await cache.storeSize(bytes, for: id, modified: item.modificationDate)
+        if await cache.storage(for: id, modified: item.modificationDate) == nil,
+           let info = AssetSizeService.storageInfo(of: box.asset) {
+            await cache.store(info, for: id, modified: item.modificationDate)
         }
         // Reuse the cache unless a print is wanted, missing, and Vision can still make one.
         // An empty cached print means "Vision tried and couldn't": don't retry every scan.

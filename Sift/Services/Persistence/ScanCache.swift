@@ -18,6 +18,8 @@ actor ScanCache {
     nonisolated struct SizeRecord: Sendable, Equatable {
         let modified: Double
         let bytes: Int64
+        /// The original is on this iPhone (false = iCloud only).
+        let isLocal: Bool
     }
 
     private let url: URL
@@ -27,7 +29,7 @@ actor ScanCache {
     private var dirty = false
 
     private static let magic: UInt32 = 0x5346_5443 // "SFTC"
-    private static let version: UInt32 = 2 // 2: sharpness measured at a fixed 160 px
+    private static let version: UInt32 = 3 // 2: sharpness at a fixed 160 px; 3: iCloud-only flag
     private static let emptyPrint = UInt32.max
 
     init(url: URL = ScanCache.defaultURL) {
@@ -53,15 +55,15 @@ actor ScanCache {
         dirty = true
     }
 
-    func size(for id: String, modified: Date?) -> Int64? {
+    func storage(for id: String, modified: Date?) -> AssetStorageInfo? {
         loadIfNeeded()
         guard let record = sizes[id], record.modified == Self.stamp(modified) else { return nil }
-        return record.bytes
+        return AssetStorageInfo(bytes: record.bytes, isLocal: record.isLocal)
     }
 
-    func storeSize(_ bytes: Int64, for id: String, modified: Date?) {
+    func store(_ info: AssetStorageInfo, for id: String, modified: Date?) {
         loadIfNeeded()
-        sizes[id] = SizeRecord(modified: Self.stamp(modified), bytes: bytes)
+        sizes[id] = SizeRecord(modified: Self.stamp(modified), bytes: info.bytes, isLocal: info.isLocal)
         dirty = true
     }
 
@@ -100,6 +102,7 @@ actor ScanCache {
             writer.append(id)
             writer.append(record.modified)
             writer.append(record.bytes)
+            writer.append(UInt8(record.isLocal ? 1 : 0))
         }
         do {
             try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
@@ -140,8 +143,8 @@ actor ScanCache {
         var loadedSizes: [String: SizeRecord] = [:]
         for _ in 0..<sizeCount {
             guard let id = reader.readString(), let modified = reader.read(Double.self),
-                  let bytes = reader.read(Int64.self) else { return }
-            loadedSizes[id] = SizeRecord(modified: modified, bytes: bytes)
+                  let bytes = reader.read(Int64.self), let local = reader.read(UInt8.self) else { return }
+            loadedSizes[id] = SizeRecord(modified: modified, bytes: bytes, isLocal: local == 1)
         }
         features = loadedFeatures
         sizes = loadedSizes

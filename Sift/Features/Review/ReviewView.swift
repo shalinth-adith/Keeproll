@@ -71,6 +71,16 @@ struct ReviewView: View {
             summaryLine
                 .font(Font.sift.caption)
                 .foregroundStyle(Color.sift.inkSecondary)
+            if vm.cloudOnly.count > 0 {
+                Label {
+                    Text("^[\(vm.cloudOnly.count) item](inflect: true) (\(ByteFormatter.string(vm.cloudOnly.bytes))) are only in iCloud. Removing them frees iCloud space, not iPhone storage.")
+                } icon: {
+                    Image(systemName: "icloud")
+                }
+                .font(Font.sift.caption)
+                .foregroundStyle(Color.sift.warning)
+                .padding(.top, Spacing.xxs)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Spacing.m)

@@ -7,6 +7,7 @@ struct AppEnvironment {
     let thumbnails: ThumbnailProviding
     let videoPlayback: VideoPlaybackProviding
     let deletion: DeletionServicing
+    let libraryMonitor: LibraryChangeMonitoring
     let scanStore: ScanStore
     let cart: CleanupCart
     let settings: SettingsStore
@@ -30,6 +31,7 @@ struct AppEnvironment {
             thumbnails: ThumbnailProvider(),
             videoPlayback: VideoPlaybackService(),
             deletion: DeletionService(contacts: contacts),
+            libraryMonitor: LibraryChangeMonitor(),
             scanStore: ScanStore(permissions: permissions, storage: DeviceStorageService(), photos: photos,
                                  similarity: SimilarityEngine(sizes: sizes, cache: cache), contactsScanner: contacts),
             cart: CleanupCart(),

@@ -1,14 +1,24 @@
 import Photos
 
+/// A photo or video's size and whether its original is on this iPhone.
+nonisolated struct AssetStorageInfo: Sendable, Equatable {
+    let bytes: Int64
+    let isLocal: Bool
+}
+
 /// Reads on-device file sizes for assets.
 ///
 /// PhotoKit has no public file-size API. `PHAssetResource`'s `fileSize` via KVC is widely
 /// used but undocumented, so it's read defensively; if it's missing, the size is
 /// estimated from the pixel count and flagged `sizeIsEstimated`. Real sizes are kept in
 /// the persistent `ScanCache`, so rescans don't re-read resources.
+///
+/// The same read reports whether the original is on the device (`locallyAvailable`,
+/// also undocumented; missing means "assume local"). iCloud-only items free iCloud
+/// space rather than iPhone storage, and the UI says so (FR-SIM-7).
 actor AssetSizeService {
     private let cache: ScanCache?
-    private var memo: [String: Int64] = [:]
+    private var memo: [String: AssetStorageInfo] = [:]
 
     init(cache: ScanCache? = nil) {
         self.cache = cache
@@ -17,7 +27,7 @@ actor AssetSizeService {
     func fillSizes(_ items: [MediaItem]) async -> [MediaItem] {
         var missing: [String] = []
         for item in items where memo[item.id] == nil {
-            if let cached = await cache?.size(for: item.id, modified: item.modificationDate) {
+            if let cached = await cache?.storage(for: item.id, modified: item.modificationDate) {
                 memo[item.id] = cached
             } else {
                 missing.append(item.id)
@@ -27,15 +37,16 @@ actor AssetSizeService {
             // Resource reads are slow (~ms each) and independent: do them in parallel,
             // off this actor, so other callers aren't queued behind a big first read.
             let found = await Self.readSizes(missing)
-            for (id, size, modified) in found {
-                memo[id] = size
-                await cache?.storeSize(size, for: id, modified: modified)
+            for (id, info, modified) in found {
+                memo[id] = info
+                await cache?.store(info, for: id, modified: modified)
             }
         }
         return items.map { item in
             var item = item
-            if let size = memo[item.id] {
-                item.byteSize = size
+            if let info = memo[item.id] {
+                item.byteSize = info.bytes
+                item.isCloudOnly = !info.isLocal
             } else {
                 item.byteSize = Self.estimate(item)
                 item.sizeIsEstimated = true
@@ -47,21 +58,21 @@ actor AssetSizeService {
     private struct Boxed: @unchecked Sendable { let assets: [PHAsset] } // immutable snapshots
 
     @concurrent
-    private static func readSizes(_ ids: [String]) async -> [(String, Int64, Date?)] {
+    private static func readSizes(_ ids: [String]) async -> [(String, AssetStorageInfo, Date?)] {
         var assets: [PHAsset] = []
         PHAsset.fetchAssets(withLocalIdentifiers: ids, options: nil).enumerateObjects { asset, _, _ in assets.append(asset) }
         let lanes = max(2, ProcessInfo.processInfo.activeProcessorCount)
         let chunk = max(1, (assets.count + lanes - 1) / lanes)
         let chunks = stride(from: 0, to: assets.count, by: chunk).map { Boxed(assets: Array(assets[$0..<min($0 + chunk, assets.count)])) }
-        return await withTaskGroup(of: [(String, Int64, Date?)].self) { group in
+        return await withTaskGroup(of: [(String, AssetStorageInfo, Date?)].self) { group in
             for box in chunks {
                 group.addTask {
                     box.assets.compactMap { asset in
-                        fileSize(of: asset).map { (asset.localIdentifier, $0, asset.modificationDate) }
+                        storageInfo(of: asset).map { (asset.localIdentifier, $0, asset.modificationDate) }
                     }
                 }
             }
-            var all: [(String, Int64, Date?)] = []
+            var all: [(String, AssetStorageInfo, Date?)] = []
             for await part in group { all += part }
             return all
         }
@@ -71,9 +82,9 @@ actor AssetSizeService {
         for id in ids { memo[id] = nil }
     }
 
-    /// Sum of the original resources' sizes. Static (no actor hop), so the scan's worker
-    /// tasks can read sizes in parallel.
-    static func fileSize(of asset: PHAsset) -> Int64? {
+    /// Sum of the original resources' sizes, and whether the primary original is on the
+    /// device. Static (no actor hop), so the scan's worker tasks can read in parallel.
+    static func storageInfo(of asset: PHAsset) -> AssetStorageInfo? {
         let resources = PHAssetResource.assetResources(for: asset)
         // Count the original resources; ignore adjustment data and derived renders.
         let originals = resources.filter {
@@ -81,7 +92,9 @@ actor AssetSizeService {
         }
         let sizes = originals.compactMap { ($0.value(forKey: "fileSize") as? NSNumber)?.int64Value }
         guard !sizes.isEmpty else { return nil }
-        return sizes.reduce(0, +)
+        let primary = originals.first { $0.type == .photo || $0.type == .video } ?? originals.first
+        let isLocal = (primary?.value(forKey: "locallyAvailable") as? NSNumber)?.boolValue ?? true
+        return AssetStorageInfo(bytes: sizes.reduce(0, +), isLocal: isLocal)
     }
 
     /// Rough fallback: HEIC averages ~0.35 bytes per pixel; video ~1 MB per second at 1080p.

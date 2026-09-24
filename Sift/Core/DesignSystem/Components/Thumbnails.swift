@@ -41,6 +41,8 @@ struct SelectableThumbnail: View {
     let id: String
     let isSelected: Bool
     var caption: String?
+    /// Original lives only in iCloud: deleting it frees iCloud space, not iPhone storage.
+    var isCloudOnly = false
     let accessibilityText: Text
     let onToggle: () -> Void
 
@@ -56,6 +58,8 @@ struct SelectableThumbnail: View {
                     }
                 }
                 .overlay(alignment: .bottomLeading) {
+                    HStack(spacing: 4) {
+                    if isCloudOnly { CloudBadge() }
                     if let caption {
                         Text(caption)
                             .font(Font.sift.badge)
@@ -63,8 +67,9 @@ struct SelectableThumbnail: View {
                             .padding(.horizontal, 6)
                             .padding(.vertical, 3)
                             .background(.black.opacity(0.55), in: Capsule())
-                            .padding(6)
                     }
+                    }
+                    .padding(6)
                 }
                 .overlay(alignment: .topTrailing) {
                     Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")

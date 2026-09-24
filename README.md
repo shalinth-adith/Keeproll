@@ -16,6 +16,8 @@ Built for the AppFactory *App Builder Intern* selection task.
 | Duplicate contacts: phone/email/name matching, merge, delete, vCard backup | ✅ |
 | Review → Delete → Summary (the only deletion path) | ✅ |
 | Scan cache (warm rescans skip analysis) | ✅ |
+| Live library changes (deleted in Photos → gone from Sift; new photos → quick refresh) | ✅ |
+| iCloud-only badges + honest "frees iCloud space" note on Review | ✅ |
 | Bonus: Swipe to sort, Blurry photos, Home Screen widget | ✅ |
 | TestFlight | ⏳ |
 

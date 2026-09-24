@@ -45,6 +45,7 @@ struct SelectableMediaGrid: View {
                     id: item.id,
                     isSelected: isSelected(item),
                     caption: item.byteSize.map(ByteFormatter.string),
+                    isCloudOnly: item.isCloudOnly,
                     accessibilityText: accessibilityLabel(item)
                 ) {
                     setSelected(item, !isSelected(item))

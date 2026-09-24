@@ -105,6 +105,18 @@ final class ReviewViewModel {
         }
     }
 
+    /// Selected items whose original is only in iCloud, and their bytes. Removing them
+    /// frees iCloud space, not iPhone storage (FR-SIM-7).
+    var cloudOnly: (count: Int, bytes: Int64) {
+        let ids = scanStore.cloudOnlyIDs
+        return cart.items.values.reduce(into: (0, Int64(0))) { total, item in
+            if case .asset(let id, _, let bytes) = item, ids.contains(id) {
+                total.0 += 1
+                total.1 += bytes
+            }
+        }
+    }
+
     func remove(assetID: String) { cart.removeAssets([assetID]) }
     func remove(_ item: CartItem) { cart.remove(item) }
 

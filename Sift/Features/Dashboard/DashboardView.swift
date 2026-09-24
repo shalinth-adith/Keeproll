@@ -17,6 +17,13 @@ struct DashboardView: View {
                     .padding(.top, Spacing.xs)
                     .staggered(0, appeared: appeared)
 
+                if vm.showStaleBanner {
+                    InlineBanner(style: .info, systemImage: "arrow.clockwise",
+                                 message: Text("Your library changed since the last scan.")) {
+                        SecondaryButton(title: "Update results", systemImage: "arrow.clockwise") { vm.rescan() }
+                    }
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                }
                 if vm.showLimitedBanner { limitedBanner.staggered(1, appeared: appeared) }
                 if vm.showPhotosLocked { lockedBanner.staggered(1, appeared: appeared) }
 
