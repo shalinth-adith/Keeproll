@@ -11,10 +11,17 @@ Built for the AppFactory *App Builder Intern* selection task.
 | Onboarding & permissions (full / limited / denied) | ✅ |
 | Storage dashboard | ✅ |
 | Screenshots → Review → Delete → Summary | ✅ end to end |
-| Large videos | ⏳ Day 2 |
-| Similar photos (fast, O(n)-ish grouping) | ⏳ Day 2–3 |
-| Duplicate contacts (merge with vCard backup) | ⏳ Day 3 |
-| Bonus: swipe mode, blurry photos, TestFlight | ⏳ Day 4–5 |
+| Large videos (list, filters, inline player) | ✅ |
+| Similar photos UI (groups, Best, Smart select, Compare) | ✅ UI · ⏳ scan engine |
+| Duplicate contacts UI (match reasons, merge preview, primary picker) | ✅ UI · ⏳ dedupe + merge/backup |
+| Swipe to sort (bonus) | ✅ |
+| Blurry photos, widget, TestFlight | ⏳ |
+
+Screens whose scanner isn't built yet only appear in the app when it is. To exercise them in the simulator with fixture data, launch with `SIFT_DEMO=1` (DEBUG builds only):
+
+```bash
+SIMCTL_CHILD_SIFT_DEMO=1 xcrun simctl launch booted me.adithyan.shalinth.Sift
+```
 
 ## Build
 
@@ -27,11 +34,12 @@ open Sift.xcodeproj
 
 Tests: `xcodebuild -project Sift.xcodeproj -scheme Sift -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test`
 
-Simulator fixtures (EXIF-tagged fake screenshots):
+Simulator fixtures (EXIF-tagged fake screenshots, short videos):
 
 ```bash
 swift scripts/make_screenshot_fixtures.swift SiftTests/Fixtures/Screenshots 12
-xcrun simctl addmedia booted SiftTests/Fixtures/Screenshots/*.png
+swift scripts/make_video_fixtures.swift SiftTests/Fixtures/Videos 3
+xcrun simctl addmedia booted SiftTests/Fixtures/Screenshots/*.png SiftTests/Fixtures/Videos/*.mp4
 ```
 
 ## How it's built

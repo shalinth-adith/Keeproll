@@ -82,7 +82,8 @@ struct StorageHero: View {
             .padding(.vertical, Spacing.s)
             .background(Color.sift.accentSoft, in: Capsule())
 
-            HStack(spacing: Spacing.m) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 96), spacing: Spacing.s, alignment: .leading)],
+                      alignment: .leading, spacing: Spacing.s) {
                 LegendItem(color: Color.sift.catFree, label: Text("Free"),
                            value: snapshot.map { ByteFormatter.string($0.availableBytes) })
                 LegendItem(color: Color.sift.catOther, label: Text("Used"),
@@ -91,7 +92,6 @@ struct StorageHero: View {
                     LegendItem(color: segment.color, label: Text(segment.label), value: ByteFormatter.string(segment.bytes))
                 }
             }
-            .frame(maxWidth: .infinity)
         }
         .animation(Motion.standard, value: freeable)
     }
@@ -102,19 +102,20 @@ struct StorageHero: View {
         let value: String?
 
         var body: some View {
-            VStack(spacing: 2) {
+            VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: Spacing.xxs) {
                     Circle().fill(color)
                         .overlay(Circle().strokeBorder(Color.sift.inkTertiary.opacity(0.5), lineWidth: 0.5))
                         .frame(width: 8, height: 8)
-                    label.font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
+                    label.font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary).lineLimit(1)
                 }
                 Text(value ?? "—")
                     .font(Font.sift.metric)
                     .foregroundStyle(Color.sift.inkPrimary)
+                    .lineLimit(1)
                     .contentTransition(.numericText())
             }
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 

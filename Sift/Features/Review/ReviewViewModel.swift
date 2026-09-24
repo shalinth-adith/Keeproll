@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// An approved list of things to delete.
+/// An approved list of things to delete or merge.
 ///
 /// The initialiser is `fileprivate`, so the only code that can build a plan is
 /// `ReviewViewModel.confirm()` in this file. That makes "nothing is deleted without
@@ -14,18 +14,47 @@ nonisolated struct CleanupPlan: Sendable {
         let bytes: Int64
     }
 
+    nonisolated enum ContactAction: Hashable, Sendable {
+        case merge(key: String, primaryID: String, mergedIDs: [String])
+        case delete(key: String, id: String)
+
+        var key: String {
+            switch self {
+            case .merge(let key, _, _), .delete(let key, _): key
+            }
+        }
+
+        /// Every contact this action touches (for the backup).
+        var affectedIDs: [String] {
+            switch self {
+            case .merge(_, let primary, let merged): [primary] + merged
+            case .delete(_, let id): [id]
+            }
+        }
+    }
+
     let items: [Item]
+    let contactActions: [ContactAction]
 
     var assetIDs: [String] { items.map(\.assetID) }
     var totalBytes: Int64 { items.reduce(0) { $0 + $1.bytes } }
+    var isEmpty: Bool { items.isEmpty && contactActions.isEmpty }
 
     fileprivate init(cartItems: [CartItem]) {
-        items = cartItems.map { item in
+        var items: [Item] = []
+        var actions: [ContactAction] = []
+        for item in cartItems {
             switch item {
             case .asset(let id, let category, let bytes):
-                Item(key: item.key, assetID: id, category: category, bytes: bytes)
+                items.append(Item(key: item.key, assetID: id, category: category, bytes: bytes))
+            case .contactMerge(_, let primaryID, let mergedIDs, _):
+                actions.append(.merge(key: item.key, primaryID: primaryID, mergedIDs: mergedIDs))
+            case .contactDelete(let id, _):
+                actions.append(.delete(key: item.key, id: id))
             }
         }
+        self.items = items
+        self.contactActions = actions
     }
 }
 
@@ -56,21 +85,34 @@ final class ReviewViewModel {
         CleanupCategory.allCases.filter { cart.count(in: $0) > 0 }
     }
 
+    var mediaCount: Int { cart.items.values.filter { if case .asset = $0 { true } else { false } }.count }
+    var contactActionCount: Int { cart.count(in: .contacts) }
+
     func assetIDs(in category: CleanupCategory) -> [String] {
         cart.items(in: category).compactMap {
             if case .asset(let id, _, _) = $0 { id } else { nil }
         }.sorted()
     }
 
-    func remove(assetID: String) {
-        cart.removeAssets([assetID])
+    /// Contact rows, merges first, then deletes.
+    var contactItems: [CartItem] {
+        cart.items(in: .contacts).sorted { a, b in
+            switch (a, b) {
+            case (.contactMerge, .contactDelete): return true
+            case (.contactDelete, .contactMerge): return false
+            default: return a.key < b.key
+            }
+        }
     }
+
+    func remove(assetID: String) { cart.removeAssets([assetID]) }
+    func remove(_ item: CartItem) { cart.remove(item) }
 
     /// The user tapped the Delete button. Builds the plan from the cart and runs it.
     func confirm() async {
         guard !cart.isEmpty, phase == .reviewing else { return }
         let plan = CleanupPlan(cartItems: Array(cart.items.values))
-        Log.cleanup.debug("Review confirmed: \(plan.items.count) items, \(plan.totalBytes) bytes")
+        Log.cleanup.debug("Review confirmed: \(plan.items.count) assets, \(plan.contactActions.count) contact actions, \(plan.totalBytes) bytes")
         phase = .deleting
         let result = await deletion.execute(plan)
 
@@ -82,6 +124,18 @@ final class ReviewViewModel {
         let deleted = Set(result.deletedAssetIDs)
         cart.removeAssets(deleted)
         scanStore.removeAssets(deleted)
+
+        let failedKeys = Set(result.failures.map(\.itemKey))
+        let doneActions = plan.contactActions.filter { !failedKeys.contains($0.key) }
+        for action in doneActions { cart.remove(key: action.key) }
+        let goneContacts = Set(doneActions.flatMap { action -> [String] in
+            switch action {
+            case .merge(_, _, let merged): merged
+            case .delete(_, let id): [id]
+            }
+        })
+        scanStore.removeContacts(goneContacts)
+
         settings.recordFreed(result.bytesFreed)
         phase = .finished(result)
     }

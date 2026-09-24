@@ -44,7 +44,9 @@ struct ReviewView: View {
                 if vm.cart.isEmpty {
                     EmptyState(systemImage: "checklist", title: Text("Nothing selected"), message: Text("Pick items to remove from any category."))
                 } else {
-                    ForEach(vm.sections) { category in section(for: category) }
+                    ForEach(vm.sections) { category in
+                        if category == .contacts { contactSection } else { section(for: category) }
+                    }
                 }
             }
             .padding(.horizontal, Spacing.m)
@@ -65,7 +67,7 @@ struct ReviewView: View {
                 .font(Font.sift.heroNumber)
                 .foregroundStyle(Color.sift.inkPrimary)
                 .contentTransition(.numericText())
-            Text("^[\(vm.cart.count) item](inflect: true) will be removed. Tap an item to keep it.")
+            summaryLine
                 .font(Font.sift.caption)
                 .foregroundStyle(Color.sift.inkSecondary)
         }
@@ -75,6 +77,63 @@ struct ReviewView: View {
         .overlay(RoundedRectangle(cornerRadius: Radius.card, style: .continuous).strokeBorder(Color.sift.hairline))
         .padding(.top, Spacing.s)
         .animation(Motion.standard, value: vm.cart.totalBytes)
+    }
+
+    /// Built from `Text` pieces so automatic grammar agreement applies to each count.
+    private var summaryLine: Text {
+        var line = Text("")
+        if vm.mediaCount > 0 { line = Text("^[\(vm.mediaCount) photo or video](inflect: true) will be removed") }
+        if vm.contactActionCount > 0 {
+            let contacts = Text("^[\(vm.contactActionCount) contact change](inflect: true)")
+            line = vm.mediaCount > 0 ? line + Text(" · ") + contacts : contacts
+        }
+        return line + Text(". ") + Text("Tap an item to keep it.")
+    }
+
+    private var contactSection: some View {
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            HStack {
+                Circle().fill(CleanupCategory.contacts.color).frame(width: 10, height: 10)
+                Text(CleanupCategory.contacts.title).font(Font.sift.headline).foregroundStyle(Color.sift.inkPrimary)
+                Spacer()
+                Text("Backed up first").font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
+            }
+            VStack(spacing: 0) {
+                ForEach(Array(vm.contactItems.enumerated()), id: \.element.key) { index, item in
+                    HStack(spacing: Spacing.s) {
+                        switch item {
+                        case .contactMerge(_, _, let mergedIDs, let name):
+                            Image(systemName: "arrow.triangle.merge").foregroundStyle(Color.sift.accent).frame(width: 24)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(name).font(Font.sift.headline).foregroundStyle(Color.sift.inkPrimary)
+                                Text("Merge ^[\(mergedIDs.count + 1) contact](inflect: true) into one").font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
+                            }
+                        case .contactDelete(_, let name):
+                            Image(systemName: "person.crop.circle.badge.minus").foregroundStyle(Color.sift.destructive).frame(width: 24)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(name).font(Font.sift.headline).foregroundStyle(Color.sift.inkPrimary)
+                                Text("Delete contact").font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
+                            }
+                        case .asset: EmptyView()
+                        }
+                        Spacer()
+                        Button { withAnimation(Motion.standard) { vm.remove(item) } } label: {
+                            Image(systemName: "minus.circle.fill")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(Color.sift.inkTertiary, Color.sift.canvas)
+                                .font(.title3)
+                                .frame(width: Layout.minTouchTarget, height: Layout.minTouchTarget)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("Keep as is"))
+                    }
+                    .padding(.horizontal, Spacing.m).padding(.vertical, Spacing.xs)
+                    if index < vm.contactItems.count - 1 { Divider().overlay(Color.sift.hairline).padding(.leading, Spacing.m) }
+                }
+            }
+            .background(Color.sift.surface, in: RoundedRectangle(cornerRadius: Radius.card, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: Radius.card, style: .continuous).strokeBorder(Color.sift.hairline))
+        }
     }
 
     private func section(for category: CleanupCategory) -> some View {
@@ -114,10 +173,14 @@ struct ReviewView: View {
             InlineBanner(
                 style: .info,
                 systemImage: "trash",
-                message: Text("Photos and videos go to Recently Deleted in the Photos app. The space comes back once you empty it, or automatically after 30 days.")
+                message: Text(vm.contactActionCount > 0
+                    ? "Photos and videos go to Recently Deleted for 30 days. Contacts are backed up in Sift before they're merged or deleted."
+                    : "Photos and videos go to Recently Deleted in the Photos app. The space comes back once you empty it, or automatically after 30 days.")
             )
             PrimaryButton(
-                title: "Delete ^[\(vm.cart.count) item](inflect: true) · \(ByteFormatter.string(vm.cart.totalBytes))",
+                title: vm.mediaCount > 0
+                    ? "Confirm ^[\(vm.cart.count) item](inflect: true) · \(ByteFormatter.string(vm.cart.totalBytes))"
+                    : "Confirm ^[\(vm.cart.count) contact change](inflect: true)",
                 systemImage: "trash",
                 role: .destructive,
                 isLoading: vm.phase == .deleting

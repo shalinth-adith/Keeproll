@@ -127,10 +127,11 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 | `SiftMark` / `SiftMarkTile` | Brand mark (three stacked cards, top one lifted with a check) and the mark on its gradient tile | `size`, `ink`, `check` |
 | `CategoryCard` | A dashboard entry per category | `.scanning(progress)`, `.ready(bytes, count)`, `.empty`, `.locked(reason)`, `.limited` |
 | `SelectableThumbnail` | A grid cell | `asset`, `isSelected`, `isBest`, `isCloudOnly`, size overlay; 44 pt minimum hit area for the check control |
-| `BestBadge` | “Best” pill on a thumbnail | teal fill, `star.fill` + text |
+| `BestBadge` / `CloudBadge` | “Best” pill on a thumbnail; iCloud-only marker | teal fill, `star.fill` + text |
 | `GroupHeader` | Similar-group header | date · count · freeable bytes · “Select all but best” button |
 | `VideoRow` | A large-videos list row | thumb (16:9), duration overlay, date, size, selection |
-| `ContactGroupCard` | A duplicate-contact group | the contacts, match-reason chip, merged preview, primary picker |
+| `ContactGroupCard` | A duplicate-contact group | match-reason chips, contact rows (primary radio + “Keep”, per-row delete), merged preview (deduped by digits/lowercase), “Merge into one” ↔ “Merge queued” |
+| `ContactAvatar` | Initials circle for contacts | `size`, photo indicator dot |
 | `SelectionBar` | Sticky bottom bar | “N items · X GB” + “Review” button; hidden when the cart is empty |
 | `PrimaryButton` | Capsule, accent fill, full width | `.normal`, `.loading`, `.disabled`; `role: .destructive` switches to the destructive colour (Review only) |
 | `SecondaryButton` | Capsule, `accentSoft` fill, accent text | |
@@ -147,6 +148,8 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 **Category screens (Similar / Screenshots / Videos).** The header shows the total freeable space and a filter or smart-select control. The content is a grid or list. The SelectionBar is pinned. When nothing is found: an EmptyState that says “Nothing to clean here 🎉”.
 
 **Similar Photos.** A vertical list of groups. Each group has a GroupHeader and a horizontal row (or wrapping grid) of SelectableThumbnails, with Best first. **Smart select** sits at the top right. Tapping a thumbnail opens the Compare view: a full-screen pager with Best and size, a Keep/Select toggle at the bottom, and “Make best” in the toolbar.
+
+**Swipe to sort (B1).** Progress row (kept · n of N · to remove) + bar, a 3:4 card stack (next card peeks beneath), KEEP/REMOVE stamps that fade in with the drag, round Remove/Keep buttons, Undo in the toolbar. The global selection bar is hidden here and on Compare.
 
 **Contacts.** A list of ContactGroupCards. Each card lists its contacts (name, phones and emails in `caption`), a match-reason chip, a “Merged result” preview row, and **Merge** / **Delete selected** actions that add to the cart.
 

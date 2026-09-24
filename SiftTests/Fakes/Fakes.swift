@@ -22,7 +22,9 @@ nonisolated struct FakeStorage: DeviceStorageProviding {
 
 nonisolated struct FakePhotos: PhotoLibraryProviding {
     let screenshots: [MediaItem]
+    var videos: [MediaItem] = []
     func fetchScreenshots() async -> [MediaItem] { screenshots }
+    func fetchVideos() async -> [MediaItem] { videos }
 }
 
 /// Records the plan it was given and returns a scripted result.
@@ -39,7 +41,8 @@ actor FakeDeletion: DeletionServicing {
         case .cancel:
             return .cancelled
         case .deleteAll:
-            let counts = Dictionary(grouping: plan.items, by: \.category).mapValues(\.count)
+            var counts = Dictionary(grouping: plan.items, by: \.category).mapValues(\.count)
+            if !plan.contactActions.isEmpty { counts[.contacts] = plan.contactActions.count }
             return CleanupResult(deletedAssetIDs: plan.assetIDs, bytesFreed: plan.totalBytes,
                                  countsByCategory: counts, failures: [], wasCancelled: false)
         }

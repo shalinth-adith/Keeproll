@@ -18,38 +18,64 @@ final class DashboardViewModel {
     var showLimitedBanner: Bool { scanStore.photosPermission == .limited }
     var showPhotosLocked: Bool { !scanStore.photosPermission.canRead }
 
-    /// Categories shipped so far. Others are added as their scanners land (PRD §9).
-    let categories: [CleanupCategory] = [.screenshots]
+    /// Categories with a scanner in this build.
+    var categories: [CleanupCategory] { scanStore.availableCategories }
+
+    var showSwipeEntry: Bool { scanStore.similarPhotoCount + (scanStore.screenshots.value?.count ?? 0) > 0 }
 
     var segments: [StorageSegment] {
-        [StorageSegment(id: "screenshots", label: "Screenshots", bytes: scanStore.screenshotBytes, color: Color.sift.catScreenshots)]
+        categories.compactMap { category in
+            switch category {
+            case .similar: StorageSegment(id: "similar", label: "Similar", bytes: scanStore.similarBytes, color: Color.sift.catSimilar)
+            case .screenshots: StorageSegment(id: "screenshots", label: "Screenshots", bytes: scanStore.screenshotBytes, color: Color.sift.catScreenshots)
+            case .videos: StorageSegment(id: "videos", label: "Videos", bytes: scanStore.videoBytes, color: Color.sift.catVideos)
+            case .contacts: nil // bytes are negligible (FR-DASH-2)
+            }
+        }
     }
 
     func cardState(for category: CleanupCategory) -> CategoryCard.State {
-        guard scanStore.photosPermission.canRead else { return .locked }
         switch category {
         case .screenshots:
-            switch scanStore.screenshots {
-            case .idle, .loading: return .scanning
-            case .failed: return .empty
-            case .loaded(let items):
-                return items.isEmpty ? .empty : .ready(bytes: scanStore.screenshotBytes, count: items.count)
-            }
-        default:
-            return .scanning
+            guard scanStore.photosPermission.canRead else { return .locked }
+            return state(scanStore.screenshots, bytes: scanStore.screenshotBytes) { $0.count }
+        case .videos:
+            guard scanStore.photosPermission.canRead else { return .locked }
+            return state(scanStore.videos, bytes: scanStore.videoBytes) { $0.count }
+        case .similar:
+            guard scanStore.photosPermission.canRead else { return .locked }
+            if scanStore.similarProgress != nil, scanStore.similarPhotoCount == 0 { return .scanning }
+            return state(scanStore.similar, bytes: scanStore.similarBytes) { _ in scanStore.similarPhotoCount }
+        case .contacts:
+            guard scanStore.contactsPermission.canRead else { return .locked }
+            return state(scanStore.contacts, bytes: 0) { _ in scanStore.duplicateContactCount }
+        }
+    }
+
+    private func state<T>(_ loadable: Loadable<[T]>, bytes: Int64, count: ([T]) -> Int) -> CategoryCard.State {
+        switch loadable {
+        case .idle, .loading: return .scanning
+        case .failed: return .empty
+        case .loaded(let items):
+            return items.isEmpty ? .empty : .ready(bytes: bytes, count: count(items))
         }
     }
 
     func open(_ category: CleanupCategory) {
-        guard scanStore.photosPermission.canRead else {
+        let permission = category == .contacts ? scanStore.contactsPermission : scanStore.photosPermission
+        guard permission.canRead || category == .contacts else {
             SystemActions.openSettings()
             return
         }
         switch category {
+        case .similar: router.open(.similar)
         case .screenshots: router.open(.screenshots)
-        default: break
+        case .videos: router.open(.videos)
+        case .contacts: router.open(.contacts)
         }
     }
+
+    func openSwipe() { router.open(.swipe) }
 
     func onAppear() {
         if case .idle = scanStore.storage { scanStore.scan() }

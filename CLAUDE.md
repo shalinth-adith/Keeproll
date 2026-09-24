@@ -28,9 +28,13 @@ xcodebuild -project Sift.xcodeproj -scheme Sift -destination 'generic/platform=i
 # (xcrun simctl list devices available). iPhone 17 Pro on iOS 27 = 76F4638C-446D-4A10-A78E-C3FA1B79CCE0
 xcodebuild -project Sift.xcodeproj -scheme Sift -destination 'id=<UDID>' test
 
-# Seed the simulator with EXIF-tagged fake screenshots
+# Seed the simulator with EXIF-tagged fake screenshots and short videos
 swift scripts/make_screenshot_fixtures.swift SiftTests/Fixtures/Screenshots 12
-xcrun simctl addmedia <UDID> SiftTests/Fixtures/Screenshots/*.png
+swift scripts/make_video_fixtures.swift SiftTests/Fixtures/Videos 3
+xcrun simctl addmedia <UDID> SiftTests/Fixtures/Screenshots/*.png SiftTests/Fixtures/Videos/*.mp4
+
+# Demo mode: fixture results for categories whose scanner isn't built (DEBUG only)
+SIMCTL_CHILD_SIFT_DEMO=1 xcrun simctl launch <UDID> me.adithyan.shalinth.Sift
 
 # Privacy + safety gates (all must print nothing; see §5)
 grep -rnE "URLSession|URLRequest|NWConnection" Sift/
@@ -42,6 +46,8 @@ grep -rn "CNContactNoteKey" Sift/
 - Never put `-derivedDataPath` inside this folder. The Desktop adds extended attributes, and codesign fails with *"resource fork, Finder information, or similar detritus not allowed"*. Use the default DerivedData or a temp dir.
 - `simctl privacy grant photos` doesn't grant `.readWrite` on iOS 27 (the status still reads `notDetermined`). Go through the real prompt instead.
 - `presentLimitedLibraryPicker` needs `import PhotosUI`.
+- Automatic grammar (`^[…](inflect: true)`) only works inside `Text(...)` literals. It renders as raw markup in `String(localized:)` concatenations, and it will pluralise verbs ("0 to removes"), so keep it to noun counts.
+- `ScanStore.availableCategories` hides a category until its scanner is injected. The live app never shows a fake "Scanning…" for an engine that doesn't exist.
 
 Performance and accuracy work happens **only on the real iPhone**, with the real library (the simulator has almost no photos). Use Instruments (Time Profiler, Allocations, Hitches) and the signposts in `Core/Logging/Log.swift`.
 

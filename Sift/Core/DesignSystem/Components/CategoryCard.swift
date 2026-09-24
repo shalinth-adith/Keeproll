@@ -81,13 +81,23 @@ struct CategoryCard: View {
                 .font(Font.sift.caption)
                 .foregroundStyle(Color.sift.inkSecondary)
         case .ready(let bytes, let count):
-            Text(ByteFormatter.string(bytes))
-                .font(Font.sift.title.monospacedDigit())
-                .foregroundStyle(Color.sift.inkPrimary)
-                .contentTransition(.numericText())
-            Text("^[\(count) item](inflect: true)")
-                .font(Font.sift.caption)
-                .foregroundStyle(Color.sift.inkSecondary)
+            if category == .contacts {
+                Text("\(count)")
+                    .font(Font.sift.title.monospacedDigit())
+                    .foregroundStyle(Color.sift.inkPrimary)
+                    .contentTransition(.numericText())
+                Text("look like duplicates")
+                    .font(Font.sift.caption)
+                    .foregroundStyle(Color.sift.inkSecondary)
+            } else {
+                Text(ByteFormatter.string(bytes))
+                    .font(Font.sift.title.monospacedDigit())
+                    .foregroundStyle(Color.sift.inkPrimary)
+                    .contentTransition(.numericText())
+                Text("^[\(count) item](inflect: true)")
+                    .font(Font.sift.caption)
+                    .foregroundStyle(Color.sift.inkSecondary)
+            }
         case .empty:
             Label("All clear", systemImage: "checkmark")
                 .font(Font.sift.caption.weight(.semibold))

@@ -58,6 +58,19 @@ struct SummaryView: View {
                     )
                 }
 
+                if let backup = result.backupURL {
+                    InlineBanner(style: .info, systemImage: "externaldrive.badge.checkmark",
+                                 message: Text("A backup of the changed contacts was saved before merging.")) {
+                        ShareLink(item: backup) {
+                            Label("Share backup", systemImage: "square.and.arrow.up")
+                                .font(Font.sift.headline)
+                                .frame(maxWidth: .infinity, minHeight: 48)
+                                .foregroundStyle(Color.sift.accent)
+                                .background(Color.sift.accentSoft, in: Capsule())
+                        }
+                    }
+                }
+
                 InlineBanner(
                     style: .info,
                     systemImage: "trash",

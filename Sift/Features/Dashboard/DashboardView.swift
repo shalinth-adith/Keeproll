@@ -25,6 +25,8 @@ struct DashboardView: View {
 
                 cards
 
+                if vm.showSwipeEntry { swipeEntry.staggered(6, appeared: appeared) }
+
                 if vm.settings.lifetimeBytesFreed > 0 {
                     Label("Sift has freed \(ByteFormatter.string(vm.settings.lifetimeBytesFreed)) so far", systemImage: "leaf.fill")
                         .font(Font.sift.caption.weight(.semibold))
@@ -80,6 +82,31 @@ struct DashboardView: View {
                 .staggered(3 + index, appeared: appeared)
             }
         }
+    }
+
+    private var swipeEntry: some View {
+        Button { vm.openSwipe() } label: {
+            HStack(spacing: Spacing.s) {
+                Image(systemName: "hand.draw.fill")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(Color.sift.onAccent)
+                    .frame(width: 44, height: 44)
+                    .background(LinearGradient(colors: [Color.sift.accent, Color.sift.accent.opacity(0.72)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                                in: RoundedRectangle(cornerRadius: Radius.control, style: .continuous))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Swipe to sort").font(Font.sift.headline).foregroundStyle(Color.sift.inkPrimary)
+                    Text("Go through suggestions one by one. Right to keep, left to remove.")
+                        .font(Font.sift.caption).foregroundStyle(Color.sift.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer()
+                Image(systemName: "chevron.right").font(Font.sift.caption.weight(.bold)).foregroundStyle(Color.sift.inkTertiary)
+            }
+            .padding(Spacing.m)
+            .background(Color.sift.surface, in: RoundedRectangle(cornerRadius: Radius.card, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: Radius.card, style: .continuous).strokeBorder(Color.sift.hairline))
+        }
+        .buttonStyle(PressableStyle())
     }
 
     private var limitedBanner: some View {

@@ -13,16 +13,24 @@ struct RootView: View {
                     DashboardView(env: env)
                         .navigationDestination(for: Route.self) { route in
                             switch route {
+                            case .similar: SimilarPhotosView(env: env)
                             case .screenshots: ScreenshotsView(env: env)
+                            case .videos: LargeVideosView(env: env)
+                            case .contacts: DuplicateContactsView(env: env)
+                            case .swipe: SwipeView(env: env)
+                            case .compare(let groupID, let startID): CompareView(env: env, groupID: groupID, startID: startID)
                             }
                         }
                 }
                 .safeAreaInset(edge: .bottom) {
-                    SelectionBar(cart: env.cart) { router.presentReview() }
+                    if !router.hidesSelectionBar {
+                        SelectionBar(cart: env.cart) { router.presentReview() }
+                    }
                 }
                 .sheet(item: $router.sheet) { sheet in
                     switch sheet {
                     case .review: ReviewFlowView(env: env)
+                    case .videoPreview(let id): VideoPreviewView(id: id, playback: env.videoPlayback)
                     }
                 }
             } else {

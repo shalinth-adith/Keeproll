@@ -1,3 +1,4 @@
+import Foundation
 import Observation
 
 /// App-wide selection of everything the user intends to remove. The Review screen reads
@@ -10,9 +11,10 @@ final class CleanupCart {
     var isEmpty: Bool { items.isEmpty }
     var totalBytes: Int64 { items.values.reduce(0) { $0 + $1.bytes } }
 
-    func contains(assetID: String) -> Bool {
-        items["asset:\(assetID)"] != nil
-    }
+    func contains(assetID: String) -> Bool { items["asset:\(assetID)"] != nil }
+    func contains(contactID: String) -> Bool { items["contact:\(contactID)"] != nil }
+    func containsMerge(groupID: UUID) -> Bool { items["merge:\(groupID.uuidString)"] != nil }
+    func contains(_ item: CartItem) -> Bool { items[item.key] != nil }
 
     func toggle(_ item: CartItem) {
         if items[item.key] == nil { items[item.key] = item } else { items[item.key] = nil }
@@ -22,9 +24,8 @@ final class CleanupCart {
         for item in newItems { items[item.key] = item }
     }
 
-    func remove(_ item: CartItem) {
-        items[item.key] = nil
-    }
+    func remove(_ item: CartItem) { items[item.key] = nil }
+    func remove(key: String) { items[key] = nil }
 
     func removeAssets(_ ids: some Sequence<String>) {
         for id in ids { items["asset:\(id)"] = nil }
