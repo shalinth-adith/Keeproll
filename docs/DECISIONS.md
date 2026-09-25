@@ -107,3 +107,6 @@ All three follow D10: nothing leaves the library or the calendar except through 
 ### Amendment — 2026-09-25 (app name: Sift → Keeproll)
 The App Store name "Sift" is reserved by another developer's record, and the live store already has more than a dozen "Sift…" photo cleaners. The app is renamed **Keeproll** everywhere users and developers see it: display name, copy, targets, folders, schemes, module name, docs and the GitHub repository. **The bundle identifiers and App Group keep their original values** (`me.adithyan.shalinth.Sift`, `me.adithyan.shalinth.Sift.Widget`, `group.me.adithyan.shalinth.Sift`, and the log subsystem): they are invisible to users, they are what the App Store Connect record, provisioning profiles and App Group entitlement are bound to, and changing them would only add risk before TestFlight.
 
+
+### Amendment — 2026-09-25 (D3, folder renamed)
+The outer local folder is now `Keeproll/` (no trailing space), matching the repository. The stale `cleaner_storage .xcodeproj` template project was removed; `Keeproll.xcodeproj` is generated from `project.yml`.
