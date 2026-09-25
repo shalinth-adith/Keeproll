@@ -7,7 +7,7 @@ import ImageIO
 import UniformTypeIdentifiers
 
 let args = CommandLine.arguments
-let outDir = URL(fileURLWithPath: args.count > 1 ? args[1] : "SiftTests/Fixtures/Screenshots")
+let outDir = URL(fileURLWithPath: args.count > 1 ? args[1] : "KeeprollTests/Fixtures/Screenshots")
 let count = args.count > 2 ? Int(args[2]) ?? 12 : 12
 let width = 1179, height = 2556
 let space = CGColorSpaceCreateDeviceRGB()

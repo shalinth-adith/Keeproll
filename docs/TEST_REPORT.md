@@ -1,4 +1,4 @@
-# Sift — Full Test Report
+# Keeproll — Full Test Report
 
 **Date:** 2026-09-24 · **Build:** `ec4c591` (main) · **Tester:** Claude (automated + manual on simulator), device data from the owner's iPhone
 **Environments:** iPhone 17 Pro simulator (iOS 27, generated fixture library: 22 photos, 8 screenshots, 3 videos, 11 contacts) · iPhone 15 (iOS 27, owner's real library: 7,724 photos)
@@ -27,7 +27,7 @@ The core loop (scan → review → delete → summary) works end to end, the del
 | # | Severity | Finding | Where | Evidence |
 |---|---|---|---|---|
 | **F1** ✅ fixed | 🔴 High | **Swipe card shows a stale photo.** When the card advances, the image stays on the previous photo if the new one is already in the memory cache; labels (size/date) change but the picture doesn't. A user can Keep/Remove while looking at the wrong photo. Regression from today's thumbnail cache (`ThumbnailView` keeps `@State image` across id changes and the task exits early on a cache hit). | `Core/DesignSystem/Components/Thumbnails.swift` · Swipe to sort | 12-swipe.png: "63 KB · 12 Sep" (a screenshot) and "107 KB · 6 Aug" both render the same mountain photo |
-| **F2** ✅ fixed | 🔴 High | **Manual "Make Best" is lost after a rescan — and a delete triggers one.** iOS's delete prompt sends the app inactive→active; the deletion itself marks the library "changed", so the quiet foreground rescan runs and re-ranks Best from scratch. The photo the user chose to keep became the suggested deletion ("168 KB · 1 item"). Two fixes: persist Best overrides across rescans; don't mark the library stale for Sift's own deletions. | `State/ScanStore.swift` (`apply`, `setBest`), `App/RootView.swift` | log: rescan at 16:26:20 immediately after delete; dashboard card after delete |
+| **F2** ✅ fixed | 🔴 High | **Manual "Make Best" is lost after a rescan — and a delete triggers one.** iOS's delete prompt sends the app inactive→active; the deletion itself marks the library "changed", so the quiet foreground rescan runs and re-ranks Best from scratch. The photo the user chose to keep became the suggested deletion ("168 KB · 1 item"). Two fixes: persist Best overrides across rescans; don't mark the library stale for Keeproll's own deletions. | `State/ScanStore.swift` (`apply`, `setBest`), `App/RootView.swift` | log: rescan at 16:26:20 immediately after delete; dashboard card after delete |
 | F3 ✅ fixed | 🟠 Medium | **AX5 (largest text) breaks the dashboard hero:** free-space number truncates ("24.89…"), "free of 494.33 GB" spills outside the ring, legend labels truncate ("Us…", "Si…"). Category icons overflow their fixed 44 pt tiles. Cards themselves reflow correctly to one column. | `StorageRing.swift`, `CategoryCard.swift` | 11-ax5-dashboard.png |
 | F4 ✅ fixed (device confirmation pending) | 🟠 Medium | **Blur threshold misses a clearly blurred photo.** At the calibrated 45, 1 of 2 deliberately blurred fixtures is found (the dark scene is missed). The threshold rests on a single "blurry" label from the owner's phone. Needs ~5+ blurry labels, or a contrast-normalised measure. | `SimilarityConfig.blurThreshold` | 07-blurry.png |
 | F5 ✅ fixed | 🟡 Low | Copy: **"7 photo or videos will be removed"** — automatic grammar pluralises the wrong word. | `ReviewView.swift` | 08-review.png |
@@ -66,14 +66,14 @@ The core loop (scan → review → delete → summary) works end to end, the del
 | 9 | Blurry Photos | Both blurred fixtures | 1 of 2 (F4); grammar (F6) | ⚠ |
 | 10 | Review | Exactly the 7 selected items, total, Recently Deleted note | As expected; grammar (F5) | ✅ ⚠ |
 | 11 | Confirm → iOS prompt → **Don't Allow** | Nothing deleted, cart intact | 7 items still selected | ✅ |
-| 12 | Confirm → **Delete** | Summary, dashboard updates, lifetime total | "1.1 MB cleaned up · 7 items"; "Sift has freed 1.1 MB so far" | ✅ |
+| 12 | Confirm → **Delete** | Summary, dashboard updates, lifetime total | "1.1 MB cleaned up · 7 items"; "Keeproll has freed 1.1 MB so far" | ✅ |
 | 13 | After delete, Similar Photos | Remaining group keeps user's Best | **Best reset; user's chosen photo now offered for deletion** (F2) | ❌ |
 | 14 | Duplicate Contacts | 2 groups (1 pair merged earlier), reasons, merged preview | "Kavya Nair ↔ Nair Kavya" by name; Priya by number + name | ✅ |
 | 15 | Swipe: right, left, Undo | Counters update, Undo restores | 1 kept / 1 to remove → Undo → 0 to remove | ✅ |
 | 16 | Swipe card image | Card shows the photo it describes | **Stale image** (F1) | ❌ |
 | 17 | AX5 text size | Everything readable, no truncation | Hero/legend truncate, icons overflow (F3) | ❌ |
 
-**Tested earlier in this session (same build family), not repeated:** Limit Access path + banner + "Add photos"; drag-to-select range on Screenshots; real contact merge with vCard backup written before the change (file inspected); Home Screen widget (small + medium, live data); library change observer (added photo → banner → 0.08 s rescan; photo deleted in the Photos app → vanished from Sift); video playback sheet; light mode.
+**Tested earlier in this session (same build family), not repeated:** Limit Access path + banner + "Add photos"; drag-to-select range on Screenshots; real contact merge with vCard backup written before the change (file inspected); Home Screen widget (small + medium, live data); library change observer (added photo → banner → 0.08 s rescan; photo deleted in the Photos app → vanished from Keeproll); video playback sheet; light mode.
 
 ## 4. Real-device results (owner's iPhone 15, 7,724 photos, iCloud "Optimize Storage")
 
@@ -109,7 +109,7 @@ Measured earlier today via the device console (Debug build). A fresh re-measurem
 | Finding | Fix | Verification | Result |
 |---|---|---|---|
 | F1 | `ThumbnailView` stores the image together with the id it was loaded for (`LoadedThumbnail`) and never displays an image for a different id | Unit test `thumbnailNeverShowsAnImageLoadedForADifferentPhoto`; on simulator, Swipe cards 1→2→3 show three different photos (mountain, blurred sunset, screenshot) matching their size/date labels; screenshot grid shows each screenshot's own colour | ✅ |
-| F2 | User Best choices stored (persisted in UserDefaults) and re-applied to every rescan; one choice per group; removed ids dropped. Sift's own deletions no longer mark results stale (10 s window set just before deleting) | Unit tests `manualBestSurvivesARescan` (incl. relaunch), `choosingAgainInTheSameGroupReplacesTheEarlierChoice`, `siftsOwnDeletionDoesNotTriggerARescan`; on simulator: Make Best on 168 KB → delete a screenshot via Review (no rescan logged) → forced full rescan at 16:36:39 → 168 KB still Best | ✅ (13-f2-best-kept-after-rescan.png) |
+| F2 | User Best choices stored (persisted in UserDefaults) and re-applied to every rescan; one choice per group; removed ids dropped. Keeproll's own deletions no longer mark results stale (10 s window set just before deleting) | Unit tests `manualBestSurvivesARescan` (incl. relaunch), `choosingAgainInTheSameGroupReplacesTheEarlierChoice`, `siftsOwnDeletionDoesNotTriggerARescan`; on simulator: Make Best on 168 KB → delete a screenshot via Review (no rescan logged) → forced full rescan at 16:36:39 → 168 KB still Best | ✅ (13-f2-best-kept-after-rescan.png) |
 
 Tests: **44/44 pass** (4 new regression tests).
 

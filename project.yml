@@ -1,4 +1,4 @@
-name: Sift
+name: Keeproll
 options:
   bundleIdPrefix: me.adithyan.shalinth
   deploymentTarget:
@@ -18,16 +18,16 @@ settings:
     SWIFT_EMIT_LOC_STRINGS: YES
 
 targets:
-  Sift:
+  Keeproll:
     type: application
     platform: iOS
     sources:
-      - path: Sift
+      - path: Keeproll
       - path: Shared
     dependencies:
-      - target: SiftWidget
+      - target: KeeprollWidget
     entitlements:
-      path: Sift/Sift.entitlements
+      path: Keeproll/Keeproll.entitlements
       properties:
         com.apple.security.application-groups:
           - group.me.adithyan.shalinth.Sift
@@ -41,9 +41,9 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: accent
         CODE_SIGN_STYLE: Automatic
     info:
-      path: Sift/Info.plist
+      path: Keeproll/Info.plist
       properties:
-        CFBundleDisplayName: Sift
+        CFBundleDisplayName: Keeproll
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSRequiresIPhoneOS: true
@@ -53,20 +53,20 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         UIApplicationSupportsIndirectInputEvents: true
-        NSPhotoLibraryUsageDescription: "Sift looks at the photos and videos on this iPhone to find duplicates, screenshots and large videos. Nothing is uploaded."
-        NSContactsUsageDescription: "Sift checks the contacts on this iPhone to find duplicates you can merge. Nothing is uploaded."
+        NSPhotoLibraryUsageDescription: "Keeproll looks at the photos and videos on this iPhone to find duplicates, screenshots and large videos. Nothing is uploaded."
+        NSContactsUsageDescription: "Keeproll checks the contacts on this iPhone to find duplicates you can merge. Nothing is uploaded."
         PHPhotoLibraryPreventAutomaticLimitedAccessAlert: true
-        NSCalendarsFullAccessUsageDescription: "Sift looks for duplicate events and events over a year old in your calendars on this iPhone. Nothing is uploaded, and nothing is removed until you confirm."
-        NSFaceIDUsageDescription: "Sift uses Face ID to unlock your private vault."
+        NSCalendarsFullAccessUsageDescription: "Keeproll looks for duplicate events and events over a year old in your calendars on this iPhone. Nothing is uploaded, and nothing is removed until you confirm."
+        NSFaceIDUsageDescription: "Keeproll uses Face ID to unlock your private vault."
 
-  SiftWidget:
+  KeeprollWidget:
     type: app-extension
     platform: iOS
     sources:
-      - path: SiftWidget
+      - path: KeeprollWidget
       - path: Shared
     entitlements:
-      path: SiftWidget/SiftWidget.entitlements
+      path: KeeprollWidget/KeeprollWidget.entitlements
       properties:
         com.apple.security.application-groups:
           - group.me.adithyan.shalinth.Sift
@@ -80,35 +80,35 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: accent
         SKIP_INSTALL: YES
     info:
-      path: SiftWidget/Info.plist
+      path: KeeprollWidget/Info.plist
       properties:
-        CFBundleDisplayName: Sift
+        CFBundleDisplayName: Keeproll
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
 
-  SiftTests:
+  KeeprollTests:
     type: bundle.unit-test
     platform: iOS
     sources:
-      - path: SiftTests
+      - path: KeeprollTests
     dependencies:
-      - target: Sift
+      - target: Keeproll
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: me.adithyan.shalinth.SiftTests
         GENERATE_INFOPLIST_FILE: YES
-        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Sift.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sift
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Keeproll.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Keeproll
         BUNDLE_LOADER: $(TEST_HOST)
 
 schemes:
-  Sift:
+  Keeproll:
     build:
       targets:
-        Sift: all
-        SiftTests: [test]
+        Keeproll: all
+        KeeprollTests: [test]
     test:
       targets:
-        - SiftTests
+        - KeeprollTests
       gatherCoverageData: true

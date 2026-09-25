@@ -1,6 +1,6 @@
-# Sift — Product Requirements Document
+# Keeproll — Product Requirements Document
 
-> **Working name:** Sift (“sift through your library, keep what matters”). It can be renamed later: change `PRODUCT_NAME` in `project.yml` and the strings in `Localizable.xcstrings`.
+> **Working name:** Keeproll (“keeproll through your library, keep what matters”). It can be renamed later: change `PRODUCT_NAME` in `project.yml` and the strings in `Localizable.xcstrings`.
 > **Source brief:** *AppFactory — Build a Storage Cleaner iOS App* (App Builder Intern selection task). Reference app: Cleanup: Phone Storage Cleaner. **Do not copy its branding, artwork or text.**
 > **Status:** v1.0 · 2026-09-24 · Owner: Shalinth Adithyan
 
@@ -8,7 +8,7 @@
 
 ## 1. Summary
 
-Sift is an iPhone app that frees up storage safely. It finds duplicate and similar photos, screenshots, large videos and duplicate contacts, shows the user exactly what it found, and removes only what the user approves on a final review screen. Everything runs on the device. There is no account, network or paywall.
+Keeproll is an iPhone app that frees up storage safely. It finds duplicate and similar photos, screenshots, large videos and duplicate contacts, shows the user exactly what it found, and removes only what the user approves on a final review screen. Everything runs on the device. There is no account, network or paywall.
 
 **Core loop:** **Scan → Review → Clean.** Every screen exists to make one of those three steps faster, more accurate or safer.
 
@@ -57,7 +57,7 @@ IDs are stable. Reference them in commits, tests and tasks (for example, `FR-SIM
 - **FR-PERM-2** Show a **pre-permission primer** for Photos that explains the reason, then trigger the system prompt (`PHPhotoLibrary.requestAuthorization(for: .readWrite)`).
 - **FR-PERM-3** Contacts primer: same pattern, but skippable (“Not now”). The app is fully usable without Contacts.
 - **FR-PERM-4 Denied:** the affected category card shows a locked state with an explanation and an **Open Settings** button (`UIApplication.openSettingsURLString`). Other categories keep working. Returning from Settings re-checks status (scenePhase `.active`).
-- **FR-PERM-5 Limited Photos access:** scan only the accessible assets. Show a persistent, dismissible banner: “Sift can see N photos you chose.” with **Add more photos** (`presentLimitedLibraryPicker`) and **Allow full access** (Settings). Set `PHPhotoLibraryPreventAutomaticLimitedAccessAlert = YES`.
+- **FR-PERM-5 Limited Photos access:** scan only the accessible assets. Show a persistent, dismissible banner: “Keeproll can see N photos you chose.” with **Add more photos** (`presentLimitedLibraryPicker`) and **Allow full access** (Settings). Set `PHPhotoLibraryPreventAutomaticLimitedAccessAlert = YES`.
 - **FR-PERM-6 Limited Contacts access (iOS 18+):** treat it like limited Photos. Deduplicate within the visible set and explain that duplicates outside the selection can't be found.
 - **FR-PERM-7** The app never crashes or shows an empty, unexplained screen in any authorization state: `.notDetermined`, `.denied`, `.restricted`, `.limited` or `.authorized`.
 
@@ -102,13 +102,13 @@ IDs are stable. Reference them in commits, tests and tasks (for example, `FR-SIM
 - **FR-REV-1** The Review screen lists **exactly** what will be removed, grouped by category: thumbnails and counts for media, names and the action for contacts, plus the **total space freed**.
 - **FR-REV-2** The user can remove individual items from the Review screen.
 - **FR-REV-3** One primary button, “Delete 42 items · 3.1 GB”, which needs one clear tap (it is not hidden behind a swipe). iOS then shows its own system confirmation for photos; we don't try to suppress it.
-- **FR-REV-4** Copy on Review explains: *“Photos and videos go to Recently Deleted in the Photos app. The space returns once you empty it, or automatically after 30 days. Merged or deleted contacts are backed up in Sift first.”*
+- **FR-REV-4** Copy on Review explains: *“Photos and videos go to Recently Deleted in the Photos app. The space returns once you empty it, or automatically after 30 days. Merged or deleted contacts are backed up in Keeproll first.”*
 - **FR-REV-5** If the user cancels the system prompt, **nothing** is deleted and the cart stays intact.
 - **FR-REV-6** Partial failures are reported item by item. The cart keeps the failed items.
 
 ### 5.8 Space-freed summary (`FR-SUM`), part of the core flow
 - **FR-SUM-1** After cleaning: the bytes freed (animated count-up), items removed per category, a Recently Deleted reminder with an **Open Photos** button, and a contacts backup share link if one applies.
-- **FR-SUM-2** Keep a running lifetime total (“Sift has freed 12.4 GB”) in local storage, shown on the dashboard.
+- **FR-SUM-2** Keep a running lifetime total (“Keeproll has freed 12.4 GB”) in local storage, shown on the dashboard.
 
 ## 6. Bonus features (only after §5 passes on a real device)
 
@@ -168,4 +168,4 @@ Build one thin vertical slice first (Screenshots → Cart → Review → Delete)
 
 1. ~~Is a paid Apple Developer account available?~~ **Yes (confirmed 2026-09-24)**, so TestFlight (B3) is in scope.
 2. The exact date the brief was received. The plan assumes 2026-09-24.
-3. Is the name “Sift” approved?
+3. Is the name “Keeproll” approved?

@@ -5,7 +5,7 @@ import CoreGraphics
 import Foundation
 
 let args = CommandLine.arguments
-let outDir = URL(fileURLWithPath: args.count > 1 ? args[1] : "SiftTests/Fixtures/Videos")
+let outDir = URL(fileURLWithPath: args.count > 1 ? args[1] : "KeeprollTests/Fixtures/Videos")
 let count = args.count > 2 ? Int(args[2]) ?? 3 : 3
 let width = 1280, height = 720, fps: Int32 = 30
 

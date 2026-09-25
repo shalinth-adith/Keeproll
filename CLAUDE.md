@@ -1,10 +1,10 @@
-# Sift — Agent Instructions
+# Keeproll — Agent Instructions
 
 > Read this file first, every session. It takes precedence over any parent `CLAUDE.md` (for example `~/Desktop/CLAUDE.md` describes **Padivam**, a different app; ignore it here).
 
 ## 1. What this is
 
-**Sift** is an iPhone storage cleaner built for the AppFactory *App Builder Intern* selection task. It finds similar/duplicate photos, screenshots, large videos and duplicate contacts, and deletes them **only after the user approves them on a Review screen**. It runs entirely on the device: no network, no login, no payments.
+**Keeproll** is an iPhone storage cleaner built for the AppFactory *App Builder Intern* selection task. It finds similar/duplicate photos, screenshots, large videos and duplicate contacts, and deletes them **only after the user approves them on a Review screen**. It runs entirely on the device: no network, no login, no payments.
 
 Read these before writing code, in this order:
 1. `docs/DECISIONS.md`: locked decisions. Never contradict them silently.
@@ -22,20 +22,20 @@ Read these before writing code, in this order:
 xcodegen generate
 
 # Build (compile check, no signing)
-xcodebuild -project Sift.xcodeproj -scheme Sift -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+xcodebuild -project Keeproll.xcodeproj -scheme Keeproll -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
 
 # Unit tests. Device names can be ambiguous across runtimes, so target by UDID
 # (xcrun simctl list devices available). iPhone 17 Pro on iOS 27 = 76F4638C-446D-4A10-A78E-C3FA1B79CCE0
-xcodebuild -project Sift.xcodeproj -scheme Sift -destination 'id=<UDID>' test
+xcodebuild -project Keeproll.xcodeproj -scheme Keeproll -destination 'id=<UDID>' test
 
 # Seed the simulator with EXIF-tagged fake screenshots and short videos
-swift scripts/make_screenshot_fixtures.swift SiftTests/Fixtures/Screenshots 12
-swift scripts/make_video_fixtures.swift SiftTests/Fixtures/Videos 3
-xcrun simctl addmedia <UDID> SiftTests/Fixtures/Screenshots/*.png SiftTests/Fixtures/Videos/*.mp4
+swift scripts/make_screenshot_fixtures.swift KeeprollTests/Fixtures/Screenshots 12
+swift scripts/make_video_fixtures.swift KeeprollTests/Fixtures/Videos 3
+xcrun simctl addmedia <UDID> KeeprollTests/Fixtures/Screenshots/*.png KeeprollTests/Fixtures/Videos/*.mp4
 
 # Photo bursts / duplicates / blurry shots, and duplicate contacts
-swift scripts/make_photo_fixtures.swift SiftTests/Fixtures/Photos
-xcrun simctl addmedia <UDID> SiftTests/Fixtures/Photos/*.jpg SiftTests/Fixtures/Contacts/duplicates.vcf
+swift scripts/make_photo_fixtures.swift KeeprollTests/Fixtures/Photos
+xcrun simctl addmedia <UDID> KeeprollTests/Fixtures/Photos/*.jpg KeeprollTests/Fixtures/Contacts/duplicates.vcf
 # Expected: 4 similar groups (3 bursts + 1 exact pair), 2 blurry, 3 contact pairs
 
 # Read the app's info-level logs (scan timings are in category "perf")
@@ -45,9 +45,9 @@ xcrun simctl spawn <UDID> log show --last 5m --info --predicate 'subsystem == "m
 sample <pid> 2
 
 # Privacy + safety gates (all must print nothing; see §5)
-grep -rnE "URLSession|URLRequest|NWConnection" Sift/
-grep -rnE "deleteAssets|CNSaveRequest|span: \.thisEvent" Sift/ | grep -vE "Sift/Services/(Cleanup|Contacts|Calendar)/"
-grep -rn "CNContactNoteKey" Sift/
+grep -rnE "URLSession|URLRequest|NWConnection" Keeproll/
+grep -rnE "deleteAssets|CNSaveRequest|span: \.thisEvent" Keeproll/ | grep -vE "Keeproll/Services/(Cleanup|Contacts|Calendar)/"
+grep -rn "CNContactNoteKey" Keeproll/
 ```
 
 **Gotchas found on Day 1:**
@@ -77,7 +77,7 @@ Performance and accuracy work happens **only on the real iPhone**, with the real
 
 ## 4. Design rules
 
-- Use tokens only: `Color.sift.*`, `Font.sift.*`, `Spacing.*`, `Radius.*`, `Motion.*`. No hex colours, fixed font sizes or magic numbers in feature views.
+- Use tokens only: `Color.keeproll.*`, `Font.keeproll.*`, `Spacing.*`, `Radius.*`, `Motion.*`. No hex colours, fixed font sizes or magic numbers in feature views.
 - Reuse components from `Core/DesignSystem/Components/` before making new ones. A new shared component gets added to DESIGN_SYSTEM.md §8.
 - Every user-facing string goes in `Resources/Localizable.xcstrings` (use plural variants for counts). Format bytes with `ByteFormatter`.
 - Copy rules: never say “junk”, “boost”, “clear cache”, “virus”. Always name the consequence (“Delete 42 items · 3.1 GB”). Red (`destructive`) appears only on the final Review button.
@@ -92,7 +92,7 @@ Performance and accuracy work happens **only on the real iPhone**, with the real
 4. **No personal data in logs.** Log counts and `privacy: .private` identifiers only; never names, numbers, emails or file names.
 5. **Honest copy.** Explain Recently Deleted. Label iCloud-only sizes. Never promise cache or junk cleaning.
 6. **Every permission state works.** `.notDetermined / .denied / .restricted / .limited / .authorized` for Photos and Contacts: no crash, and no blank, unexplained screen.
-7. **No placeholder data in production paths.** Fixtures and fakes live under `#if DEBUG` or in `SiftTests/`. Missing values display “Unknown”, never invented data.
+7. **No placeholder data in production paths.** Fixtures and fakes live under `#if DEBUG` or in `KeeprollTests/`. Missing values display “Unknown”, never invented data.
 
 Run the grep gates in §2 before every commit.
 

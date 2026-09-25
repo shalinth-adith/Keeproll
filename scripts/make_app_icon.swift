@@ -1,13 +1,13 @@
-// Renders the Sift app icon (1024×1024) in light, dark and tinted variants.
-// Same geometry as `SiftMark` in the app. Usage:
-//   swift scripts/make_app_icon.swift Sift/Resources/Assets.xcassets/AppIcon.appiconset
+// Renders the Keeproll app icon (1024×1024) in light, dark and tinted variants.
+// Same geometry as `KeeprollMark` in the app. Usage:
+//   swift scripts/make_app_icon.swift Keeproll/Resources/Assets.xcassets/AppIcon.appiconset
 import CoreGraphics
 import Foundation
 import ImageIO
 import UniformTypeIdentifiers
 
 let outDir = URL(fileURLWithPath: CommandLine.arguments.count > 1
-    ? CommandLine.arguments[1] : "Sift/Resources/Assets.xcassets/AppIcon.appiconset")
+    ? CommandLine.arguments[1] : "Keeproll/Resources/Assets.xcassets/AppIcon.appiconset")
 let S: CGFloat = 1024
 let space = CGColorSpaceCreateDeviceRGB()
 

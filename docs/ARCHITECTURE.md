@@ -1,4 +1,4 @@
-# Sift — Architecture (MVVM)
+# Keeproll — Architecture (MVVM)
 
 > How the code is organised, how data flows, and how the two hard problems are solved: **fast, accurate similarity on large libraries** and **deletion that can't happen without approval**. Locked decisions and their reasons are listed in [DECISIONS.md](DECISIONS.md).
 
@@ -46,18 +46,18 @@
 ## 3. Folder structure
 
 ```
-Sift/                          # repo root
+Keeproll/                          # repo root
 ├─ project.yml                 # XcodeGen spec (targets, settings, Info.plist keys)
 ├─ CLAUDE.md                   # agent instructions
 ├─ docs/                       # PRD, DESIGN_SYSTEM, ARCHITECTURE, DECISIONS
-├─ Sift/
+├─ Keeproll/
 │  ├─ App/
-│  │  ├─ SiftApp.swift         # @main; builds AppEnvironment, injects it
+│  │  ├─ KeeprollApp.swift         # @main; builds AppEnvironment, injects it
 │  │  ├─ AppEnvironment.swift  # dependency container (live / preview / test)
 │  │  ├─ AppRouter.swift       # @Observable NavigationPath + Route enum + sheets
 │  │  └─ RootView.swift        # onboarding gate → Dashboard
 │  ├─ Core/
-│  │  ├─ DesignSystem/         # Tokens (SiftColor, Font.sift, Spacing, Radius, Motion) + Components/
+│  │  ├─ DesignSystem/         # Tokens (KeeprollColor, Font.keeproll, Spacing, Radius, Motion) + Components/
 │  │  ├─ Logging/              # Log.swift (Logger categories), Signposts.swift
 │  │  ├─ Formatting/           # ByteFormatter, DateFormatting
 │  │  └─ Extensions/
@@ -85,8 +85,8 @@ Sift/                          # repo root
 │  │  ├─ Summary/              # SummaryView, SummaryViewModel
 │  │  └─ Bonus/                # SwipeMode/, Blurry/, CompressVideo/ (only after core loop)
 │  └─ Resources/               # Assets.xcassets (Colors/, AppIcon), Localizable.xcstrings
-├─ SiftTests/                  # Swift Testing: Engines/, ViewModels/, Fakes/, Fixtures/
-└─ SiftWidget/                 # (bonus B5) WidgetKit extension
+├─ KeeprollTests/                  # Swift Testing: Engines/, ViewModels/, Fakes/, Fixtures/
+└─ KeeprollWidget/                 # (bonus B5) WidgetKit extension
 ```
 
 Feature naming: `<Feature>View.swift` + `<Feature>ViewModel.swift`, with subviews in the same folder. A ViewModel lives next to its View, not in a global `ViewModels/` folder.
@@ -114,7 +114,7 @@ struct AppEnvironment {
 
 - Injected once at the root via `.environment(...)`. ViewModels are created by their View with the dependencies they need, e.g. `@State private var vm: ScreenshotsViewModel` initialised in `init(env:)`.
 - `ScanStore` and `CleanupCart` are single `@Observable` instances shared by every screen, which is how the dashboard, category screens and Review stay in sync.
-- The preview/test environment uses `Fake*` services with fixture data (`SiftTests/Fakes`, which also compiles into the app under `#if DEBUG` for previews).
+- The preview/test environment uses `Fake*` services with fixture data (`KeeprollTests/Fakes`, which also compiles into the app under `#if DEBUG` for previews).
 
 ## 5. Core models
 
@@ -242,8 +242,8 @@ Review is a **sheet** (a deliberate, modal decision). Summary replaces Review in
 
 `PermissionService` exposes `photos: PermissionState` and `contacts: PermissionState` (`.notDetermined`, `.denied`, `.restricted`, `.limited`, `.authorized`) and re-reads them on `scenePhase == .active`. Info.plist keys are set in `project.yml`:
 
-- `NSPhotoLibraryUsageDescription`: “Sift looks at your photos and videos on this iPhone to find duplicates, screenshots and large videos. Nothing is uploaded.”
-- `NSContactsUsageDescription`: “Sift checks your contacts on this iPhone to find duplicates you can merge. Nothing is uploaded.”
+- `NSPhotoLibraryUsageDescription`: “Keeproll looks at your photos and videos on this iPhone to find duplicates, screenshots and large videos. Nothing is uploaded.”
+- `NSContactsUsageDescription`: “Keeproll checks your contacts on this iPhone to find duplicates you can merge. Nothing is uploaded.”
 - `PHPhotoLibraryPreventAutomaticLimitedAccessAlert`: `YES`
 
 Limited contacts status (`CNAuthorizationStatus.limited`) exists on iOS 18+ only, so check it inside `if #available(iOS 18, *)`.
@@ -269,7 +269,7 @@ Limited contacts status (`CNAuthorizationStatus.limited`) exists on iOS 18+ only
 | Engines (pure) | Swift Testing with fixtures | dHash of known images; multi-index lookup finds all pairs with Hamming ≤ 3; union-find + complete-link guard; BestShotRanker ordering; phone/email/name normalisation; ContactMerger union |
 | ViewModels | Swift Testing + `Fake*` services | selection toggles update the cart; Smart select excludes Best; Review total = the sum of unique items; cancel keeps the cart |
 | DeletionService | Fake photo/contact stores | backup happens before mutation; cancel → 0 deleted; partial failure reported |
-| UI | Simulator run + screenshots | Seed with `xcrun simctl addmedia booted SiftTests/Fixtures/Photos/*` (fixture set: near-duplicate bursts, exact copies, screenshots, a few videos) |
+| UI | Simulator run + screenshots | Seed with `xcrun simctl addmedia booted KeeprollTests/Fixtures/Photos/*` (fixture set: near-duplicate bursts, exact copies, screenshots, a few videos) |
 | Performance & accuracy | **Real iPhone only** | Instruments Time Profiler + signposts on the real library; manual precision audit of 50 groups |
 
 Commands are in `CLAUDE.md`.

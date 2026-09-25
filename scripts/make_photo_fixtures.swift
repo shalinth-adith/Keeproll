@@ -4,13 +4,13 @@
 //   blurry-*   : out-of-focus shots (rendered small, scaled up)
 //   unique-*   : unrelated scenes
 // Capture dates are written to EXIF DateTimeOriginal, which Photos uses on import.
-// Usage: swift scripts/make_photo_fixtures.swift SiftTests/Fixtures/Photos
+// Usage: swift scripts/make_photo_fixtures.swift KeeprollTests/Fixtures/Photos
 import CoreGraphics
 import Foundation
 import ImageIO
 import UniformTypeIdentifiers
 
-let outDir = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "SiftTests/Fixtures/Photos")
+let outDir = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "KeeprollTests/Fixtures/Photos")
 let W = 1600, H = 1200
 let space = CGColorSpaceCreateDeviceRGB()
 let exifFormat: DateFormatter = { let f = DateFormatter(); f.dateFormat = "yyyy:MM:dd HH:mm:ss"; return f }()

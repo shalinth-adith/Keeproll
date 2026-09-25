@@ -1,6 +1,6 @@
-# Sift
+# Keeproll
 
-**Keep what matters.** Sift is an iPhone storage cleaner. It finds similar photos, screenshots, large videos and duplicate contacts, and removes only what you approve on a final Review screen. Everything runs on the device: no account, no network, no uploads.
+**Keep what matters.** Keeproll is an iPhone storage cleaner. It finds similar photos, screenshots, large videos and duplicate contacts, and removes only what you approve on a final Review screen. Everything runs on the device: no account, no network, no uploads.
 
 Built for the AppFactory *App Builder Intern* selection task.
 
@@ -16,7 +16,7 @@ Built for the AppFactory *App Builder Intern* selection task.
 | Duplicate contacts: phone/email/name matching, merge, delete, vCard backup | ✅ |
 | Review → Delete → Summary (the only deletion path) | ✅ |
 | Scan cache (warm rescans skip analysis) | ✅ |
-| Live library changes (deleted in Photos → gone from Sift; new photos → quick refresh) | ✅ |
+| Live library changes (deleted in Photos → gone from Keeproll; new photos → quick refresh) | ✅ |
 | iCloud-only badges + honest "frees iCloud space" note on Review | ✅ |
 | Bonus: Swipe to sort, Blurry photos, Home Screen widget, space-freed Summary | ✅ |
 | Bonus: Compress large videos (HEVC copy saved first; original goes to Review) | ✅ |
@@ -29,20 +29,20 @@ Built for the AppFactory *App Builder Intern* selection task.
 Requirements: Xcode 26+ (Swift 6.2), [XcodeGen](https://github.com/yonaskolb/XcodeGen), iOS 17+ device or simulator.
 
 ```bash
-xcodegen generate          # creates Sift.xcodeproj from project.yml
-open Sift.xcodeproj
+xcodegen generate          # creates Keeproll.xcodeproj from project.yml
+open Keeproll.xcodeproj
 ```
 
-Tests: `xcodebuild -project Sift.xcodeproj -scheme Sift -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test`
+Tests: `xcodebuild -project Keeproll.xcodeproj -scheme Keeproll -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test`
 
 Simulator fixtures: tagged screenshots, short videos, photo bursts / duplicates / blurry shots, and duplicate contacts:
 
 ```bash
-swift scripts/make_screenshot_fixtures.swift SiftTests/Fixtures/Screenshots 12
-swift scripts/make_video_fixtures.swift SiftTests/Fixtures/Videos 3
-swift scripts/make_photo_fixtures.swift SiftTests/Fixtures/Photos
-xcrun simctl addmedia booted SiftTests/Fixtures/Screenshots/*.png SiftTests/Fixtures/Videos/*.mp4 \
-  SiftTests/Fixtures/Photos/*.jpg SiftTests/Fixtures/Contacts/duplicates.vcf
+swift scripts/make_screenshot_fixtures.swift KeeprollTests/Fixtures/Screenshots 12
+swift scripts/make_video_fixtures.swift KeeprollTests/Fixtures/Videos 3
+swift scripts/make_photo_fixtures.swift KeeprollTests/Fixtures/Photos
+xcrun simctl addmedia booted KeeprollTests/Fixtures/Screenshots/*.png KeeprollTests/Fixtures/Videos/*.mp4 \
+  KeeprollTests/Fixtures/Photos/*.jpg KeeprollTests/Fixtures/Contacts/duplicates.vcf
 ```
 
 With that library the expected result is: 4 similar groups (3 bursts + 1 exact-duplicate pair), 2 blurry photos, 3 duplicate-contact pairs.

@@ -1,4 +1,4 @@
-# Sift — Decisions Log
+# Keeproll — Decisions Log
 
 > Locked project-wide decisions. Agents read this **before** writing code. Don't silently contradict an entry; if one needs to change, add a dated `### Amendment` under it. The original text is never edited.
 
@@ -11,7 +11,7 @@ Why: the brief says iOS 17+; `@Observable` needs 17. APIs newer than 17 (limited
 Why: a widget target (B5) and the Info.plist keys have to be added by agents, and hand-editing `project.pbxproj` is fragile. `project.yml` is the source of truth; `*.xcodeproj` is gitignored. Bundle ID `me.adithyan.shalinth.Sift`, team `649T62WKAQ` (same as the other projects).
 
 **D3 — The folder and project names have no spaces.**
-Why: the template was created as `cleaner_storage /` and `cleaner_storage .xcodeproj` (trailing space), which breaks shell scripts and `xcodebuild` arguments. Rename the folder to `Sift` (or at least drop the trailing space) and generate `Sift.xcodeproj`.
+Why: the template was created as `cleaner_storage /` and `cleaner_storage .xcodeproj` (trailing space), which breaks shell scripts and `xcodebuild` arguments. Rename the folder to `Keeproll` (or at least drop the trailing space) and generate `Keeproll.xcodeproj`.
 
 **D4 — Swift 6 language mode, default MainActor isolation, no third-party dependencies.**
 Why: compile-time data-race safety for a heavily concurrent scanner; zero dependencies keeps review and privacy claims simple.
@@ -55,7 +55,7 @@ Why: it keeps private photos out of the recording (a rule in the brief) and demo
 A paid Apple Developer account is confirmed. **TestFlight (B3) is committed, not optional.** Upload the first build at the end of Day 4, so any Beta App Review for external testers can finish before submission. Use the internal testing group as a fallback if external review is slow.
 
 ### Amendment — 2026-09-24 (D3)
-The **outer local folder is kept** as `cleaner_storage ` for now, because renaming it mid-session would break the active Claude Code session. Everything inside has no spaces (`Sift/`, `Sift.xcodeproj`), and the GitHub repo is named `Sift`, so every clone is clean. Rename the local folder by hand between sessions if you want to.
+The **outer local folder is kept** as `cleaner_storage ` for now, because renaming it mid-session would break the active Claude Code session. Everything inside has no spaces (`Keeproll/`, `Keeproll.xcodeproj`), and the GitHub repo is named `Keeproll`, so every clone is clean. Rename the local folder by hand between sessions if you want to.
 
 ### Amendment — 2026-09-24 (D13)
 The scan cache is a **flat binary file** (`ScanCache`, an actor) instead of SwiftData. The cache is a pure key-value lookup keyed by `localIdentifier` + modification date; it needs no queries or relationships. A flat file loads ~10k records (feature prints included) in milliseconds and avoids SwiftData's `@Model`/`@ModelActor` friction under Swift 6 with default MainActor isolation. Feature prints **are** cached (not deferred as first planned), so a warm rescan does no Vision work at all. The file is written atomically with file protection; a corrupt or old-format file is ignored and rebuilt.
@@ -82,7 +82,7 @@ Calibrated with the DEBUG Calibrate screen on the owner's iPhone 15 (7,724 photo
 - **Warm rescan on device: 7,724 photos in 2.04 s** (all features from the cache).
 
 ### Amendment — 2026-09-24 (D6, scan speed on device)
-Cold scans of the same 7,724-photo library on iPhone 15 (Debug build), each with the cache cleared via the DEBUG `-SiftResetCache` launch argument:
+Cold scans of the same 7,724-photo library on iPhone 15 (Debug build), each with the cache cleared via the DEBUG `-KeeprollResetCache` launch argument:
 
 | Change | Cold scan |
 |---|---|
@@ -101,5 +101,9 @@ Vision is now the floor: 4,753 prints, ~98 s of Vision execution across the lane
 ### Amendment — 2026-09-24 (D14, the last three bonus features)
 All three follow D10: nothing leaves the library or the calendar except through Review.
 - **Compress large videos.** HEVC 1080p export (720p fallback) with `AVAssetExportSession`. The new copy is saved to Photos first, with the original's date, location and favourite flag; only then is the original **added to the cart**, never deleted. It's offered only when the estimated saving is at least 20 MB and 25 % of the file, and the copy is thrown away if it isn't at least 10 % smaller. The export may download an iCloud original: the user started it on a single video.
-- **Private vault ("PIN / Face ID").** Unlocked with `.deviceOwnerAuthentication` (Face ID, falling back to the device passcode), so Sift never stores a PIN of its own. Without a passcode the vault is unavailable, not unprotected. Files sit in Application Support/Vault with `.complete` file protection, and the vault re-locks when the app goes to the background and is covered in the app switcher. Adding photos **copies** them in; the originals go to the cart for Review. Removing a vault item is permanent and confirmed in its own dialog, since it's Sift's only copy.
+- **Private vault ("PIN / Face ID").** Unlocked with `.deviceOwnerAuthentication` (Face ID, falling back to the device passcode), so Keeproll never stores a PIN of its own. Without a passcode the vault is unavailable, not unprotected. Files sit in Application Support/Vault with `.complete` file protection, and the vault re-locks when the app goes to the background and is covered in the app switcher. Adding photos **copies** them in; the originals go to the cart for Review. Removing a vault item is permanent and confirmed in its own dialog, since it's Keeproll's only copy.
 - **Calendar cleanup.** Suggests exact duplicates (same title, start, end and all-day flag; the first is kept) and events that ended over a year ago. It covers only non-recurring events in editable calendars (no birthdays, subscriptions or repeating series), since deleting "this occurrence" of a series is rarely what people mean. It needs full calendar access (iOS 17). An `.ics` backup is written before anything is removed, shared from the Summary like the contacts `.vcf`, and all removals are committed together.
+
+### Amendment — 2026-09-25 (app name: Sift → Keeproll)
+The App Store name "Sift" is reserved by another developer's record, and the live store already has more than a dozen "Sift…" photo cleaners. The app is renamed **Keeproll** everywhere users and developers see it: display name, copy, targets, folders, schemes, module name, docs and the GitHub repository. **The bundle identifiers and App Group keep their original values** (`me.adithyan.shalinth.Sift`, `me.adithyan.shalinth.Sift.Widget`, `group.me.adithyan.shalinth.Sift`, and the log subsystem): they are invisible to users, they are what the App Store Connect record, provisioning profiles and App Group entitlement are bound to, and changing them would only add risk before TestFlight.
+
