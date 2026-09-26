@@ -21,6 +21,12 @@ final class SettingsStore {
         lifetimeBytesFreed = (defaults.object(forKey: Keys.lifetimeBytes) as? NSNumber)?.int64Value ?? 0
     }
 
+    /// Settings → "Reset freed total".
+    func resetFreedTotal() {
+        lifetimeBytesFreed = 0
+        WidgetBridge.update(lifetimeFreedBytes: 0)
+    }
+
     func recordFreed(_ bytes: Int64) {
         lifetimeBytesFreed += max(bytes, 0)
         WidgetBridge.update(lifetimeFreedBytes: lifetimeBytesFreed)

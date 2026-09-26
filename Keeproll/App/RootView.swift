@@ -25,6 +25,7 @@ struct RootView: View {
                         .navigationDestination(for: Route.self) { route in
                             switch route {
                             case .dashboard: DashboardView(env: env)
+                            case .settings: SettingsView(env: env)
                             case .similar: SimilarPhotosView(env: env)
                             case .screenshots: ScreenshotsView(env: env)
                             case .blurry: BlurryPhotosView(env: env)

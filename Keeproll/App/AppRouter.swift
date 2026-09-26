@@ -2,7 +2,7 @@ import Observation
 import Foundation
 
 enum Route: Hashable {
-    case dashboard
+    case dashboard, settings
     case similar, screenshots, blurry, videos, contacts, calendar, vault, swipe, calibration
     case compare(groupID: UUID, startID: String)
 }
@@ -29,7 +29,7 @@ final class AppRouter {
     /// Compare and Swipe carry their own bottom controls, so the global bar steps aside.
     var hidesSelectionBar: Bool {
         switch path.last {
-        case .compare, .swipe, .calibration: true
+        case .compare, .swipe, .calibration, .settings: true
         default: false
         }
     }

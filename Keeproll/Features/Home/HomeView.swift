@@ -64,20 +64,30 @@ struct HomeView: View {
                 }
             }
             Spacer(minLength: Spacing.s)
-            Button { vm.rescan() } label: {
-                Group {
+            HStack(spacing: Spacing.xs) {
+                roundButton(accessibility: vm.isScanning ? "Scanning" : "Rescan", disabled: vm.isScanning) { vm.rescan() } label: {
                     if vm.isScanning { ProgressView().controlSize(.small).tint(Color.keeproll.accent) }
                     else { Image(systemName: "arrow.clockwise").font(Font.keeproll.headline).foregroundStyle(Color.keeproll.accent) }
                 }
+                roundButton(accessibility: "Settings") { vm.openSettings() } label: {
+                    Image(systemName: "gearshape").font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkSecondary)
+                }
+            }
+        }
+        .accessibilityElement(children: .contain)
+    }
+
+    private func roundButton<Label: View>(accessibility: LocalizedStringKey, disabled: Bool = false,
+                                          action: @escaping () -> Void, @ViewBuilder label: () -> Label) -> some View {
+        Button(action: action) {
+            label()
                 .frame(width: Layout.minTouchTarget, height: Layout.minTouchTarget)
                 .background(Color.keeproll.surface, in: Circle())
                 .shadow(color: Elevation.cardColor, radius: 8, y: 3)
-            }
-            .buttonStyle(PressableStyle())
-            .disabled(vm.isScanning)
-            .accessibilityLabel(Text(vm.isScanning ? "Scanning" : "Rescan"))
         }
-        .accessibilityElement(children: .contain)
+        .buttonStyle(PressableStyle())
+        .disabled(disabled)
+        .accessibilityLabel(Text(accessibility))
     }
 
     // MARK: Hero
@@ -164,36 +174,58 @@ struct HomeView: View {
 
     // MARK: Checks
 
+    /// One card, one row per category: tile, full name, last-known value, chevron. A list
+    /// reads correctly wherever the fold falls, which a tile grid did not.
     private var checks: some View {
         VStack(alignment: .leading, spacing: Spacing.s) {
-            Text("What Keeproll checks")
-                .font(Font.keeproll.title)
-                .foregroundStyle(Color.keeproll.inkPrimary)
-                .accessibilityAddTraits(.isHeader)
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Spacing.s), count: typeSize.isAccessibilitySize ? 1 : 3),
-                      spacing: Spacing.s) {
-                ForEach(vm.categories) { category in
-                    Button { vm.open(category) } label: {
-                        VStack(spacing: Spacing.xs) {
-                            CategoryTile(category: category, side: 40)
-                            Text(category.cardTitle)
-                                .font(Font.keeproll.caption.weight(.semibold))
-                                .foregroundStyle(Color.keeproll.inkPrimary)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.8)
-                            Text(vm.chipValue(for: category) ?? " ")
-                                .font(Font.keeproll.badge)
-                                .foregroundStyle(Color.keeproll.inkSecondary)
-                                .monospacedDigit()
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, Spacing.s)
-                        .card(padding: Spacing.xs)
-                    }
-                    .buttonStyle(PressableStyle())
-                    .accessibilityLabel(Text("\(Text(category.title))\(vm.chipValue(for: category).map { ", \($0)" } ?? "")"))
+            HStack(alignment: .firstTextBaseline) {
+                Text("What Keeproll checks")
+                    .font(Font.keeproll.title)
+                    .foregroundStyle(Color.keeproll.inkPrimary)
+                    .accessibilityAddTraits(.isHeader)
+                Spacer()
+                if vm.hasResults {
+                    Button("All results") { vm.primaryAction() }
+                        .font(Font.keeproll.caption.weight(.semibold))
+                        .foregroundStyle(Color.keeproll.accent)
                 }
             }
+            VStack(spacing: 0) {
+                ForEach(Array(vm.categories.enumerated()), id: \.element) { index, category in
+                    Button { vm.open(category) } label: {
+                        HStack(spacing: Spacing.s) {
+                            CategoryTile(category: category, side: 36)
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(category.title)
+                                    .font(Font.keeproll.headline)
+                                    .foregroundStyle(Color.keeproll.inkPrimary)
+                                Text(vm.checkSubtitle(for: category))
+                                    .font(Font.keeproll.caption)
+                                    .foregroundStyle(Color.keeproll.inkSecondary)
+                                    .lineLimit(1)
+                            }
+                            Spacer(minLength: Spacing.s)
+                            if let value = vm.chipValue(for: category) {
+                                Text(value)
+                                    .font(Font.keeproll.metric)
+                                    .foregroundStyle(Color.keeproll.inkPrimary)
+                                    .monospacedDigit()
+                            }
+                            Image(systemName: "chevron.right")
+                                .font(Font.keeproll.caption.weight(.bold))
+                                .foregroundStyle(Color.keeproll.inkTertiary)
+                        }
+                        .padding(.vertical, Spacing.s)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityElement(children: .combine)
+                    if index < vm.categories.count - 1 {
+                        Divider().overlay(Color.keeproll.hairline).padding(.leading, 36 + Spacing.s)
+                    }
+                }
+            }
+            .card(padding: Spacing.m)
         }
     }
 

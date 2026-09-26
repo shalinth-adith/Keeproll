@@ -56,6 +56,19 @@ final class HomeViewModel {
         }
     }
 
+    /// One line describing what the category looks for; the locked state where it applies.
+    func checkSubtitle(for category: CleanupCategory) -> LocalizedStringResource {
+        switch category {
+        case .similar: "Bursts and duplicate shots"
+        case .screenshots: "Screenshots taking up space"
+        case .blurry: "Out-of-focus photos"
+        case .videos: "Biggest clips, compressible"
+        case .contacts: scanStore.contactsPermission.canRead ? "The same person saved twice" : "Needs access · tap to allow"
+        case .calendar: scanStore.calendarPermission.canRead ? "Duplicates and events over a year old" : "Needs access · tap to allow"
+        case .vault: "Photos kept behind Face ID"
+        }
+    }
+
     /// Last-known number for a category chip, if any.
     func chipValue(for category: CleanupCategory) -> String? {
         guard let count = scanStore.displayCount(category), count > 0 else { return nil }
@@ -74,6 +87,7 @@ final class HomeViewModel {
     }
 
     func rescan() { scanStore.scan() }
+    func openSettings() { router.open(.settings) }
     func open(_ category: CleanupCategory) {
         let asksForItsOwnAccess = category == .contacts || category == .calendar
         guard scanStore.photosPermission.canRead || asksForItsOwnAccess else { SystemActions.openSettings(); return }

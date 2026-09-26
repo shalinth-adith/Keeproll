@@ -87,7 +87,10 @@ v3 achieved calm by removing everything, and the owner read the result as empty.
 | E6 | Sections were unlabelled. | “Photos & videos”, “Contacts & calendar”, “Tools” with `SectionHeader`s. |
 | E7 | Empty states and Summary had lost their warmth. | `EmptyState` symbol back in an `accentSoft` circle; Summary rings restored. |
 
-Verified in the simulator: onboarding (3 pages, both system prompts), Home (locked, scanning, results), Results (populated, select recommended → 18 items in the bar, contacts/calendar and tools sections), Similar, Review; light, dark and AX5. AX5 needed three fixes on Home: the ring shows a percentage and spells the bytes out under the pill, the pill becomes a rounded rectangle, and the tagline hides so the brand row fits.
+| E8 | **“What Keeproll checks” grid cut at the fold** (owner report): with three tiles per row, the second row sat exactly at the bottom edge on a 6.1″ screen, so the user saw a strip of icons with no names. | Replaced with one card of full rows: tile, full category name, a one-line description (or “Needs access · tap to allow”), last-known value, chevron. A list degrades gracefully at any fold; a tile grid does not. “All results” link in the section header. |
+| E9 | **No settings.** Permission status, cache and the freed total had no home; the only way to change access was to know about iOS Settings. | New Settings screen (gear on Home): Access (Photos / Contacts / Calendar with status and Allow / Change), Data on this iPhone (clear scan cache, reset freed total, replay onboarding), About (version, privacy). Selection bar hidden there. |
+
+Verified in the simulator: onboarding (3 pages, both system prompts), Home (locked, scanning, results, list of checks), Settings, Results (populated, select recommended → 18 items in the bar, contacts/calendar and tools sections), Similar, Review; light, dark and AX5. AX5 needed three fixes on Home: the ring shows a percentage and spells the bytes out under the pill, the pill becomes a rounded rectangle, and the tagline hides so the brand row fits.
 
 ---
 
