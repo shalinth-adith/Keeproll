@@ -89,6 +89,7 @@ struct ReviewView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .card(radius: Radius.sheet, padding: Spacing.l)
         .padding(.top, Spacing.s)
         .animation(Motion.standard, value: vm.cart.totalBytes)
     }
@@ -113,7 +114,7 @@ struct ReviewView: View {
         let rows = vm.recordItems(in: category)
         return VStack(alignment: .leading, spacing: Spacing.s) {
             HStack(spacing: Spacing.xs) {
-                Image(systemName: category.symbol).font(Font.keeproll.headline).foregroundStyle(category.color).frame(width: 24)
+                CategoryTile(category: category, side: 26)
                 Text(category.title).font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkPrimary)
                 Spacer()
                 Text("Backed up first").font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
@@ -159,6 +160,7 @@ struct ReviewView: View {
                     if index < rows.count - 1 { Divider().overlay(Color.keeproll.hairline).padding(.leading, 24 + Spacing.s) }
                 }
             }
+            .card(padding: Spacing.s)
         }
     }
 

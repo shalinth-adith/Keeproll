@@ -5,12 +5,42 @@ import SwiftUI
 final class DashboardViewModel {
     private let scanStore: ScanStore
     private let router: AppRouter
+    private let cart: CleanupCart
     let settings: SettingsStore
 
-    init(scanStore: ScanStore, router: AppRouter, settings: SettingsStore) {
+    init(scanStore: ScanStore, router: AppRouter, settings: SettingsStore, cart: CleanupCart) {
         self.scanStore = scanStore
         self.router = router
         self.settings = settings
+        self.cart = cart
+    }
+
+    /// When the last complete scan finished, for the "Last scan" stat.
+    var lastScanDate: Date? { scanStore.lastSummary?.finishedAt }
+
+    /// Photo categories (grid) and record categories (contacts, calendar), in dashboard order.
+    var photoCategories: [CleanupCategory] { categories.filter { $0 != .contacts && $0 != .calendar } }
+    var recordCategories: [CleanupCategory] { categories.filter { $0 == .contacts || $0 == .calendar } }
+
+    /// The safe suggestions: every non-best shot in a similar group, plus blurry photos.
+    /// One explicit tap adds them to the cart (D9); nothing is pre-selected.
+    private var recommended: [(MediaItem, CleanupCategory)] {
+        var seen = Set<String>()
+        var out: [(MediaItem, CleanupCategory)] = []
+        for item in (scanStore.similar.value ?? []).flatMap(\.othersThanBest) where seen.insert(item.id).inserted { out.append((item, .similar)) }
+        for item in scanStore.blurry.value ?? [] where seen.insert(item.id).inserted { out.append((item, .blurry)) }
+        return out
+    }
+    var recommendedCount: Int { recommended.count }
+    var recommendedBytes: Int64 { recommended.reduce(0) { $0 + ($1.0.byteSize ?? 0) } }
+    var recommendedAllSelected: Bool { !recommended.isEmpty && recommended.allSatisfy { cart.contains(assetID: $0.0.id) } }
+
+    func toggleRecommended() {
+        if recommendedAllSelected {
+            cart.removeAssets(recommended.map(\.0.id))
+        } else {
+            cart.add(recommended.map { $0.0.cartItem(in: $0.1) })
+        }
     }
 
     var storage: StorageSnapshot? { scanStore.storage.value }
@@ -57,7 +87,7 @@ final class DashboardViewModel {
         }
     }
 
-    func cardState(for category: CleanupCategory) -> CategoryRow.State {
+    func cardState(for category: CleanupCategory) -> CategoryCard.State {
         // While refreshing, keep showing the last scan's numbers instead of a spinner.
         if isRefreshing(category), let bytes = scanStore.displayBytes(category), let count = scanStore.displayCount(category) {
             let permitted = category == .contacts ? scanStore.contactsPermission.canRead : scanStore.photosPermission.canRead
@@ -94,7 +124,7 @@ final class DashboardViewModel {
         }
     }
 
-    private func state<T>(_ loadable: Loadable<[T]>, bytes: Int64, count: ([T]) -> Int) -> CategoryRow.State {
+    private func state<T>(_ loadable: Loadable<[T]>, bytes: Int64, count: ([T]) -> Int) -> CategoryCard.State {
         switch loadable {
         case .idle, .loading: return .scanning(progress: nil)
         case .failed: return .empty

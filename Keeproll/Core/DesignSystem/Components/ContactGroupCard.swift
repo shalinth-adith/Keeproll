@@ -22,12 +22,14 @@ struct ContactGroupCard: View {
                     if index < group.contacts.count - 1 { Divider().overlay(Color.keeproll.hairline) }
                 }
             }
+            .background(Color.keeproll.canvas, in: RoundedRectangle(cornerRadius: Radius.control, style: .continuous))
 
             mergedPreview
             actions
         }
-        .padding(.vertical, Spacing.m)
-        .overlay(alignment: .bottom) { Divider().overlay(Color.keeproll.hairline) }
+        .card()
+        .overlay(RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
+            .strokeBorder(Color.keeproll.accent, lineWidth: mergeQueued ? 2 : 0))
         .animation(Motion.standard, value: mergeQueued)
         .animation(Motion.standard, value: primaryID)
     }

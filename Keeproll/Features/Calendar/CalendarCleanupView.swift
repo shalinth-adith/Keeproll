@@ -125,8 +125,7 @@ struct CalendarCleanupView: View {
                         }
                     }
                 }
-                .padding(.vertical, Spacing.s)
-                .overlay(alignment: .bottom) { Divider().overlay(Color.keeproll.hairline) }
+                .card()
             }
         }
     }
@@ -155,8 +154,7 @@ struct CalendarCleanupView: View {
                     }
                 }
                 .tint(Color.keeproll.inkSecondary)
-                .padding(.vertical, Spacing.s)
-                .overlay(alignment: .bottom) { Divider().overlay(Color.keeproll.hairline) }
+                .card()
             }
         }
     }

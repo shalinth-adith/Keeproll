@@ -2,7 +2,7 @@
 
 > Source of truth for how Keeproll looks, moves and speaks. Code lives in `Keeproll/Core/DesignSystem/`. **Never hard-code a colour, font, spacing or radius in a feature view.** Use a token. If the token you need doesn't exist, add it here first, then in code.
 >
-> **v3, minimalist (2026-09-25).** After the v2 audit the owner asked for a lighter, less clumpy app. v3 removes every card, border, gradient, glow and shadow from content screens; the dashboard is a plain list with one text headline and one 6 pt storage bar. The reasoning and evidence are in [DESIGN_AUDIT.md](DESIGN_AUDIT.md). Screenshots of the current build: `docs/design-screenshots/`.
+> **v4, "warm & alive" (2026-09-26).** The v3 flat list read as plain and empty. v4 adds a proper entry screen (Home) between onboarding and the results dashboard, brings back soft elevation and the category gradient tiles, puts the storage ring on a brand-gradient hero, and gives onboarding three illustrated heroes. Depth comes from one soft shadow step and one gradient family, never from borders. The reasoning and evidence are in [DESIGN_AUDIT.md](DESIGN_AUDIT.md) §1c. Screenshots of the current build: `docs/design-screenshots/`.
 
 ---
 
@@ -10,7 +10,8 @@
 
 1. **Calm, not alarming.** Many cleaner apps use scare tactics (“Your phone is full of junk!”, red warnings, fake virus scans). Keeproll is the opposite: a tidy desk, not an alarm. Red appears **only** on the final destructive button. Tips are quiet (`HintRow`, no fill); a filled `InlineBanner` is reserved for things that need attention.
 6. **Lead with what Keeproll can do.** The biggest number on any screen is the one the user can act on (“3.1 GB can be freed”, “1.3 GB · 4 groups”). Device totals are footnotes.
-7. **One surface, one accent, one graphic.** Content sits directly on the canvas, separated by hairlines. No cards, borders, gradients, glows or shadows. Teal appears only on the one primary action of a screen and on quiet hints. The dashboard has exactly one graphic, the storage bar. Status is said in words in secondary grey (“Allow access”, “None”), never in coloured bold text.
+7. **Soft depth, one family.** Content lives on soft-shadowed `surface` cards over the warm canvas (`.card()`); nothing is drawn with a border in light mode. There is one brand gradient (teal → deep teal) for the Home hero and the brand tile, and one tile gradient per category colour for icons. Shadows are one step (`Elevation.card`) except for the floating selection bar and the hero. Dark mode separates surfaces by value and a hairline instead of shadow.
+8. **Three-stage entry.** Onboarding (illustrated, three pages) → Home (device storage, one primary action, a glance at what was found) → Results (the full dashboard). Home is calm and always the same shape; Results is where the numbers and the "select recommended" shortcut live.
 2. **Show, then ask.** Always show the actual photo, video or contact before asking the user to decide. Numbers (GB) support the decision; they never replace seeing the items.
 3. **One obvious next step.** Each screen has one primary action. The selection bar is the thread that leads every screen to Review.
 4. **Honest numbers.** Say “up to” when a number is uncertain (iCloud assets). Explain Recently Deleted. Never promise to clear caches or junk.
@@ -44,6 +45,7 @@ Defined as asset-catalog colour sets (`Assets.xcassets/Colors/`) with Any and Da
 | Token | Light | Dark | Use |
 |---|---|---|---|
 | `accent` | `#0B7A6F` (Keeproll Teal, 5.2:1 on white) | `#3CC7B5` (9.1:1 on canvas) | Primary buttons, selection, links, Best badge |
+| `accentDeep` | `#075A52` | `#126E64` | Far end of the hero gradient; text on the Home status pill |
 | `onAccent` | `#FFFFFF` | `#0E1113` | Text and icons on an accent fill |
 | `accentSoft` | `#E3F2EF` | `#123430` | Selected-cell tint, chips, banners |
 | `destructive` | `#C93A3A` (5.1:1 with white text) | `#FF6B6B` | **Only** the final Delete button and error text |
@@ -86,7 +88,9 @@ Rules: never use fixed point sizes; truncate middle for file names and never for
 - **Spacing (`Spacing.*`, 4 pt grid):** `xxs 4 · xs 8 · s 12 · m 16 · l 20 · xl 24 · xxl 32 · xxxl 40`. Screen horizontal margin is `m` (16). Gap between cards is `s` (12).
 - **Radii (`Radius.*`):** `thumb 8 · control 12 · card 16 · sheet 24`; buttons use `Capsule()`. Always `.continuous` corners.
 - **Grid:** photo grids are 3 columns (4 when `horizontalSizeClass == .regular`; 2 at AX sizes), with a 2 pt gutter and square cells.
-- **Elevation:** none. Content screens have no cards: sections are separated by a 1 pt `hairline` `Divider`, inset to the text edge under a row symbol (`RowDivider`). The only filled surfaces are the floating **SelectionBar** (`surfaceRaised` + hairline, no shadow), `InlineBanner` (`accentSoft`, attention only), the Swipe card (a photo, so it keeps a soft shadow) and system sheets. Symbols are drawn flat in their category colour; there are no icon tiles.
+- **Elevation (`Elevation.*`):** two steps. `card` = `black 7 %, radius 16, y 6` on every `.card()` in light mode (dark mode swaps it for a hairline). `floating` = `black 14 %, radius 24, y 8` on the SelectionBar; the Home hero uses `accentDeep 35 %` at the same radius. `CategoryTile` and `ToolCard` tiles carry a coloured shadow at 28 % of their own colour. No other shadows.
+- **Gradients (`KeeprollGradient.*`):** `hero` (accent → accentDeep, top-leading to bottom-trailing) for the Home hero and the brand tile; `tile(color)` (color → color 72 %) for category tiles. Nothing else is gradient-filled.
+- **Cards (`.card(radius:padding:)`):** `surface` fill, `Radius.card` (16) by default, `Radius.sheet` (24) for hero-sized cards, continuous corners, the `card` shadow. Groups, rows, summaries and dashboard entries all use it, so a screen has exactly one card style.
 
 ## 6. Iconography
 
@@ -117,7 +121,7 @@ SF Symbols only, `.hierarchical` rendering, tinted with the category colour.
 | `gentle` | `.spring(response: 0.6, dampingFraction: 0.9)` | Storage ring fill, progress |
 | `countUp` | `.easeOut(duration: 1.2)` + `.contentTransition(.numericText())` | Summary bytes, dashboard totals |
 
-- The **storage bar** fills on first appearance. The **selection check** uses `.symbolEffect(.bounce)`. The **selection bar** slides up from the bottom (`.move(edge: .bottom).combined(with: .opacity)`).
+- The **storage ring** and **storage bar** fill on first appearance; Home and Results sections rise in with a 70 ms stagger (`Rise`). Onboarding heroes animate their parts in once. The **selection check** uses `.symbolEffect(.bounce)`. The **selection bar** slides up from the bottom (`.move(edge: .bottom).combined(with: .opacity)`).
 - **Swipe mode (B1):** the card rotates up to ±12° with the drag. Keep shows a teal tint, Delete a neutral grey tint (not red; nothing is deleted until Review).
 - **Reduce Motion:** replace springs and rotation with `.opacity` crossfades, and skip count-ups (show the final value).
 - **Haptics:** `.sensoryFeedback(.selection, trigger:)` on toggle; `.impact(weight: .light)` when drag-select crosses a cell; `.success` when cleaning completes; `.warning` on a partial failure.
@@ -128,36 +132,37 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 
 | Component | Purpose | States / API |
 |---|---|---|
-| `StorageBar` | The dashboard's one graphic: a 6 pt capsule of the device's storage. Freeable categories are coloured segments at the start, the rest of the used space is `catOther`, free space is the `catFree` track. Fills on first appearance (`Motion.gentle`). | `snapshot`, `segments` |
-| `ListRow` | The list row every dashboard entry uses: flat symbol (28 pt column), `body` title, optional trailing value in `metric` + `inkSecondary`, chevron in `inkTertiary`. 56 pt tall. `dimmed` turns everything `inkTertiary` for “nothing here” rows. Value drops under the title at AX sizes. | `symbol`, `tint`, `title`, `dimmed`, `action`, `value` |
-| `CategoryRow` | `ListRow` for one cleanup category: value is the bytes or count, a spinner while scanning, “Allow access” when locked, “None” when empty (dimmed). | `.scanning(progress)`, `.ready(bytes, count)`, `.empty`, `.locked`; `refreshing` |
-| `RowDivider` | Hairline between rows, inset past the symbol column | — |
+| `StorageRing` | Home hero graphic, drawn on the hero gradient: translucent white track (free), solid white arc (used), glowing category arcs at the start, free bytes in the centre (free % at AX sizes), and a thin outer arc for scan progress. | `snapshot`, `segments`, `scanProgress`, `size` |
+| `StorageBar` | Results summary graphic: a 6 pt capsule of the device's storage with the same segment logic as the ring. | `snapshot`, `segments` |
+| `StatTile` | Home metric card: tinted symbol circle, caption label, `metric` value ("Freed so far", "Last scan") | `symbol`, `tint`, `label`, `value` |
+| `CategoryTile` | The category's symbol on its gradient tile, any size. The one visual identity of a category (Home checks, Results cards, Review headers, Summary rows, onboarding). | `category`, `side` |
+| `CategoryCard` | Results entry per category: tile top-left, state badge top-right (lock / check / spinner / chevron), then title, `display` number and caption. Two per row, one per row at AX sizes. | `.scanning(progress)`, `.ready(bytes, count)`, `.empty`, `.locked`; `refreshing` |
+| `ToolCard` | Full-width card for Swipe and Vault: gradient tile, title, two-line subtitle, chevron | `symbol`, `tint`, `title`, `subtitle` |
 | `SectionHeader` | `title` text between groups, optional trailing view | `Text`, `trailing` |
-| `KeeprollMark` / `KeeprollMarkTile` | Brand mark (three stacked cards, top one lifted with a check) and the mark on its flat accent tile. Used in onboarding and the Swipe “All sorted” screen only. | `size`, `ink`, `check` |
-| `CategoryHeader` | Top of every category screen: `heroNumber` + caption on the left, `SelectedChip` on the right (below the caption at AX sizes), optional scanning line, optional `HintRow` | `hero`, `caption`, `selectedCount`, `hint`, `scanning` |
-| `SelectedChip` | “8 selected” accent capsule | `count` |
-| `HintRow` | A quiet tip: accent symbol + `caption` in `inkSecondary`, no fill. Used for “drag sideways to select”, “tap to compare”, backup notes. | `systemImage`, `message` |
-| `ToolRow` | Full-width row for tools that aren't scan categories (Swipe, Vault): tile, title, two-line subtitle, chevron | `symbol`, `tint`, `title`, `subtitle` |
+| `OnboardingHero.Welcome / Photos / Contacts` | Illustrated onboarding heroes built from the design system's own tiles, mark and badges: satellites popping around the brand tile; three fanned photos with Best; two avatars merging. Animated with `Motion.standard`/`gentle`, static under Reduce Motion. | — |
+| `KeeprollMark` / `KeeprollMarkTile` | Brand mark (three stacked cards, top one lifted with a check) and the mark on its gradient tile with a soft glow. Home brand row, onboarding, Swipe “All sorted”. | `size`, `ink`, `check` |
 | `SelectableThumbnail` | A grid cell | `asset`, `isSelected`, `isBest`, `isCloudOnly`, size overlay; 44 pt minimum hit area for the check control |
 | `BestBadge` / `CloudBadge` | “Best” pill on a thumbnail; iCloud-only marker | teal fill, `star.fill` + text |
 | `GroupHeader` | Similar-group header | date · count · freeable bytes · “Select all but best” button |
-| `VideoRow` | A large-videos list row, flat with a hairline under it; `accentSoft` fill only while selected | thumb (16:9), duration overlay, date, size, selection, optional “Save ~X” compress pill |
-| `ContactGroupCard` | A duplicate-contact group, a flat section ending in a hairline | match-reason chips, contact rows (primary radio + “Keep”, per-row delete), merged preview (deduped by digits/lowercase), “Merge into one” ↔ “Merge queued” |
+| `VideoRow` | A large-videos list row as a `.card()`; a 2 pt accent ring while selected | thumb (16:9), duration overlay, date, size, selection, optional “Save ~X” compress pill |
+| `ContactGroupCard` | A duplicate-contact group as a `.card()`; accent ring while a merge is queued | match-reason chips, contact rows (primary radio + “Keep”, per-row delete), merged preview, “Merge into one” ↔ “Merge queued” |
 | `ContactAvatar` | Initials circle for contacts | `size`, photo indicator dot |
-| `SelectionBar` | Sticky bottom bar, the one accent-filled control on a screen | “N items · X GB” + “Review” button; hidden when the cart is empty. Text and button stack, with a full-width button, at AX sizes. No shadow |
+| `SelectionBar` | Floating bottom bar | “N items · X GB” + “Review” button; hidden when the cart is empty. Text and button stack, with a full-width button, at AX sizes. `Elevation.floating` shadow |
 | `PrimaryButton` | Capsule, accent fill, full width | `.normal`, `.loading`, `.disabled`; `role: .destructive` switches to the destructive colour (Review only) |
 | `SecondaryButton` | Capsule, `accentSoft` fill, accent text | |
 | `FilterChips` | Segmented chips (video size, screenshot age) | selected state uses `accent` fill |
-| `PermissionPrimer` | Full-screen explainer before the system prompt | `hero: .brandMark | .symbol(name)`, rounded display title, reasons as a plain check list, Allow and Not now buttons; the onboarding container adds page dots |
+| `PermissionPrimer` | Full-screen explainer before the system prompt | `hero: .brandMark | .symbol(name) | .custom(view)`, rounded display title, reasons in a `.card()`, Allow and Not now buttons; the onboarding container adds page dots |
 | `InlineBanner` | Things that need attention: limited access, library changed, Recently Deleted, backups | `.info`, `.warning`; optional action. Not for tips (use `HintRow`) |
-| `EmptyState` | Nothing found / all clean | plain `inkTertiary` symbol, title, message, optional action |
+| `EmptyState` | Nothing found / all clean | accent symbol in an 80 pt `accentSoft` circle, title, message, optional action |
 | `ScanProgressView` | Linear progress + “1,204 of 9,860 photos” | determinate or indeterminate |
 
 ## 9. Screen blueprints
 
-**Dashboard (v3).** System large title “Keeproll”, Rescan as a bare symbol in the bar (plus pull-to-refresh). Then, on the canvas with no cards: the headline “213 MB **can be freed**” (`heroNumber` + `title`; “Photo access needed”, “Looking for things to clean…” or “Nothing to clean right now” as the other states) → one `caption` line “18 GB free of 494 GB · 440 KB freed so far · checking 42 %” → `StorageBar` → any attention banners → the category list (`CategoryRow`s between hairlines; categories with findings first, empty ones dimmed at the bottom) → a gap → the tools list (`ListRow`s “Swipe to sort”, “Private vault”) → the DEBUG calibrate link in `inkTertiary`. The SelectionBar is pinned to the bottom. All six categories and both tools fit on one 6.1″ screen.
+**Home (v4, the entry screen).** System bar hidden. Brand row (`KeeprollMarkTile` 40 pt, “Keeproll” rounded title, “Keep what matters” caption, circular Rescan button with a spinner while scanning) → the hero: a `Radius.sheet` card on `KeeprollGradient.hero` with a corner light, the `StorageRing`, and a white status pill (“Up to 213 MB can be freed” / “Checking photos · 42 %” / “Photo access needed” / “All tidy”) → one `PrimaryButton` (“Scan my iPhone” before the first scan, “See what to clean” after) → any attention banner → two `StatTile`s (“Freed so far”, “Last scan”) → “What Keeproll checks”: a 3-column grid of tappable tiles with the category name and its last-known value. Pull to refresh. At AX sizes the ring shows the free %, the pill becomes a rounded rectangle, the tagline hides and the checks grid is one column.
 
-**Category screens (Similar / Screenshots / Blurry / Videos / Contacts / Calendar / Vault).** Inline nav title, with Select all / Smart select / Merge all on the right. Then `CategoryHeader` (total, caption, selected chip, one `HintRow`), a filter row where one exists, and the grid or list. Groups and rows sit on the canvas and end in a hairline; nothing is boxed. The SelectionBar is pinned. When nothing is found: an `EmptyState`.
+**Results (v4, the dashboard).** Inline title “Results”, Rescan in the bar. A `Radius.sheet` summary card: “UP TO / 213 MB / can be freed · 35 GB free of 494 GB”, the `StorageBar`, and the one-tap **Select recommended · 2.8 MB** `SecondaryButton` (toggles to “Clear recommended”; recommended = non-best similar shots + blurry photos; nothing is pre-selected, D9) with a `HintRow` saying nothing is removed until Review. Then three titled sections: “Photos & videos” (`CategoryCard` grid), “Contacts & calendar” (`CategoryCard` grid), “Tools” (`ToolCard`s for Swipe and Vault), then the DEBUG calibrate link. The SelectionBar is pinned to the bottom. Reached from Home; `finishCleanup()` lands here.
+
+**Category screens (Similar / Screenshots / Blurry / Videos / Contacts / Calendar / Vault).** Inline nav title, with Select all / Smart select / Merge all on the right. Then `CategoryHeader` (total, caption, selected chip, one `HintRow`), a filter row where one exists, and the grid or list. Similar groups, video rows, contact groups and calendar sections are `.card()`s; photo grids sit directly on the canvas. The SelectionBar is pinned. When nothing is found: an `EmptyState`.
 
 **Similar Photos.** A vertical list of groups. Each group has a GroupHeader and a horizontal row (or wrapping grid) of SelectableThumbnails, with Best first. **Smart select** sits at the top right. Tapping a thumbnail opens the Compare view: a full-screen pager with Best and size, a Keep/Select toggle at the bottom, and “Make best” in the toolbar.
 
@@ -165,13 +170,13 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 
 **Contacts.** A list of ContactGroupCards. Each card lists its contacts (name, phones and emails in `caption`), a match-reason chip, a “Merged result” preview row, and **Merge** / **Delete selected** actions that add to the cart.
 
-**Review.** Title “Review”. The total as plain text (“You'll free up to / 110 MB / 2 items…”), then sections by category, each headed by the category symbol in its colour and the title: compact media grids (tap to remove an item) and contact / event rows between hairlines. A total card reads “You'll free 3.1 GB”. The Recently Deleted and contact-backup InlineBanner sits above the only destructive PrimaryButton: “Delete 42 items”.
+**Review.** Title “Review”. The total in a `Radius.sheet` card (“You'll free up to / 110 MB / 2 items…”), then sections by category, each headed by a 26 pt `CategoryTile` and the title: compact media grids (tap to remove an item) and contact / event rows in a `.card()`.
 
-**Summary.** A single light-weight check symbol that scales in, then “3.1 GB cleaned up” (count-up), per-category rows (symbol, title, count) between hairlines, the Recently Deleted banner with an **Open Photos** button, backup share (if any), and a **Done** button.
+**Summary.** A success check with three expanding rings, then “3.1 GB cleaned up” (count-up), per-category rows with 32 pt `CategoryTile`s in a `.card()`, the Recently Deleted banner with an **Open Photos** button, backup share (if any), and a **Done** button.
 
 **Calendar.** Duplicate groups show the kept copy first (green check, “Keep” pill, calendar name), then the extra copies with selection circles. Old events are grouped by year in disclosure cards with a “Select year” shortcut.
 
-**Onboarding.** Three screens: Welcome (privacy promise) → Photos primer → Contacts primer (skippable).
+**Onboarding.** Three screens with illustrated heroes (`OnboardingHero`): Welcome (brand tile with category tiles popping in around it) → Photos primer (three fanned photos, the front one marked Best) → Contacts primer (two avatars merging; skippable). Rounded display title, reasons in a card, one primary button, page dots.
 
 ## 10. Voice & copy
 

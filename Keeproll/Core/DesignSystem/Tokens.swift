@@ -16,6 +16,8 @@ enum KeeprollColor {
     static let inkTertiary = Color(.inkTertiary)
 
     static let accent = Color(.accent)
+    /// Darker teal, the far end of the hero gradient.
+    static let accentDeep = Color(.accentDeep)
     static let onAccent = Color(.onAccent)
     static let accentSoft = Color(.accentSoft)
     static let destructive = Color(.destructive)
@@ -80,6 +82,69 @@ enum Radius {
 enum Layout {
     static let minTouchTarget: CGFloat = 44
     static let gridGutter: CGFloat = 2
+}
+
+// MARK: - Elevation & surfaces
+
+/// Soft, single-step elevation for cards on the canvas (DESIGN_SYSTEM §5, v4).
+enum Elevation {
+    static let cardColor = Color.black.opacity(0.07)
+    static let cardRadius: CGFloat = 16
+    static let cardY: CGFloat = 6
+    static let floatingColor = Color.black.opacity(0.14)
+    static let floatingRadius: CGFloat = 24
+    static let floatingY: CGFloat = 8
+}
+
+/// Shared gradients: the brand hero and a per-category tile gradient.
+enum KeeprollGradient {
+    static var hero: LinearGradient {
+        LinearGradient(colors: [Color.keeproll.accent, Color.keeproll.accentDeep], startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+
+    static func tile(_ color: Color) -> LinearGradient {
+        LinearGradient(colors: [color, color.opacity(0.72)], startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+}
+
+/// A surface card with the standard radius and soft shadow. Content screens use this
+/// for groups, rows and summaries; the dashboard for category cards.
+struct CardStyle: ViewModifier {
+    var radius: CGFloat = Radius.card
+    var padding: CGFloat? = Spacing.m
+    @Environment(\.colorScheme) private var scheme
+
+    func body(content: Content) -> some View {
+        content
+            .padding(.all, padding ?? 0)
+            .background(Color.keeproll.surface, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
+            // Dark mode separates surfaces by value, not shadow (DESIGN_SYSTEM §5).
+            .overlay(RoundedRectangle(cornerRadius: radius, style: .continuous)
+                .strokeBorder(Color.keeproll.hairline.opacity(scheme == .dark ? 1 : 0)))
+            .shadow(color: scheme == .dark ? .clear : Elevation.cardColor, radius: Elevation.cardRadius, y: Elevation.cardY)
+    }
+}
+
+extension View {
+    func card(radius: CGFloat = Radius.card, padding: CGFloat? = Spacing.m) -> some View {
+        modifier(CardStyle(radius: radius, padding: padding))
+    }
+}
+
+/// Category icon on its gradient tile, at any size. The one visual identity of a category.
+struct CategoryTile: View {
+    let category: CleanupCategory
+    var side: CGFloat = 44
+
+    var body: some View {
+        Image(systemName: category.symbol)
+            .font(.system(size: side * 0.46, weight: .semibold))
+            .foregroundStyle(.white)
+            .frame(width: side, height: side)
+            .background(KeeprollGradient.tile(category.color), in: RoundedRectangle(cornerRadius: side * 0.28, style: .continuous))
+            .shadow(color: category.color.opacity(0.28), radius: side * 0.18, y: side * 0.08)
+            .accessibilityHidden(true)
+    }
 }
 
 // MARK: - Motion

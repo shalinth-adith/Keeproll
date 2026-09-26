@@ -2,6 +2,7 @@ import Observation
 import Foundation
 
 enum Route: Hashable {
+    case dashboard
     case similar, screenshots, blurry, videos, contacts, calendar, vault, swipe, calibration
     case compare(groupID: UUID, startID: String)
 }
@@ -34,12 +35,17 @@ final class AppRouter {
     }
 
     func open(_ route: Route) { path.append(route) }
+
+    /// Home → results. Never stacks a second dashboard.
+    func showDashboard() {
+        if !path.contains(.dashboard) { path = [.dashboard] }
+    }
     func presentReview() { sheet = .review }
     func previewVideo(_ id: String) { sheet = .videoPreview(id: id) }
 
-    /// After cleaning, go back to the dashboard.
+    /// After cleaning, land on the results dashboard.
     func finishCleanup() {
         sheet = nil
-        path.removeAll()
+        path = [.dashboard]
     }
 }

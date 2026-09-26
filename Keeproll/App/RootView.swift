@@ -21,9 +21,10 @@ struct RootView: View {
         Group {
             if env.settings.hasCompletedOnboarding {
                 NavigationStack(path: $router.path) {
-                    DashboardView(env: env)
+                    HomeView(env: env)
                         .navigationDestination(for: Route.self) { route in
                             switch route {
+                            case .dashboard: DashboardView(env: env)
                             case .similar: SimilarPhotosView(env: env)
                             case .screenshots: ScreenshotsView(env: env)
                             case .blurry: BlurryPhotosView(env: env)

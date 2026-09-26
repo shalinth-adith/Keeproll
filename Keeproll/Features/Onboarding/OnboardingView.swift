@@ -45,7 +45,7 @@ struct OnboardingView: View {
 
     private var welcome: some View {
         PermissionPrimer(
-            hero: .brandMark,
+            hero: .custom(AnyView(OnboardingHero.Welcome())),
             title: Text("Keep what matters"),
             reasons: [
                 Text("Find similar photos, screenshots, large videos and duplicate contacts."),
@@ -58,7 +58,7 @@ struct OnboardingView: View {
 
     private var photos: some View {
         PermissionPrimer(
-            hero: .symbol("photo.on.rectangle.angled"),
+            hero: .custom(AnyView(OnboardingHero.Photos())),
             title: Text("Let Keeproll look at your photos"),
             reasons: [
                 Text("Keeproll checks photos and videos on this iPhone to find what's taking space."),
@@ -76,7 +76,7 @@ struct OnboardingView: View {
 
     private var contacts: some View {
         PermissionPrimer(
-            hero: .symbol("person.2.circle"),
+            hero: .custom(AnyView(OnboardingHero.Contacts())),
             title: Text("Find duplicate contacts"),
             reasons: [
                 Text("Keeproll can spot the same person saved more than once."),

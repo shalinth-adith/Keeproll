@@ -65,9 +65,9 @@ struct SimilarPhotosView: View {
                 .padding(.horizontal, Spacing.m)
             }
             .padding(.horizontal, -Spacing.m)
+            .scrollClipDisabled()
         }
-        .padding(.bottom, Spacing.m)
-        .overlay(alignment: .bottom) { Divider().overlay(Color.keeproll.hairline) }
+        .card()
     }
 
     private func cell(_ item: MediaItem, in group: SimilarGroup) -> some View {

@@ -10,6 +10,7 @@ struct BestBadge: View {
             .padding(.horizontal, 7)
             .padding(.vertical, 4)
             .background(Color.keeproll.accent, in: Capsule())
+            .shadow(color: .black.opacity(0.25), radius: 3, y: 1)
     }
 }
 
@@ -135,10 +136,9 @@ struct VideoRow: View {
             .buttonStyle(.plain)
             .accessibilityLabel(Text(isSelected ? "Deselect" : "Select"))
         }
-        .padding(.vertical, Spacing.s)
-        .padding(.horizontal, Spacing.xs)
-        .background(isSelected ? Color.keeproll.accentSoft : .clear, in: RoundedRectangle(cornerRadius: Radius.control, style: .continuous))
-        .overlay(alignment: .bottom) { Divider().overlay(Color.keeproll.hairline) }
+        .card(padding: Spacing.s)
+        .overlay(RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
+            .strokeBorder(Color.keeproll.accent, lineWidth: isSelected ? 2 : 0))
         .contentShape(Rectangle())
         .onTapGesture(perform: onToggle)
         .sensoryFeedback(.selection, trigger: isSelected)

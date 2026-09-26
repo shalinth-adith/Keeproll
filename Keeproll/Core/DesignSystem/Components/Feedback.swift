@@ -43,8 +43,11 @@ struct EmptyState<Action: View>: View {
     var body: some View {
         VStack(spacing: Spacing.m) {
             Image(systemName: systemImage)
-                .font(.system(.largeTitle, weight: .regular))
-                .foregroundStyle(Color.keeproll.inkTertiary)
+                .font(.system(.title, weight: .medium))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(Color.keeproll.accent)
+                .frame(width: 80, height: 80)
+                .background(Color.keeproll.accentSoft, in: Circle())
                 .accessibilityHidden(true)
             title
                 .font(Font.keeproll.title)
@@ -100,7 +103,7 @@ struct FilterChips<Option: Hashable & Identifiable>: View {
 
 /// Explains why Keeproll needs a permission before the iOS prompt appears (FR-PERM-2/3).
 struct PermissionPrimer: View {
-    enum Hero { case brandMark, symbol(String) }
+    enum Hero { case brandMark, symbol(String), custom(AnyView) }
 
     let hero: Hero
     let title: Text
@@ -117,6 +120,7 @@ struct PermissionPrimer: View {
                 .font(.system(.largeTitle, design: .rounded, weight: .bold))
                 .foregroundStyle(Color.keeproll.inkPrimary)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
             VStack(alignment: .leading, spacing: Spacing.m) {
                 ForEach(reasons.indices, id: \.self) { index in
                     HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
@@ -133,8 +137,8 @@ struct PermissionPrimer: View {
                     }
                 }
             }
-            .padding(.horizontal, Spacing.xs)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .card()
             Spacer()
             VStack(spacing: Spacing.s) {
                 PrimaryButton(title: allowTitle, action: onAllow)
@@ -162,6 +166,8 @@ struct PermissionPrimer: View {
                 .frame(width: 112, height: 112)
                 .background(Color.keeproll.accentSoft, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
                 .accessibilityHidden(true)
+        case .custom(let view):
+            view.accessibilityHidden(true)
         }
     }
 }

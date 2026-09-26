@@ -47,6 +47,7 @@ struct KeeprollMarkTile: View {
                                startPoint: .topLeading, endPoint: .bottomTrailing),
                 in: RoundedRectangle(cornerRadius: size * 0.22, style: .continuous)
             )
+            .shadow(color: Color.keeproll.accent.opacity(0.35), radius: size * 0.2, y: size * 0.08)
     }
 }
 

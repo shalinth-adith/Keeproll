@@ -23,6 +23,8 @@ nonisolated struct ScanSummary: Codable, Sendable, Equatable {
     var bytes: [String: Int64] = [:]
     var counts: [String: Int] = [:]
     var totalFreeable: Int64 = 0
+    /// When the scan that produced these numbers finished (nil for summaries saved before v4).
+    var finishedAt: Date? = nil
 
     private static let key = "lastScanSummary"
 
@@ -267,6 +269,7 @@ final class ScanStore {
             summary.counts[category.rawValue] = liveCount(category)
         }
         summary.totalFreeable = totalFreeableBytes
+        summary.finishedAt = Date()
         summary.save()
         lastSummary = summary
     }

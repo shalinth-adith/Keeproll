@@ -1,4 +1,4 @@
-# Keeproll — Design Audit & Redesign (v2 → v3 minimalist)
+# Keeproll — Design Audit & Redesign (v2 → v3 → v4)
 
 > Date: 2026-09-25. Every screen was walked in the iPhone 17 Pro simulator, in light and dark mode, with seeded fixtures (22 photos, 6 videos, 6 calendar events, contacts locked). Findings are ordered by impact. Each one names the screen, the evidence, the fix, and its status. Screenshots of the result live in `docs/design-screenshots/`.
 
@@ -73,6 +73,24 @@ Verified again in light, dark and AX5 (`01`, `05`, `06`); AX5 surfaced two more 
 
 ---
 
+## 1c. Third audit: v3 judged as “so simple, plain, and has no things” (owner request)
+
+v3 achieved calm by removing everything, and the owner read the result as empty. The brief this time: keep the onboarding, add a proper entry screen, then the dashboard, and make it feel like a finished product.
+
+| # | Finding on v3 | Fix (v4) |
+|---|---|---|
+| E1 | **No arrival moment.** After onboarding the user landed straight on a list of numbers. | New **Home** screen: brand row, a gradient hero card with the storage ring, one primary action (“Scan my iPhone” → “See what to clean”), two stat tiles, and a “What Keeproll checks” grid. Results is a push from Home; `finishCleanup()` lands on Results. |
+| E2 | **Nothing to look at.** One 6 pt bar was the only graphic in the app. | The ring returns as the Home hero on the brand gradient with glowing category arcs and a scan-progress arc; onboarding gets three illustrated heroes built from the design system's own tiles. |
+| E3 | **No hierarchy between surfaces.** Everything sat on the canvas at the same level. | `.card()` with one soft shadow step for every group, row and dashboard entry; `Elevation.floating` for the selection bar; a `Radius.sheet` card for heroes and totals. Dark mode uses a hairline instead of shadow. |
+| E4 | **Categories had no identity.** Plain coloured symbols. | `CategoryTile` (symbol on its gradient tile) everywhere a category appears: Home checks, Results cards, Review headers, Summary rows, onboarding satellites. |
+| E5 | **The dashboard did nothing for you.** Numbers only; every selection was manual. | Results summary gains **Select recommended · X MB**, one explicit tap that adds non-best similar shots and blurry photos to the cart (D9 kept: nothing is pre-selected). |
+| E6 | Sections were unlabelled. | “Photos & videos”, “Contacts & calendar”, “Tools” with `SectionHeader`s. |
+| E7 | Empty states and Summary had lost their warmth. | `EmptyState` symbol back in an `accentSoft` circle; Summary rings restored. |
+
+Verified in the simulator: onboarding (3 pages, both system prompts), Home (locked, scanning, results), Results (populated, select recommended → 18 items in the bar, contacts/calendar and tools sections), Similar, Review; light, dark and AX5. AX5 needed three fixes on Home: the ring shows a percentage and spells the bytes out under the pill, the pill becomes a rounded rectangle, and the tagline hides so the brand row fits.
+
+---
+
 ## 2. What was deliberately kept
 
 - Onboarding (brand tile, glow, reason cards, page dots).
@@ -85,8 +103,8 @@ Verified again in light, dark and AX5 (`01`, `05`, `06`); AX5 surfaced two more 
 
 - Build: zero warnings, Swift 6 strict.
 - Tests: 59/59 pass (no engine or ViewModel logic changed by this pass).
-- Simulator (iPhone 17 Pro) screenshots of the v3 build in `docs/design-screenshots/`:
-  `01-dashboard-dark`, `02-similar-light`, `03-videos-light`, `04-calendar-light`, `05-dashboard-light`, `06-dashboard-ax5`, `07-screenshots-ax5`, `08-screenshots-light`, `09-review-light`, `10-summary-light`.
+- Simulator (iPhone 17 Pro) screenshots of the v4 build in `docs/design-screenshots/`:
+  `00-onboarding-1/2/3`, `01-home-light`, `01-home-dark`, `02-results-light`, `02b-results-selected`, `02c-results-bottom-dark`, `03-similar-light`, `06-home-ax5`, `09-review-light`; earlier v3 captures of Videos, Calendar, Screenshots and Summary remain for reference.
 - End-to-end: Screenshots → Select all → Review → Confirm → iOS delete prompt → Summary → dashboard shows “All clear” for Screenshots and “Keeproll has freed 440 KB so far”.
 - Grep gates (§5 of CLAUDE.md): clean.
 

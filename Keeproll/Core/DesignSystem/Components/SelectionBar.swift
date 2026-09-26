@@ -39,6 +39,7 @@ struct SelectionBar: View {
                 .padding(.vertical, Spacing.s)
                 .background(Color.keeproll.surfaceRaised, in: RoundedRectangle(cornerRadius: Radius.card, style: .continuous))
                 .overlay(RoundedRectangle(cornerRadius: Radius.card, style: .continuous).strokeBorder(Color.keeproll.hairline))
+                .shadow(color: Elevation.floatingColor, radius: Elevation.floatingRadius, y: Elevation.floatingY)
                 .padding(.horizontal, Spacing.m)
                 .padding(.bottom, Spacing.xs)
                 .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
