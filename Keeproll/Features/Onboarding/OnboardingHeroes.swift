@@ -78,6 +78,48 @@ enum OnboardingHero {
         }
     }
 
+    /// Photos, Contacts and Calendar tiles with a shield rising between them.
+    struct Access: View {
+        @State private var shown = false
+        @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+        var body: some View {
+            ZStack {
+                Circle().fill(Color.keeproll.accent.opacity(0.12)).frame(width: 220, height: 220).blur(radius: 40)
+                HStack(spacing: Spacing.m) {
+                    tile("photo.on.rectangle", Color.keeproll.catSimilar, delay: 0.1)
+                    tile("person.2", Color.keeproll.catContacts, delay: 0.2)
+                    tile("calendar", Color.keeproll.catCalendar, delay: 0.3)
+                }
+                Image(systemName: "checkmark.shield.fill")
+                    .font(.title2.weight(.bold))
+                    .foregroundStyle(Color.keeproll.onAccent)
+                    .frame(width: 48, height: 48)
+                    .background(Color.keeproll.accent, in: Circle())
+                    .overlay(Circle().strokeBorder(Color.keeproll.canvas, lineWidth: 4))
+                    .shadow(color: Color.keeproll.accent.opacity(0.4), radius: 10, y: 4)
+                    .offset(y: 56)
+                    .scaleEffect(shown ? 1 : 0.4)
+                    .opacity(shown ? 1 : 0)
+                    .animation(reduceMotion ? nil : Motion.standard.delay(0.45), value: shown)
+            }
+            .frame(height: 200)
+            .onAppear { withAnimation(reduceMotion ? nil : Motion.standard) { shown = true } }
+        }
+
+        private func tile(_ symbol: String, _ color: Color, delay: Double) -> some View {
+            Image(systemName: symbol)
+                .font(.system(size: 30, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 68, height: 68)
+                .background(KeeprollGradient.tile(color), in: RoundedRectangle(cornerRadius: 19, style: .continuous))
+                .shadow(color: color.opacity(0.3), radius: 12, y: 6)
+                .scaleEffect(shown ? 1 : 0.5)
+                .opacity(shown ? 1 : 0)
+                .animation(reduceMotion ? nil : Motion.standard.delay(delay), value: shown)
+        }
+    }
+
     /// Two copies of the same person sliding together into one.
     struct Contacts: View {
         @State private var shown = false

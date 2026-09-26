@@ -1,12 +1,12 @@
 import SwiftUI
 
-/// Welcome → Photos primer → Contacts primer (skippable). FR-PERM-1…3.
+/// Welcome (how it works) → Set up access (Photos, Contacts, Calendar in one place). FR-PERM-1…3.
 struct OnboardingView: View {
     let env: AppEnvironment
     @State private var step: Step = .welcome
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    enum Step: Int, CaseIterable { case welcome, photos, contacts }
+    enum Step: Int, CaseIterable { case welcome, access }
 
     var body: some View {
         ZStack {
@@ -15,8 +15,7 @@ struct OnboardingView: View {
                 Group {
                     switch step {
                     case .welcome: welcome
-                    case .photos: photos
-                    case .contacts: contacts
+                    case .access: AccessSetupPage(scanStore: env.scanStore, onFinish: finish)
                     }
                 }
                 .id(step)
@@ -48,50 +47,12 @@ struct OnboardingView: View {
             hero: .custom(AnyView(OnboardingHero.Welcome())),
             title: Text("Keep what matters"),
             reasons: [
-                Text("Find similar photos, screenshots, large videos and duplicate contacts."),
-                Text("You review everything before anything is removed."),
-                Text("Everything stays on your iPhone. Nothing is uploaded."),
+                Text("Scan: Keeproll finds similar photos, screenshots, blurry shots, large videos, duplicate contacts and old events."),
+                Text("Review: you see every item and tap any to keep it. Nothing is removed until you confirm."),
+                Text("Private: everything stays on your iPhone. No account, no upload."),
             ],
-            allowTitle: "Get started"
-        ) { step = .photos }
-    }
-
-    private var photos: some View {
-        PermissionPrimer(
-            hero: .custom(AnyView(OnboardingHero.Photos())),
-            title: Text("Let Keeproll look at your photos"),
-            reasons: [
-                Text("Keeproll checks photos and videos on this iPhone to find what's taking space."),
-                Text("You can choose to share only some photos. Keeproll will still work."),
-                Text("Nothing is ever deleted without your approval."),
-            ],
-            allowTitle: "Continue"
-        ) {
-            Task {
-                await env.scanStore.requestPhotos()
-                step = .contacts
-            }
-        }
-    }
-
-    private var contacts: some View {
-        PermissionPrimer(
-            hero: .custom(AnyView(OnboardingHero.Contacts())),
-            title: Text("Find duplicate contacts"),
-            reasons: [
-                Text("Keeproll can spot the same person saved more than once."),
-                Text("Merged contacts keep every number and email."),
-                Text("You can skip this and turn it on later."),
-            ],
-            allowTitle: "Continue",
-            onAllow: {
-                Task {
-                    await env.scanStore.requestContacts()
-                    finish()
-                }
-            },
-            onSkip: finish
-        )
+            allowTitle: "Okay, let's go"
+        ) { step = .access }
     }
 
     private func finish() {

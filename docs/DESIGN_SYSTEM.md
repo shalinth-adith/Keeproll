@@ -140,7 +140,8 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 | `ToolCard` | Full-width card for Swipe and Vault: gradient tile, title, two-line subtitle, chevron | `symbol`, `tint`, `title`, `subtitle` |
 | `SectionHeader` | `title` text between groups, optional trailing view | `Text`, `trailing` |
 | `SettingsView` rows | `permissionRow` (tile, name, status line, Allow/Change), `actionRow` (tinted symbol, title, subtitle, chevron), `infoRow` (label · value) inside `.card()` sections | see Settings blueprint |
-| `OnboardingHero.Welcome / Photos / Contacts` | Illustrated onboarding heroes built from the design system's own tiles, mark and badges: satellites popping around the brand tile; three fanned photos with Best; two avatars merging. Animated with `Motion.standard`/`gentle`, static under Reduce Motion. | — |
+| `OnboardingHero.Welcome / Access` (+ `Photos`, `Contacts` kept for reuse) | Illustrated onboarding heroes built from the design system's own tiles, mark and badges: satellites popping around the brand tile; the three permission tiles with a shield. Animated with `Motion.standard`, static under Reduce Motion. | — |
+| `AccessSetupPage` | Onboarding page 2: permission rows with per-row Allow, “Allow all” sequencing the system prompts, “Start using Keeproll” once all are decided | `scanStore`, `onFinish` |
 | `KeeprollMark` / `KeeprollMarkTile` | Brand mark (three stacked cards, top one lifted with a check) and the mark on its gradient tile with a soft glow. Home brand row, onboarding, Swipe “All sorted”. | `size`, `ink`, `check` |
 | `SelectableThumbnail` | A grid cell | `asset`, `isSelected`, `isBest`, `isCloudOnly`, size overlay; 44 pt minimum hit area for the check control |
 | `BestBadge` / `CloudBadge` | “Best” pill on a thumbnail; iCloud-only marker | teal fill, `star.fill` + text |
@@ -179,7 +180,7 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 
 **Settings.** Reached from the gear on Home; inline title. Three `.card()` sections: **Access** (Photos, Contacts, Calendar rows with a status line in `success`/`warning`/`inkSecondary` and an Allow / Change action: first request through the system prompt, later ones open iOS Settings), a `HintRow` restating the privacy promise, **Data on this iPhone** (Clear scan cache with a confirmation, Reset freed total with a destructive confirmation, Show the welcome again), and **About** (version, purpose, privacy paragraph). No toggles: there is nothing to sync, no account, no analytics.
 
-**Onboarding.** Three screens with illustrated heroes (`OnboardingHero`): Welcome (brand tile with category tiles popping in around it) → Photos primer (three fanned photos, the front one marked Best) → Contacts primer (two avatars merging; skippable). Rounded display title, reasons in a card, one primary button, page dots.
+**Onboarding.** Two screens. **Welcome** (`OnboardingHero.Welcome`: brand tile with category tiles popping in): title “Keep what matters”, three reasons in a card that describe the loop (Scan · Review · Private), button “Okay, let’s go”. **Set up access** (`AccessSetupPage`, `OnboardingHero.Access`: Photos, Contacts and Calendar tiles with a shield): a card with one row per permission (tile, name, one-line reason, then an **Allow** pill → spinner → green check, or “Settings” if it was denied), a primary **Allow all** that walks through the three system prompts in order (Photos first), and “Not now”. Once every prompt has been answered the primary button becomes **Start using Keeproll**. Nothing here blocks entry; anything skipped can be allowed later from Settings or from the category itself.
 
 ## 10. Voice & copy
 
