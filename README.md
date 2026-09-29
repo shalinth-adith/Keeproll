@@ -4,6 +4,15 @@
 
 Built for the AppFactory *App Builder Intern* selection task.
 
+## Smart categories (post-submission)
+
+Two detectors no mainstream iOS cleaner ships, both on-device:
+
+- **Saved from chats.** Photos that arrived through WhatsApp, Telegram and other messaging apps rather than the camera. Detected from the first 96 KB of each file (camera make, model, lens and exposure tags are stripped by chat apps), chat-app file names and re-encode sizes, missing location, and on iOS 18 Vision's "utility image" flag. Grouped by confidence with the reasons shown; camera photos and favourites are never suggested.
+- **Expired screenshots.** On-device OCR finds screenshots of one-time codes, boarding passes, tickets, deliveries, coupons, reservations and parking spots, and flags the ones past their date. The text is read once and never stored.
+
+Both feed the same cart and Review screen as everything else.
+
 ## Status
 
 | Area | State |

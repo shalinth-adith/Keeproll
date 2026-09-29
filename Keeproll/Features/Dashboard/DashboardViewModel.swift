@@ -81,6 +81,8 @@ final class DashboardViewModel {
             case .similar: StorageSegment(id: "similar", label: "Similar", bytes: scanStore.displayBytes(.similar) ?? 0, color: Color.keeproll.catSimilar)
             case .screenshots: StorageSegment(id: "screenshots", label: "Screenshots", bytes: scanStore.displayBytes(.screenshots) ?? 0, color: Color.keeproll.catScreenshots)
             case .blurry: StorageSegment(id: "blurry", label: "Blurry", bytes: scanStore.displayBytes(.blurry) ?? 0, color: Color.keeproll.catBlurry)
+            case .chats: StorageSegment(id: "chats", label: "From chats", bytes: scanStore.displayBytes(.chats) ?? 0, color: Color.keeproll.catChats)
+            case .expired: StorageSegment(id: "expired", label: "Expired", bytes: scanStore.displayBytes(.expired) ?? 0, color: Color.keeproll.catExpired)
             case .videos: StorageSegment(id: "videos", label: "Videos", bytes: scanStore.displayBytes(.videos) ?? 0, color: Color.keeproll.catVideos)
             case .contacts, .calendar, .vault: nil // no meaningful bytes (FR-DASH-2)
             }
@@ -108,6 +110,12 @@ final class DashboardViewModel {
             guard scanStore.photosPermission.canRead else { return .locked }
             if let progress = scanStore.similarProgress, (scanStore.blurry.value ?? []).isEmpty { return .scanning(progress: progress) }
             return state(scanStore.blurry, bytes: scanStore.blurryBytes) { $0.count }
+        case .chats:
+            guard scanStore.photosPermission.canRead else { return .locked }
+            return state(scanStore.chats, bytes: scanStore.chatBytes) { $0.count }
+        case .expired:
+            guard scanStore.photosPermission.canRead else { return .locked }
+            return state(scanStore.expired, bytes: scanStore.expiredBytes) { $0.count }
         case .calendar:
             guard scanStore.calendarPermission.canRead else { return .locked }
             switch scanStore.calendar {
@@ -145,6 +153,8 @@ final class DashboardViewModel {
         case .screenshots: router.open(.screenshots)
         case .blurry: router.open(.blurry)
         case .videos: router.open(.videos)
+        case .chats: router.open(.chats)
+        case .expired: router.open(.expired)
         case .contacts: router.open(.contacts)
         case .calendar: router.open(.calendar)
         case .vault: router.open(.vault)

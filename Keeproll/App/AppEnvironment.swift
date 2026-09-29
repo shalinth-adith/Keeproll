@@ -41,7 +41,9 @@ struct AppEnvironment {
             libraryMonitor: LibraryChangeMonitor(),
             scanStore: ScanStore(permissions: permissions, storage: DeviceStorageService(), photos: photos,
                                  similarity: SimilarityEngine(sizes: sizes, cache: cache), contactsScanner: contacts,
-                                 calendarScanner: calendar),
+                                 calendarScanner: calendar,
+                                 chatScanner: ChatMediaScanner(sizes: sizes, cache: cache),
+                                 expiryScanner: ScreenshotExpiryScanner(photos: photos, cache: cache)),
             cart: CleanupCart(),
             settings: SettingsStore(),
             router: AppRouter()

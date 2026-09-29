@@ -50,6 +50,8 @@ final class HomeViewModel {
             case .similar: StorageSegment(id: "similar", label: "Similar", bytes: scanStore.displayBytes(.similar) ?? 0, color: Color.keeproll.catSimilar)
             case .screenshots: StorageSegment(id: "screenshots", label: "Screenshots", bytes: scanStore.displayBytes(.screenshots) ?? 0, color: Color.keeproll.catScreenshots)
             case .blurry: StorageSegment(id: "blurry", label: "Blurry", bytes: scanStore.displayBytes(.blurry) ?? 0, color: Color.keeproll.catBlurry)
+            case .chats: StorageSegment(id: "chats", label: "From chats", bytes: scanStore.displayBytes(.chats) ?? 0, color: Color.keeproll.catChats)
+            case .expired: StorageSegment(id: "expired", label: "Expired", bytes: scanStore.displayBytes(.expired) ?? 0, color: Color.keeproll.catExpired)
             case .videos: StorageSegment(id: "videos", label: "Videos", bytes: scanStore.displayBytes(.videos) ?? 0, color: Color.keeproll.catVideos)
             case .contacts, .calendar, .vault: nil
             }
@@ -63,6 +65,8 @@ final class HomeViewModel {
         case .screenshots: "Screenshots taking up space"
         case .blurry: "Out-of-focus photos"
         case .videos: "Biggest clips, compressible"
+        case .chats: "Forwards saved by WhatsApp and Telegram"
+        case .expired: "Old codes, passes and tickets"
         case .contacts: scanStore.contactsPermission.canRead ? "The same person saved twice" : "Needs access · tap to allow"
         case .calendar: scanStore.calendarPermission.canRead ? "Duplicates and events over a year old" : "Needs access · tap to allow"
         case .vault: "Photos kept behind Face ID"
@@ -96,6 +100,8 @@ final class HomeViewModel {
         case .screenshots: router.open(.screenshots)
         case .blurry: router.open(.blurry)
         case .videos: router.open(.videos)
+        case .chats: router.open(.chats)
+        case .expired: router.open(.expired)
         case .contacts: router.open(.contacts)
         case .calendar: router.open(.calendar)
         case .vault: router.open(.vault)

@@ -22,14 +22,32 @@ actor ScanCache {
         let isLocal: Bool
     }
 
+    /// Where an image came from (bonus: smart categories). Tri-state flags: nil = unknown.
+    nonisolated struct ProvenanceRecord: Sendable, Equatable {
+        let modified: Double
+        let hasCameraMetadata: Bool?
+        let isUtility: Bool?
+    }
+
+    /// OCR-derived expiry for a screenshot (bonus: smart categories). `kind` nil = looked, found nothing.
+    nonisolated struct ExpiryRecord: Sendable, Equatable {
+        let modified: Double
+        let kind: ExpiryVerdict.Kind?
+        let expiresAt: Double
+        let mentionedDate: Double
+        let confidence: Float
+    }
+
     private let url: URL
     private var features: [String: FeatureRecord] = [:]
     private var sizes: [String: SizeRecord] = [:]
+    private var provenances: [String: ProvenanceRecord] = [:]
+    private var expiries: [String: ExpiryRecord] = [:]
     private var loaded = false
     private var dirty = false
 
     private static let magic: UInt32 = 0x5346_5443 // "SFTC"
-    private static let version: UInt32 = 4 // 2: sharpness at 160 px; 3: iCloud-only flag; 4: contrast-normalised sharpness
+    private static let version: UInt32 = 5 // 2: sharpness at 160 px; 3: iCloud-only flag; 4: contrast-normalised sharpness; 5: provenance + expiry
     private static let emptyPrint = UInt32.max
 
     init(url: URL = ScanCache.defaultURL) {
@@ -67,14 +85,45 @@ actor ScanCache {
         dirty = true
     }
 
+    func provenance(for id: String, modified: Date?) -> ProvenanceRecord? {
+        loadIfNeeded()
+        guard let record = provenances[id], record.modified == Self.stamp(modified) else { return nil }
+        return record
+    }
+
+    func store(_ record: ProvenanceRecord, for id: String) {
+        loadIfNeeded()
+        provenances[id] = record
+        dirty = true
+    }
+
+    func expiry(for id: String, modified: Date?) -> ExpiryRecord? {
+        loadIfNeeded()
+        guard let record = expiries[id], record.modified == Self.stamp(modified) else { return nil }
+        return record
+    }
+
+    func store(_ record: ExpiryRecord, for id: String) {
+        loadIfNeeded()
+        expiries[id] = record
+        dirty = true
+    }
+
     func forget(_ ids: some Sequence<String>) {
         loadIfNeeded()
         for id in ids {
             features[id] = nil
             sizes[id] = nil
+            provenances[id] = nil
+            expiries[id] = nil
         }
         dirty = true
     }
+
+    /// Tri-state flag encoding: 0 unknown, 1 false, 2 true.
+    private static func byte(_ flag: Bool?) -> UInt8 { flag.map { $0 ? 2 : 1 } ?? 0 }
+    private static func flag(_ byte: UInt8) -> Bool? { byte == 0 ? nil : byte == 2 }
+    private static let kinds = ExpiryVerdict.Kind.allCases
 
     /// Writes the cache if anything changed. Atomic, so a crash mid-write can't corrupt it.
     func save() {
@@ -103,6 +152,22 @@ actor ScanCache {
             writer.append(record.modified)
             writer.append(record.bytes)
             writer.append(UInt8(record.isLocal ? 1 : 0))
+        }
+        writer.append(UInt32(provenances.count))
+        for (id, record) in provenances {
+            writer.append(id)
+            writer.append(record.modified)
+            writer.append(Self.byte(record.hasCameraMetadata))
+            writer.append(Self.byte(record.isUtility))
+        }
+        writer.append(UInt32(expiries.count))
+        for (id, record) in expiries {
+            writer.append(id)
+            writer.append(record.modified)
+            writer.append(UInt8(record.kind.flatMap { Self.kinds.firstIndex(of: $0) }.map { $0 + 1 } ?? 0))
+            writer.append(record.expiresAt)
+            writer.append(record.mentionedDate)
+            writer.append(record.confidence)
         }
         do {
             try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
@@ -146,9 +211,29 @@ actor ScanCache {
                   let bytes = reader.read(Int64.self), let local = reader.read(UInt8.self) else { return }
             loadedSizes[id] = SizeRecord(modified: modified, bytes: bytes, isLocal: local == 1)
         }
+        var loadedProvenance: [String: ProvenanceRecord] = [:]
+        var loadedExpiry: [String: ExpiryRecord] = [:]
+        if let provenanceCount = reader.read(UInt32.self) {
+            for _ in 0..<provenanceCount {
+                guard let id = reader.readString(), let modified = reader.read(Double.self),
+                      let camera = reader.read(UInt8.self), let utility = reader.read(UInt8.self) else { return }
+                loadedProvenance[id] = ProvenanceRecord(modified: modified, hasCameraMetadata: Self.flag(camera), isUtility: Self.flag(utility))
+            }
+        }
+        if let expiryCount = reader.read(UInt32.self) {
+            for _ in 0..<expiryCount {
+                guard let id = reader.readString(), let modified = reader.read(Double.self), let kindByte = reader.read(UInt8.self),
+                      let expires = reader.read(Double.self), let mentioned = reader.read(Double.self),
+                      let confidence = reader.read(Float.self) else { return }
+                let kind = kindByte == 0 ? nil : Self.kinds[Int(kindByte) - 1]
+                loadedExpiry[id] = ExpiryRecord(modified: modified, kind: kind, expiresAt: expires, mentionedDate: mentioned, confidence: confidence)
+            }
+        }
         features = loadedFeatures
         sizes = loadedSizes
-        Log.scan.debug("Scan cache loaded: \(loadedFeatures.count) features, \(loadedSizes.count) sizes")
+        provenances = loadedProvenance
+        expiries = loadedExpiry
+        Log.scan.debug("Scan cache loaded: \(loadedFeatures.count) features, \(loadedSizes.count) sizes, \(loadedProvenance.count) provenance, \(loadedExpiry.count) expiry")
     }
 
     private static func stamp(_ date: Date?) -> Double { date?.timeIntervalSinceReferenceDate ?? 0 }

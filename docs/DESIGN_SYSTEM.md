@@ -136,6 +136,7 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 | `StorageBar` | Results summary graphic: a 6 pt capsule of the device's storage with the same segment logic as the ring. | `snapshot`, `segments` |
 | `StatTile` | Home metric card: tinted symbol circle, caption label, `metric` value ("Freed so far", "Last scan") | `symbol`, `tint`, `label`, `value` |
 | `CategoryTile` | The category's symbol on its gradient tile, any size. The one visual identity of a category (Home checks, Results cards, Review headers, Summary rows, onboarding). | `category`, `side` |
+| `CategoryCard` (chats, expired) | Same card; `catChats` and `catExpired` tiles; values are bytes | as above |
 | `CategoryCard` | Results entry per category: tile top-left, state badge top-right (lock / check / spinner / chevron), then title, `display` number and caption. Two per row, one per row at AX sizes. | `.scanning(progress)`, `.ready(bytes, count)`, `.empty`, `.locked`; `refreshing` |
 | `ToolCard` | Full-width card for Swipe and Vault: gradient tile, title, two-line subtitle, chevron | `symbol`, `tint`, `title`, `subtitle` |
 | `SectionHeader` | `title` text between groups, optional trailing view | `Text`, `trailing` |
@@ -177,6 +178,10 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 **Summary.** A success check with three expanding rings, then “3.1 GB cleaned up” (count-up), per-category rows with 32 pt `CategoryTile`s in a `.card()`, the Recently Deleted banner with an **Open Photos** button, backup share (if any), and a **Done** button.
 
 **Calendar.** Duplicate groups show the kept copy first (green check, “Keep” pill, calendar name), then the extra copies with selection circles. Old events are grouped by year in disclosure cards with a “Select year” shortcut.
+
+**Saved from Chats.** `CategoryHeader` (total, "N look like WhatsApp · N look like Telegram", selected chip, a hint explaining the camera-metadata idea), then up to three tiers, **Very likely / Likely / Possible**, each a titled `SelectableMediaGrid` with a one-line note on what the tier means. Toolbar: **Select very likely** (only that tier, D9). Tiles use `catChats` (coral).
+
+**Expired Screenshots.** `CategoryHeader` (total, "N screenshots past their date", a hint that text is read on-device and never stored), then a `.card()` per kind (One-time codes, Boarding passes, Tickets, Deliveries, Coupons, Reservations, Parking) with rows: 56 × 72 thumbnail, a plain sentence ("Flight was on 12 Mar"), size and "% sure", selection check. Toolbar: Select all. Tiles use `catExpired` (ochre).
 
 **Settings.** Reached from the gear on Home; inline title. Three `.card()` sections: **Access** (Photos, Contacts, Calendar rows with a status line in `success`/`warning`/`inkSecondary` and an Allow / Change action: first request through the system prompt, later ones open iOS Settings), a `HintRow` restating the privacy promise, **Data on this iPhone** (Clear scan cache with a confirmation, Reset freed total with a destructive confirmation, Show the welcome again), and **About** (version, purpose, privacy paragraph). No toggles: there is nothing to sync, no account, no analytics.
 

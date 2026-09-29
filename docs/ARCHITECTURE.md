@@ -273,3 +273,14 @@ Limited contacts status (`CNAuthorizationStatus.limited`) exists on iOS 18+ only
 | Performance & accuracy | **Real iPhone only** | Instruments Time Profiler + signposts on the real library; manual precision audit of 50 groups |
 
 Commands are in `CLAUDE.md`.
+
+## 12. Smart categories (bonus, 2026-09-30)
+
+Two more scanners hang off `ScanStore.scan()` alongside screenshots, videos, contacts and calendar; both are `nonisolated final class`es behind protocols (`ChatMediaScanning`, `ScreenshotExpiryScanning`) so tests can inject fakes, and both add to the cart only.
+
+**Saved from chats.** `ChatMediaScanner` enumerates non-screenshot, non-favourite images and, per photo (parallel, width = 2 × cores): `AssetHeaderReader.identity` (filename + UTI, no I/O), a cached `ProvenanceRecord` or a header read (`AssetHeaderReader.hasCameraMetadata`: streamed resource request cancelled at 96 KB, incremental `CGImageSource`, TIFF make/model or EXIF lens/exposure present → true), optionally `AestheticsService.isUtility` on a 256 px thumbnail (iOS 18), then `ProvenanceEngine.verdict`. Verdicts carry a confidence tier and reasons; the view groups by tier.
+
+**Expired screenshots.** `ScreenshotExpiryScanner` takes `fetchScreenshots()`, and per screenshot a cached `ExpiryRecord` or one OCR pass (`VNRecognizeTextRequest`, fast, on `VisionRunner`), then `ScreenshotExpiryEngine.verdict(text:capturedOn:now:)`. The text is used once and dropped. Verdicts below 0.6 confidence or with a future expiry are never shown.
+
+**Shared pieces.** `VisionRunner` (serial lanes + watchdog, generic over requests), `AssetThumbnailLoader` (fast-then-local thumbnail, network off), `ScanCache` v5 (`provenance(for:)`, `expiry(for:)`). Deletion invariant unchanged: both categories are ordinary `CartItem.asset`s and go through Review.
+

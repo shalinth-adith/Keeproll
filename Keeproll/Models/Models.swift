@@ -5,7 +5,12 @@ import SwiftUI
 // Contacts objects (those are not Sendable).
 
 nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Identifiable {
-    case similar, screenshots, blurry, videos, contacts, calendar
+    case similar, screenshots, blurry, videos
+    /// Images that arrived through messaging apps rather than the camera (bonus: smart categories).
+    case chats
+    /// Screenshots whose content has passed its use-by date: codes, passes, tickets (bonus: smart categories).
+    case expired
+    case contacts, calendar
     /// Originals of photos copied into the private vault. Never a dashboard card; it
     /// only appears on Review, so the user sees exactly what leaves the library.
     case vault
@@ -17,6 +22,8 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .screenshots: "Screenshots"
         case .blurry: "Blurry Photos"
         case .videos: "Large Videos"
+        case .chats: "Saved from Chats"
+        case .expired: "Expired Screenshots"
         case .contacts: "Duplicate Contacts"
         case .calendar: "Old Calendar Events"
         case .vault: "Moved to Vault"
@@ -30,6 +37,8 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .screenshots: "Screenshots"
         case .blurry: "Blurry"
         case .videos: "Videos"
+        case .chats: "From chats"
+        case .expired: "Expired"
         case .contacts: "Contacts"
         case .calendar: "Calendar"
         case .vault: "Vault"
@@ -42,6 +51,8 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .screenshots: "camera.viewfinder"
         case .blurry: "camera.metering.unknown"
         case .videos: "video"
+        case .chats: "bubble.left.and.bubble.right"
+        case .expired: "clock.badge.xmark"
         case .contacts: "person.2"
         case .calendar: "calendar"
         case .vault: "lock.shield"
@@ -54,6 +65,8 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .screenshots: Color.keeproll.catScreenshots
         case .blurry: Color.keeproll.catBlurry
         case .videos: Color.keeproll.catVideos
+        case .chats: Color.keeproll.catChats
+        case .expired: Color.keeproll.catExpired
         case .contacts: Color.keeproll.catContacts
         case .calendar: Color.keeproll.catCalendar
         case .vault: Color.keeproll.catVault
@@ -276,3 +289,65 @@ nonisolated enum AppError: LocalizedError, Hashable, Sendable {
         }
     }
 }
+
+// MARK: - Smart categories (bonus)
+
+/// What can be known about where an image came from, without decoding it. Inputs to
+/// `ProvenanceEngine`; gathered by `ChatMediaScanner` from PhotoKit and a header read.
+nonisolated struct AssetProvenance: Sendable, Equatable {
+    var originalFilename: String?
+    /// Uniform type identifier of the original resource, e.g. "public.jpeg".
+    var uniformType: String?
+    var pixelWidth: Int
+    var pixelHeight: Int
+    /// The file header carries camera make/model or lens/exposure data. nil = not readable
+    /// (for example the original is only in iCloud).
+    var hasCameraMetadata: Bool?
+    var hasLocation: Bool
+    var isFavorite: Bool
+    /// iOS 18 Vision aesthetics: the content is a "utility" image (screens, documents,
+    /// forwards) rather than a memorable photo. nil = not evaluated.
+    var isUtility: Bool?
+}
+
+/// The engine's opinion that an image was saved from a chat app.
+nonisolated struct ChatSavedVerdict: Sendable, Hashable {
+    enum Source: String, Sendable, Hashable { case whatsapp, telegram, unknownApp }
+    enum Confidence: Int, Sendable, Hashable, Comparable {
+        case possible = 1, likely = 2, veryLikely = 3
+        static func < (a: Self, b: Self) -> Bool { a.rawValue < b.rawValue }
+    }
+    enum Reason: String, Sendable, Hashable, CaseIterable {
+        case noCameraData, chatFilename, chatDimensions, noLocation, jpegOnly, utilityLook
+    }
+    let confidence: Confidence
+    let source: Source
+    let reasons: [Reason]
+}
+
+nonisolated struct ChatSavedItem: Identifiable, Hashable, Sendable {
+    var item: MediaItem
+    let verdict: ChatSavedVerdict
+    var id: String { item.id }
+}
+
+/// What an expired screenshot was, and when it stopped being useful.
+nonisolated struct ExpiryVerdict: Sendable, Hashable {
+    enum Kind: String, Sendable, Hashable, CaseIterable {
+        case oneTimeCode, boardingPass, ticket, delivery, coupon, reservation, parking
+    }
+    let kind: Kind
+    /// The moment the screenshot stopped mattering. Past `now` means expired.
+    let expiresAt: Date
+    /// A date found in the text that drove the verdict, if any (shown to the user).
+    let mentionedDate: Date?
+    /// 0…1. Only verdicts at or above the scanner's threshold are shown.
+    let confidence: Float
+}
+
+nonisolated struct ExpiredScreenshot: Identifiable, Hashable, Sendable {
+    var item: MediaItem
+    let verdict: ExpiryVerdict
+    var id: String { item.id }
+}
+

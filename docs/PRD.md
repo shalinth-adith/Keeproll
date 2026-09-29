@@ -110,6 +110,16 @@ IDs are stable. Reference them in commits, tests and tasks (for example, `FR-SIM
 - **FR-SUM-1** After cleaning: the bytes freed (animated count-up), items removed per category, a Recently Deleted reminder with an **Open Photos** button, and a contacts backup share link if one applies.
 - **FR-SUM-2** Keep a running lifetime total (“Keeproll has freed 12.4 GB”) in local storage, shown on the dashboard.
 
+### 5.9 Smart categories (`FR-SMART`, bonus, added 2026-09-30)
+Two detectors no mainstream iOS cleaner ships, both fully on-device, both feeding the same cart and Review (D10). Nothing is pre-selected (D9); favourites are never suggested.
+
+- **FR-SMART-1 Saved from chats.** Flag images that arrived through messaging apps rather than the camera, using: absence of camera metadata in the file header (read header-only, never the full file, never from iCloud), chat-app file naming (WhatsApp, Telegram), chat-app re-encode sizes (1600 / 1280 / 1080 px long edge), missing location, JPEG type, and on iOS 18 the Vision "utility image" flag. Each hit carries a confidence tier (very likely / likely / possible) and its reasons.
+- **FR-SMART-2** An image with camera metadata is never flagged, whatever the other signals say. An image whose header can't be read is flagged only on an explicit chat-app file name. Camera-sized images without metadata are capped at "possible".
+- **FR-SMART-3** The screen groups by tier with a plain-language note per tier; the one-tap shortcut selects only the "very likely" tier.
+- **FR-SMART-4 Expired screenshots.** Run on-device OCR over screenshots and flag those whose content has passed its use-by date: one-time codes (1 day), boarding passes and tickets (the date in the text, else 2 / 30 days), deliveries (14 days), coupons and reservations (the stated date, else 30 days), parking spots (1 day).
+- **FR-SMART-5** A screenshot naming a date still in the future is never flagged. Recognised text is never stored or logged; only the kind, the dates and a confidence are cached.
+- **FR-SMART-6** Both scans cache per asset (keyed by id + modification date) so a rescan does no header reads or OCR for unchanged photos, and both are cancellable with the rest of the scan.
+
 ## 6. Bonus features (only after §5 passes on a real device)
 
 Priority order, chosen for demo value relative to cost and how much already-built code each one reuses:
@@ -123,6 +133,7 @@ Priority order, chosen for demo value relative to cost and how much already-buil
 | B5 | **Home Screen storage widget** | Small; needs an App Group | StorageService |
 | B6 | PIN / Face ID private vault | Large, with separate security concerns | — (likely skip) |
 | B7 | Calendar cleanup | Off-theme for storage | — (likely skip) |
+| B8 | **Saved from chats** + **Expired screenshots** (§5.9) | Post-submission: a category no competitor has; resume feature | Cart, grid, ScanCache, Vision |
 
 ## 7. Non-functional requirements
 

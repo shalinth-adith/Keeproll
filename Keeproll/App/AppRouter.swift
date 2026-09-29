@@ -3,7 +3,7 @@ import Foundation
 
 enum Route: Hashable {
     case dashboard, settings
-    case similar, screenshots, blurry, videos, contacts, calendar, vault, swipe, calibration
+    case similar, screenshots, blurry, videos, chats, expired, contacts, calendar, vault, swipe, calibration
     case compare(groupID: UUID, startID: String)
 }
 

@@ -55,6 +55,10 @@ final class ScanStore {
     /// Photos the similarity scan scored as out of focus (bonus: blurry detection).
     private(set) var blurry: Loadable<[MediaItem]> = .idle
     private(set) var contacts: Loadable<[DuplicateContactGroup]> = .idle
+    /// Images saved from messaging apps, most confident first (bonus: smart categories).
+    private(set) var chats: Loadable<[ChatSavedItem]> = .idle
+    /// Screenshots whose content has expired (bonus: smart categories).
+    private(set) var expired: Loadable<[ExpiredScreenshot]> = .idle
     #if DEBUG
     /// Statistics from the last similar-photo scan, for the calibration screen.
     private(set) var calibration: CalibrationData?
@@ -86,6 +90,8 @@ final class ScanStore {
     private let similarity: SimilarityScanning?
     private let contactsScanner: ContactsScanning?
     private let calendarScanner: CalendarScanning?
+    private let chatScanner: ChatMediaScanning?
+    private let expiryScanner: ScreenshotExpiryScanning?
     private var scanTask: Task<Void, Never>?
 
     init(permissions: PermissionServicing,
@@ -94,6 +100,8 @@ final class ScanStore {
          similarity: SimilarityScanning? = nil,
          contactsScanner: ContactsScanning? = nil,
          calendarScanner: CalendarScanning? = nil,
+         chatScanner: ChatMediaScanning? = nil,
+         expiryScanner: ScreenshotExpiryScanning? = nil,
          defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.bestOverrides = Set(defaults.stringArray(forKey: Self.bestOverridesKey) ?? [])
@@ -104,6 +112,8 @@ final class ScanStore {
         self.similarity = similarity
         self.contactsScanner = contactsScanner
         self.calendarScanner = calendarScanner
+        self.chatScanner = chatScanner
+        self.expiryScanner = expiryScanner
         self.calendarPermission = permissions.calendarState()
         self.photosPermission = permissions.photosState()
         self.contactsPermission = permissions.contactsState()
@@ -118,6 +128,8 @@ final class ScanStore {
             case .similar, .blurry: similarity != nil
             case .contacts: contactsScanner != nil
             case .calendar: calendarScanner != nil
+            case .chats: chatScanner != nil
+            case .expired: expiryScanner != nil
             case .vault: false // reached from its own entry, never a scan card
             }
         }
@@ -127,6 +139,8 @@ final class ScanStore {
     var videoBytes: Int64 { videos.value?.reduce(0) { $0 + ($1.byteSize ?? 0) } ?? 0 }
     var similarBytes: Int64 { similar.value?.reduce(0) { $0 + $1.freeableBytes } ?? 0 }
     var blurryBytes: Int64 { blurry.value?.reduce(0) { $0 + ($1.byteSize ?? 0) } ?? 0 }
+    var chatBytes: Int64 { chats.value?.reduce(0) { $0 + ($1.item.byteSize ?? 0) } ?? 0 }
+    var expiredBytes: Int64 { expired.value?.reduce(0) { $0 + ($1.item.byteSize ?? 0) } ?? 0 }
 
     /// Everything that can be freed, counting each asset once even if it appears in
     /// several categories (FR-DASH-6).
@@ -135,6 +149,7 @@ final class ScanStore {
         var total: Int64 = 0
         let candidates = (screenshots.value ?? []) + (videos.value ?? []) + (blurry.value ?? [])
             + (similar.value ?? []).flatMap(\.othersThanBest)
+            + (chats.value ?? []).map(\.item) + (expired.value ?? []).map(\.item)
         for item in candidates where seen.insert(item.id).inserted { total += item.byteSize ?? 0 }
         return total
     }
@@ -179,8 +194,10 @@ final class ScanStore {
             async let c: Void = loadVideos()
             async let d: Void = loadContacts()
             async let f: Void = loadCalendar()
+            async let g: Void = loadChats()
+            async let h: Void = loadExpired()
             async let e: Void = loadSimilar()
-            _ = await (a, b, c, d, e, f)
+            _ = await (a, b, c, d, e, f, g, h)
             guard !Task.isCancelled else { return }
             saveSummary()
             WidgetBridge.update(freeableBytes: totalFreeableBytes)
@@ -202,6 +219,12 @@ final class ScanStore {
         }
         if case .loaded(let items) = blurry {
             blurry = .loaded(items.filter { !ids.contains($0.id) })
+        }
+        if case .loaded(let items) = chats {
+            chats = .loaded(items.filter { !ids.contains($0.id) })
+        }
+        if case .loaded(let items) = expired {
+            expired = .loaded(items.filter { !ids.contains($0.id) })
         }
         if case .loaded(let groups) = similar {
             similar = .loaded(groups.compactMap { group in
@@ -236,6 +259,8 @@ final class ScanStore {
         case .blurry: blurry.value != nil && similarProgress == nil
         case .contacts: contacts.value != nil
         case .calendar: calendar.value != nil
+        case .chats: chats.value != nil
+        case .expired: expired.value != nil
         case .vault: false
         }
     }
@@ -246,6 +271,8 @@ final class ScanStore {
         case .videos: videoBytes
         case .similar: similarBytes
         case .blurry: blurryBytes
+        case .chats: chatBytes
+        case .expired: expiredBytes
         case .contacts, .calendar, .vault: 0
         }
     }
@@ -258,6 +285,8 @@ final class ScanStore {
         case .blurry: blurry.value?.count ?? 0
         case .contacts: duplicateContactCount
         case .calendar: calendar.value?.suggestionCount ?? 0
+        case .chats: chats.value?.count ?? 0
+        case .expired: expired.value?.count ?? 0
         case .vault: 0
         }
     }
@@ -299,6 +328,8 @@ final class ScanStore {
     var knownAssetIDs: Set<String> {
         var ids = Set<String>()
         for item in (screenshots.value ?? []) + (videos.value ?? []) + (blurry.value ?? []) { ids.insert(item.id) }
+        for entry in chats.value ?? [] { ids.insert(entry.id) }
+        for entry in expired.value ?? [] { ids.insert(entry.id) }
         for group in similar.value ?? [] { for member in group.members { ids.insert(member.id) } }
         return ids
     }
@@ -307,6 +338,7 @@ final class ScanStore {
     var cloudOnlyIDs: Set<String> {
         var ids = Set<String>()
         for item in (screenshots.value ?? []) + (videos.value ?? []) + (blurry.value ?? []) where item.isCloudOnly { ids.insert(item.id) }
+        for entry in (chats.value ?? []).map(\.item) + (expired.value ?? []).map(\.item) where entry.isCloudOnly { ids.insert(entry.id) }
         for group in similar.value ?? [] { for member in group.members where member.isCloudOnly { ids.insert(member.id) } }
         return ids
     }
@@ -379,6 +411,22 @@ final class ScanStore {
         let items = await photos.fetchVideos()
         guard !Task.isCancelled else { return }
         videos = .loaded(items)
+    }
+
+    private func loadChats() async {
+        guard let chatScanner, photosPermission.canRead else { chats = .idle; return }
+        if chats.value == nil { chats = .loading }
+        let items = await chatScanner.findChatSaved()
+        guard !Task.isCancelled else { return }
+        chats = .loaded(items)
+    }
+
+    private func loadExpired() async {
+        guard let expiryScanner, photosPermission.canRead else { expired = .idle; return }
+        if expired.value == nil { expired = .loading }
+        let items = await expiryScanner.findExpired()
+        guard !Task.isCancelled else { return }
+        expired = .loaded(items)
     }
 
     private func loadCalendar() async {

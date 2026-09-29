@@ -30,6 +30,8 @@ struct RootView: View {
                             case .screenshots: ScreenshotsView(env: env)
                             case .blurry: BlurryPhotosView(env: env)
                             case .videos: LargeVideosView(env: env)
+                            case .chats: ChatSavedView(env: env)
+                            case .expired: ExpiredScreenshotsView(env: env)
                             case .contacts: DuplicateContactsView(env: env)
                             case .calendar: CalendarCleanupView(env: env)
                             case .vault: VaultView(env: env)

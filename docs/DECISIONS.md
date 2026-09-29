@@ -110,3 +110,11 @@ The App Store name "Sift" is reserved by another developer's record, and the liv
 
 ### Amendment — 2026-09-25 (D3, folder renamed)
 The outer local folder is now `Keeproll/` (no trailing space), matching the repository. The stale `cleaner_storage .xcodeproj` template project was removed; `Keeproll.xcodeproj` is generated from `project.yml`.
+
+### Amendment — 2026-09-30 (D6/D7/D13: smart categories, post-submission)
+Two new detectors, chosen after a market survey found no mainstream iOS cleaner offering either (PRD §5.9).
+- **Saved from chats.** Camera metadata is read from the **first 96 KB** of the original through a streamed `PHAssetResourceManager.requestData` that is cancelled once enough has arrived (one 512 KB retry for HEIC), parsed with an incremental `CGImageSource`. Never the full file, never from iCloud (D7): an unreadable header is "unknown", and unknown flags only on an explicit chat-app filename. The rules live in a pure `ProvenanceEngine`; conservative by construction (camera data always clears; camera-sized exports are capped at "possible"; favourites excluded).
+- **Expired screenshots.** `VNRecognizeTextRequest` (fast, no language correction) on a 1024 px local thumbnail, on the shared `VisionRunner` lanes with a watchdog (same deadlock lesson as feature prints). Rules in a pure `ScreenshotExpiryEngine`; dates via `NSDataDetector`. **Recognised text is never stored or logged.** A future date never flags.
+- **iOS 18 aesthetics** (`VNCalculateImageAestheticsScoresRequest.isUtility`) is a supporting signal for chats only, behind `#available`; iOS 17 simply lacks it.
+- **Cache v5** adds provenance and expiry records (tri-state flags, kind, dates, confidence). Bumping the version invalidates v4 caches, so the first scan after this update is cold once.
+
