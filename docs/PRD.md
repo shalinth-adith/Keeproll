@@ -126,6 +126,12 @@ Two detectors no mainstream iOS cleaner ships, both fully on-device, both feedin
 - **FR-LIVE-3** Selection on the screen is local to "convert"; the cart is touched only after a still is safely saved. Converted originals and their stills are remembered so neither is offered again.
 - **FR-LIVE-4** Batch conversion shows progress and reports per-item failures without stopping the batch.
 
+### 5.11 Storage forecast (`FR-CAST`, bonus, added 2026-10-17)
+- **FR-CAST-1** Record one storage reading per calendar day (free and total bytes) whenever the storage snapshot loads; the latest reading of a day wins; history is trimmed to the forecast window.
+- **FR-CAST-2** Fit a least-squares line to free space over the last 30 days. Show nothing speculative until at least 3 distinct days are recorded ("Learning your pace").
+- **FR-CAST-3** Report one of: filling (bytes per week and days until free space reaches 2 GB, where iOS starts to struggle), steady (drift under 20 MB a day or 0.01 % of the device), or freeing up.
+- **FR-CAST-4** The card is calm: accent colour by default, warning only within 14 days of the floor; a plain sparkline of the window; no notifications.
+
 ## 6. Bonus features (only after §5 passes on a real device)
 
 Priority order, chosen for demo value relative to cost and how much already-built code each one reuses:
@@ -139,6 +145,7 @@ Priority order, chosen for demo value relative to cost and how much already-buil
 | B5 | **Home Screen storage widget** | Small; needs an App Group | StorageService |
 | B6 | PIN / Face ID private vault | Large, with separate security concerns | — (likely skip) |
 | B7 | Calendar cleanup | Off-theme for storage | — (likely skip) |
+| B10 | **Storage forecast** (§5.11) | Makes Home useful between cleanups; no new permissions | Storage snapshot, UserDefaults |
 | B9 | **Live Photos to still** (§5.10) | Table stakes in the category; reuses the compression pattern | Compression, grid, cart |
 | B8 | **Saved from chats** + **Expired screenshots** (§5.9) | Post-submission: a category no competitor has; resume feature | Cart, grid, ScanCache, Vision |
 

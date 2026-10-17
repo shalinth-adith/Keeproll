@@ -125,3 +125,6 @@ Two new detectors, chosen after a market survey found no mainstream iOS cleaner 
 ### Amendment — 2026-10-17 (D10: Live Photos to still)
 Follows the compress-video shape exactly: the still is **added** first via `PHAssetCreationRequest` with only a `.photo` resource (the edited full-size still if present), carrying the original's date, location and favourite; only then is the original put in the cart. The paired clip's size (`.pairedVideo` resource) is what the category reports as freeable, so the dashboard never overstates. Converted originals and their stills are remembered in UserDefaults so neither is offered again. The DEBUG `-KeeprollSeedLivePhotos` flag builds three genuine Live Photos (shared content identifier, still-image-time track) because `simctl addmedia` can't pair loose files.
 
+### Amendment — 2026-10-17 (D12: storage forecast)
+A least-squares trend over at most 30 daily samples, never fewer than three distinct days. "Full" is defined as 2 GB free (the point where iOS updates and the camera start failing), not zero, and the card says so. Drift under 20 MB a day (or 0.01 % of capacity, about 50 MB on a 512 GB phone) is reported as steady rather than extrapolated, because deleting and emptying Recently Deleted make small week-to-week noise. History is one tiny JSON array in UserDefaults, local only.
+

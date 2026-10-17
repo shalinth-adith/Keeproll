@@ -21,6 +21,12 @@ final class HomeViewModel {
     var photosLocked: Bool { !scanStore.photosPermission.canRead }
     var photosPermission: PermissionState { scanStore.photosPermission }
     var lastScanDate: Date? { scanStore.lastSummary?.finishedAt }
+    var forecast: StorageForecast { scanStore.storageForecast }
+    /// Free bytes per day over the forecast window, oldest first, for the sparkline.
+    var forecastPoints: [Int64] {
+        let cutoff = Date().addingTimeInterval(-Double(StorageForecaster.windowDays) * 86_400)
+        return scanStore.storageHistory.filter { $0.date >= cutoff }.map(\.availableBytes)
+    }
 
     /// "Scanning…", "Just now", "2 hours ago", or "Not yet".
     var lastScanLabel: String {

@@ -98,6 +98,9 @@ final class ScanStore {
     /// Live Photos already converted (and the stills made from them), so they aren't offered twice.
     private(set) var convertedLivePhotos: Set<String>
     private static let convertedLivePhotosKey = "convertedLivePhotos"
+    /// One storage reading per day, for the forecast on Home (bonus).
+    private(set) var storageHistory: [StorageSample]
+    private static let storageHistoryKey = "storageHistory"
     private var scanTask: Task<Void, Never>?
 
     init(permissions: PermissionServicing,
@@ -123,6 +126,20 @@ final class ScanStore {
         self.expiryScanner = expiryScanner
         self.livePhotoScanner = livePhotoScanner
         self.convertedLivePhotos = Set(defaults.stringArray(forKey: Self.convertedLivePhotosKey) ?? [])
+        var history = defaults.data(forKey: Self.storageHistoryKey)
+            .flatMap { try? JSONDecoder().decode([StorageSample].self, from: $0) } ?? []
+        #if DEBUG
+        // `-KeeprollSeedStorageHistory`: 21 days of a slowly filling phone, so the forecast
+        // card can be checked without waiting three days.
+        if ProcessInfo.processInfo.arguments.contains("-KeeprollSeedStorageHistory"), history.count < 3 {
+            let total: Int64 = 494_000_000_000
+            history = (0..<21).reversed().map { daysAgo in
+                StorageSample(date: Date().addingTimeInterval(-Double(daysAgo) * 86_400),
+                              availableBytes: 25_500_000_000 + Int64(daysAgo) * 180_000_000, totalBytes: total)
+            }
+        }
+        #endif
+        self.storageHistory = history
         self.calendarPermission = permissions.calendarState()
         self.photosPermission = permissions.photosState()
         self.contactsPermission = permissions.contactsState()
@@ -413,11 +430,22 @@ final class ScanStore {
     private func loadStorage() async {
         if storage.value == nil { storage = .loading }
         do {
-            storage = .loaded(try await storageService.snapshot())
+            let snapshot = try await storageService.snapshot()
+            storage = .loaded(snapshot)
+            recordStorageSample(snapshot)
         } catch {
             storage = .failed(.storageUnavailable)
         }
     }
+
+    /// Today's reading replaces any earlier one from today; history is kept to the forecast window.
+    private func recordStorageSample(_ snapshot: StorageSnapshot, now: Date = Date()) {
+        let sample = StorageSample(date: now, availableBytes: snapshot.availableBytes, totalBytes: snapshot.totalBytes)
+        storageHistory = StorageForecaster.appending(sample, to: storageHistory)
+        if let data = try? JSONEncoder().encode(storageHistory) { defaults.set(data, forKey: Self.storageHistoryKey) }
+    }
+
+    var storageForecast: StorageForecast { StorageForecaster.forecast(storageHistory) }
 
     private func loadScreenshots() async {
         guard photosPermission.canRead else { screenshots = .idle; return }

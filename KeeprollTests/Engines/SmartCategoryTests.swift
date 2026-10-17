@@ -148,3 +148,51 @@ struct LivePhotoCandidateTests {
         #expect(store.convertedLivePhotos == ["orig", "new"])
     }
 }
+
+// MARK: - Storage forecast
+
+struct StorageForecasterTests {
+    let now = Date(timeIntervalSinceReferenceDate: 800_000_000)
+    let total: Int64 = 128_000_000_000
+
+    private func history(days: Int, start: Int64, perDay: Int64) -> [StorageSample] {
+        (0..<days).map { i in
+            StorageSample(date: now.addingTimeInterval(-Double(days - 1 - i) * 86_400), availableBytes: start + Int64(i) * perDay, totalBytes: total)
+        }
+    }
+
+    @Test func needsThreeDays() {
+        #expect(StorageForecaster.forecast([], now: now) == .notEnoughData(daysRecorded: 0))
+        #expect(StorageForecaster.forecast(history(days: 2, start: 20_000_000_000, perDay: -500_000_000), now: now) == .notEnoughData(daysRecorded: 2))
+    }
+
+    @Test func fillingPhoneProjectsDaysToTheFloor() {
+        // 20 GB free, losing 500 MB a day: (20 - 2) GB / 0.5 GB = 36 days.
+        let h = history(days: 10, start: 20_000_000_000 + 9 * 500_000_000, perDay: -500_000_000)
+        guard case .filling(let perDay, let days) = StorageForecaster.forecast(h, now: now) else { Issue.record("expected filling"); return }
+        #expect(abs(perDay - 500_000_000) < 1_000_000)
+        #expect(days == 36)
+    }
+
+    @Test func smallDriftIsSteady() {
+        #expect(StorageForecaster.forecast(history(days: 7, start: 50_000_000_000, perDay: -5_000_000), now: now) == .steady)
+    }
+
+    @Test func growingFreeSpaceIsFreeingUp() {
+        guard case .freeingUp(let perDay) = StorageForecaster.forecast(history(days: 7, start: 10_000_000_000, perDay: 300_000_000), now: now) else { Issue.record("expected freeingUp"); return }
+        #expect(abs(perDay - 300_000_000) < 1_000_000)
+    }
+
+    @Test func oneSamplePerDayLatestWins() {
+        let morning = StorageSample(date: now, availableBytes: 10, totalBytes: total)
+        let evening = StorageSample(date: now.addingTimeInterval(3600), availableBytes: 20, totalBytes: total)
+        let kept = StorageForecaster.appending(evening, to: [morning])
+        #expect(kept.count == 1 && kept[0].availableBytes == 20)
+    }
+
+    @Test func oldSamplesAreTrimmed() {
+        let old = StorageSample(date: now.addingTimeInterval(-60 * 86_400), availableBytes: 1, totalBytes: total)
+        let kept = StorageForecaster.appending(StorageSample(date: now, availableBytes: 2, totalBytes: total), to: [old])
+        #expect(kept.map(\.availableBytes) == [2])
+    }
+}

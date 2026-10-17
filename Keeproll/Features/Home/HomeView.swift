@@ -24,8 +24,10 @@ struct HomeView: View {
                 if vm.photosLocked { lockedBanner.rise(1, appeared) }
                 stats
                     .rise(2, appeared)
-                checks
+                ForecastCard(forecast: vm.forecast, points: vm.forecastPoints)
                     .rise(3, appeared)
+                checks
+                    .rise(4, appeared)
             }
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
@@ -235,6 +237,106 @@ struct HomeView: View {
             SecondaryButton(title: vm.photosPermission == .notDetermined ? "Allow access" : "Open Settings") {
                 Task { await vm.requestPhotosAccess() }
             }
+        }
+    }
+}
+
+/// Where the storage is heading (bonus: forecast). One sentence, one caption, a sparkline
+/// of free space over the window. Never alarming: the colour is the accent, and it says
+/// "not enough data yet" rather than guessing.
+struct ForecastCard: View {
+    let forecast: StorageForecast
+    let points: [Int64]
+
+    var body: some View {
+        HStack(alignment: .center, spacing: Spacing.s) {
+            Image(systemName: symbol)
+                .font(Font.keeproll.headline)
+                .foregroundStyle(tint)
+                .frame(width: 36, height: 36)
+                .background(tint.opacity(0.14), in: Circle())
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Storage forecast").font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
+                headline.font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+                caption.font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: Spacing.xs)
+            if points.count >= 3 {
+                Sparkline(values: points.map(Double.init), tint: tint)
+                    .frame(width: 72, height: 32)
+                    .accessibilityHidden(true)
+            }
+        }
+        .card(padding: Spacing.s)
+        .accessibilityElement(children: .combine)
+    }
+
+    private var symbol: String {
+        switch forecast {
+        case .notEnoughData: "chart.line.uptrend.xyaxis"
+        case .filling: "chart.line.downtrend.xyaxis"
+        case .steady: "equal.circle"
+        case .freeingUp: "chart.line.uptrend.xyaxis"
+        }
+    }
+
+    private var tint: Color {
+        switch forecast {
+        case .filling(_, let days) where days <= 14: Color.keeproll.warning
+        case .freeingUp: Color.keeproll.success
+        default: Color.keeproll.accent
+        }
+    }
+
+    private var headline: Text {
+        switch forecast {
+        case .notEnoughData:
+            Text("Learning your pace")
+        case .filling(_, let days):
+            days == 0 ? Text("Running out of room now")
+                : days < 14 ? Text("About ^[\(days) day](inflect: true) until it's full")
+                : Text("About ^[\(max(days / 7, 1)) week](inflect: true) until it's full")
+        case .steady:
+            Text("Holding steady")
+        case .freeingUp(let perDay):
+            Text("Gaining \(ByteFormatter.string(perDay * 7)) a week")
+        }
+    }
+
+    private var caption: Text {
+        switch forecast {
+        case .notEnoughData(let days):
+            Text("Open Keeproll on ^[\(StorageForecaster.minimumDays - days) more day](inflect: true) to see where your storage is heading.")
+        case .filling(let perDay, _):
+            Text("Filling at \(ByteFormatter.string(perDay * 7)) a week. “Full” means under \(ByteFormatter.rounded(StorageForecaster.floorBytes)) free, where iOS starts to struggle.")
+        case .steady:
+            Text("Free space has barely moved over the last few weeks.")
+        case .freeingUp:
+            Text("Cleanups are outpacing new photos.")
+        }
+    }
+}
+
+/// A plain line through the values, scaled to the frame. No axes, no dots.
+struct Sparkline: View {
+    let values: [Double]
+    let tint: Color
+
+    var body: some View {
+        GeometryReader { geo in
+            let minV = values.min() ?? 0, maxV = values.max() ?? 1
+            let range = max(maxV - minV, 1)
+            let step = geo.size.width / CGFloat(max(values.count - 1, 1))
+            Path { path in
+                for (i, v) in values.enumerated() {
+                    let point = CGPoint(x: CGFloat(i) * step, y: geo.size.height * (1 - CGFloat((v - minV) / range)))
+                    if i == 0 { path.move(to: point) } else { path.addLine(to: point) }
+                }
+            }
+            .stroke(tint, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
         }
     }
 }
