@@ -1,0 +1,33 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ free" : {
+
+    },
+    "%lld%%" : {
+
+    },
+    "free" : {
+
+    },
+    "Free space on this iPhone, and how much Keeproll can clean." : {
+
+    },
+    "Keeproll" : {
+
+    },
+    "of %@" : {
+
+    },
+    "Open Keeproll to scan" : {
+
+    },
+    "Storage" : {
+
+    },
+    "Up to %@ to clean" : {
+
+    }
+  },
+  "version" : "1.0"
+}

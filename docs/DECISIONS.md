@@ -118,3 +118,7 @@ Two new detectors, chosen after a market survey found no mainstream iOS cleaner 
 - **iOS 18 aesthetics** (`VNCalculateImageAestheticsScoresRequest.isUtility`) is a supporting signal for chats only, behind `#available`; iOS 17 simply lacks it.
 - **Cache v5** adds provenance and expiry records (tri-state flags, kind, dates, confidence). Bumping the version invalidates v4 caches, so the first scan after this update is cold once.
 
+### Amendment — 2026-10-17 (App Store readiness: privacy manifest, string catalog)
+- **Privacy manifests** (`Keeproll/PrivacyInfo.xcprivacy`, `KeeprollWidget/PrivacyInfo.xcprivacy`): no tracking, no collected data types. Required-reason APIs declared: disk space `85F4.1` (shown to the user on Home, Results and the widget) and UserDefaults `CA92.1` (settings, last scan summary) + `1C8F.1` (the widget snapshot in the App Group). File-timestamp APIs are **not** declared: the only "modificationDate" reads are `PHAsset.modificationDate`, which is PhotoKit, not a file attribute, and the two `fileSizeKey` reads are not on Apple's list. Re-check this table whenever a new system API is added.
+- **String catalogs** (`Keeproll/Resources/Localizable.xcstrings`, `KeeprollWidget/Localizable.xcstrings`) populated from Xcode's own extraction (370 + 9 strings). English is the source; a new language is one column in the catalog. Punctuation glue entries are marked do-not-translate. Xcode's IDE keeps the catalog in sync on build; from the command line, run `xcodebuild -exportLocalizations` / `-importLocalizations` after adding strings.
+

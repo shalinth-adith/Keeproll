@@ -1,0 +1,571 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "": {
+      "shouldTranslate": false
+    },
+    " · ": {
+      "shouldTranslate": false
+    },
+    "%@ free of %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ free of %2$@"
+          }
+        }
+      }
+    },
+    "%@ · %lld%% sure": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$lld%% sure"
+          }
+        }
+      }
+    },
+    "%@ · %lld×%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$lld×%3$lld"
+          }
+        }
+      }
+    },
+    "%@ · ^[%lld copy](inflect: true)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · ^[%2$lld copy](inflect: true)"
+          }
+        }
+      }
+    },
+    "%@ · only on this iPhone": {},
+    "%@ → %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ → %2$@"
+          }
+        }
+      }
+    },
+    "%@, %@, ^[%lld item](inflect: true)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@, %2$@, ^[%3$lld item](inflect: true)"
+          }
+        }
+      }
+    },
+    "%@, ^[%lld item](inflect: true)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@, ^[%2$lld item](inflect: true)"
+          }
+        }
+      }
+    },
+    "%@, kept": {},
+    "%@, needs access": {},
+    "%@, nothing to clean": {},
+    "%@, scanning": {},
+    "%@. Up to %@ can be freed.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@. Up to %2$@ can be freed."
+          }
+        }
+      }
+    },
+    "%lld couldn't be copied and stay in your library.": {},
+    "%lld from other apps": {},
+    "%lld kept": {},
+    "%lld look like Telegram": {},
+    "%lld look like WhatsApp": {},
+    "%lld of %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "%lld selected": {},
+    "%lld selected for review": {},
+    "%lld to remove": {},
+    ". ": {
+      "shouldTranslate": false
+    },
+    "A backup of the changed contacts and events was saved before anything changed.": {},
+    "About": {},
+    "Access": {},
+    "Add": {},
+    "Add photos": {},
+    "All": {},
+    "All clear": {},
+    "All done": {},
+    "All results": {},
+    "All sorted": {},
+    "All tidy": {},
+    "All tidy. Nothing to clean right now": {},
+    "Allow": {},
+    "Allow access": {},
+    "Allow all": {},
+    "Allowed": {},
+    "AppFactory App Builder task": {},
+    "Back": {},
+    "Back to dashboard": {},
+    "Backed up first": {},
+    "Best": {},
+    "Biggest clips, compressible": {},
+    "Blurry": {},
+    "Blurry Photos": {},
+    "Blurry photo, %@, %@%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Blurry photo, %1$@, %2$@%3$@"
+          }
+        }
+      }
+    },
+    "Boarding passes": {},
+    "Bursts and duplicate shots": {},
+    "Calendar": {},
+    "Calendar access needed": {},
+    "Calendar changes aren't available.": {},
+    "Calendar couldn't save the change.": {},
+    "Can't play this video": {},
+    "Change": {},
+    "Checking photos for blur…": {},
+    "Checking photos · %lld%%": {},
+    "Checking where photos came from…": {},
+    "Clear": {},
+    "Clear cache": {},
+    "Clear recommended": {},
+    "Clear scan cache": {},
+    "Clear the scan cache?": {},
+    "Clear very likely": {},
+    "Cleared. The next scan will take longer.": {},
+    "Close": {},
+    "Codes stop working within minutes · taken %@": {},
+    "Compare": {},
+    "Compress": {},
+    "Compress to save about %@": {},
+    "Compress video": {},
+    "Compressing": {},
+    "Compressing… %lld%%": {},
+    "Confirm ^[%lld change](inflect: true)": {},
+    "Confirm ^[%lld item](inflect: true) · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Confirm ^[%1$lld item](inflect: true) · %2$@"
+          }
+        }
+      }
+    },
+    "Contact changes aren't available.": {},
+    "Contacts": {},
+    "Contacts & calendar": {},
+    "Contacts access needed": {},
+    "Copies of these are safe in your vault. This removes the originals from your library.": {},
+    "Copying %lld of %lld…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Copying %1$lld of %2$lld…"
+          }
+        }
+      }
+    },
+    "Couldn't read this iPhone's storage.": {},
+    "Couldn't save a backup first, so nothing was changed.": {},
+    "Couldn't save to your library.": {},
+    "Coupons and offers": {},
+    "Currently %@": {},
+    "Data on this iPhone": {},
+    "Delete contact": {},
+    "Delete this contact": {},
+    "Deleted photos stay in Recently Deleted for 30 days. Empty it in the Photos app to get the space back now.": {},
+    "Delivered weeks ago · taken %@": {},
+    "Deliveries": {},
+    "Deselect": {},
+    "Deselect all": {},
+    "Don't delete": {},
+    "Done": {},
+    "Drag sideways across photos to select several at once.": {},
+    "Duplicate Contacts": {},
+    "Duplicate events": {},
+    "Duplicate events and events over a year old": {},
+    "Duplicates and events over a year old": {},
+    "Event was on %@": {},
+    "Every contact looks unique.": {},
+    "Every photo Keeproll checked looks like it was taken on this iPhone.": {},
+    "Every photo Keeproll checked looks sharp.": {},
+    "Exact copies": {},
+    "Expired": {},
+    "Expired %@": {},
+    "Expired Screenshots": {},
+    "Extra shots from similar groups and blurry photos. Nothing is removed until you confirm on Review.": {},
+    "Favourites are never suggested. Drag sideways to select several at once.": {},
+    "Flight was on %@": {},
+    "Forwards saved by WhatsApp and Telegram": {},
+    "Freed so far": {},
+    "From chats": {},
+    "Group cleaned": {},
+    "Home": {},
+    "It may still be downloading from iCloud.": {},
+    "JPEG": {},
+    "Just now": {},
+    "KEEP": {},
+    "Keep": {},
+    "Keep Keeproll open until it finishes.": {},
+    "Keep all": {},
+    "Keep as is": {},
+    "Keep best only": {},
+    "Keep one": {},
+    "Keep private photos out of your library, behind Face ID.": {},
+    "Keep this item": {},
+    "Keep what matters": {},
+    "Keeproll": {},
+    "Keeproll can only see the photos you chose. Anything outside that selection won't be scanned.": {},
+    "Keeproll checks contacts on this iPhone for duplicates. Nothing is uploaded.": {},
+    "Keeproll didn't find duplicates or near-identical shots.": {},
+    "Keeproll doesn't have access to your contacts.": {},
+    "Keeproll doesn't have access to your photos.": {},
+    "Keeproll has no account, no analytics and no network access. Photos, contacts and events are read on this iPhone and never leave it. Contacts and calendar changes are backed up to a file you can share before anything is changed.": {},
+    "Keeproll looks for duplicate events and events over a year old. Nothing is uploaded, and nothing is removed until you confirm on Review.": {},
+    "Keeproll needs access to your photos to find what's taking space. Nothing leaves your iPhone.": {},
+    "Keeproll needs access to your photos to move them into the vault.": {},
+    "Keeproll reads these on your iPhone only. Nothing is uploaded, and nothing is removed until you confirm on Review.": {},
+    "Keeproll saves a backup before changing any contact or event. They have no Recently Deleted, so the backup is your undo.": {},
+    "Keeproll saves a smaller copy (HEVC, up to 1080p) to your library first, with the same date and place. The original then goes to Review. Nothing is deleted until you confirm.": {},
+    "Large Videos": {},
+    "Last scan": {},
+    "Likely": {},
+    "Limited to selected photos": {},
+    "Loading storage": {},
+    "Locked": {},
+    "Locks again when Keeproll goes to the background.": {},
+    "Looking for similar photos…": {},
+    "Looking for things to clean…": {},
+    "Looking…": {},
+    "Made for": {},
+    "Make Best": {},
+    "Make primary": {},
+    "Merge ^[%lld contact](inflect: true) into one": {},
+    "Merge all": {},
+    "Merge into one": {},
+    "Merge queued": {},
+    "Merged result": {},
+    "Merging keeps every number and email. A backup is saved before anything changes.": {},
+    "Moved to Vault": {},
+    "Needs access · tap to allow": {},
+    "No blurry photos": {},
+    "No camera data plus one more sign.": {},
+    "No camera data, and the size or file name of a chat app.": {},
+    "No duplicate events, and nothing older than a year.": {},
+    "No duplicates": {},
+    "No large videos": {},
+    "No name": {},
+    "No screenshots are older than 30 days.": {},
+    "No screenshots of codes, passes or tickets that are past their date.": {},
+    "No similar photos": {},
+    "No videos match this size.": {},
+    "Not allowed": {},
+    "Not asked yet": {},
+    "Not now": {},
+    "Not yet": {},
+    "Nothing from chats": {},
+    "Nothing has expired": {},
+    "Nothing in your library changes. The next scan recomputes photo features, so it takes as long as the first one did.": {},
+    "Nothing scanned": {},
+    "Nothing selected": {},
+    "Nothing to clean": {},
+    "Nothing to clean here": {},
+    "Nothing to sort": {},
+    "Nothing to tidy": {},
+    "OK": {},
+    "Okay, let's go": {},
+    "Old Calendar Events": {},
+    "Old codes, passes and tickets": {},
+    "Older than 30 days": {},
+    "Older than a year": {},
+    "One photo at a time. Right to keep, left to remove.": {},
+    "One-time codes": {},
+    "Open Photos": {},
+    "Open Settings": {},
+    "Out-of-focus photos": {},
+    "Over 100 MB": {},
+    "Over 500 MB": {},
+    "Parking spots": {},
+    "Photo access needed": {},
+    "Photo features kept so rescans take seconds. Safe to clear.": {},
+    "Photo from a chat app, %@, %@%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Photo from a chat app, %1$@, %2$@%3$@"
+          }
+        }
+      }
+    },
+    "Photo, %@": {},
+    "Photo, %@%@%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Photo, %1$@%2$@%3$@"
+          }
+        }
+      }
+    },
+    "Photos": {},
+    "Photos & videos": {},
+    "Photos and videos go to Recently Deleted for 30 days. Contacts and events are backed up in Keeproll before they change.": {},
+    "Photos and videos go to Recently Deleted in the Photos app. The space comes back once you empty it, or automatically after 30 days.": {},
+    "Photos here are kept only on this iPhone, locked with Face ID or your passcode, and out of your photo library.": {},
+    "Photos kept behind Face ID": {},
+    "Photos taken by a camera carry lens and exposure data; forwards from chat apps don't. Favourites are never suggested.": {},
+    "Pick items to remove from any category.": {},
+    "Possible": {},
+    "Preview video": {},
+    "Primary contact": {},
+    "Privacy": {},
+    "Private Vault": {},
+    "Private vault": {},
+    "Private: everything stays on your iPhone. No account, no upload.": {},
+    "REMOVE": {},
+    "Reading screenshots…": {},
+    "Remove": {},
+    "Remove from vault?": {},
+    "Remove permanently": {},
+    "Repeating events are never touched. A calendar backup is saved before anything is removed.": {},
+    "Replays the three onboarding pages.": {},
+    "Rescan": {},
+    "Reservations": {},
+    "Reset freed total": {},
+    "Reset the freed total?": {},
+    "Reset to zero": {},
+    "Restricted on this iPhone": {},
+    "Result": {},
+    "Results": {},
+    "Review": {},
+    "Review originals": {},
+    "Review: you see every item and tap any to keep it. Nothing is removed until you confirm.": {},
+    "Same email": {},
+    "Same name": {},
+    "Same number": {},
+    "Save about %@": {},
+    "Save to Photos": {},
+    "Save ~%@": {},
+    "Saved a copy to your library.": {},
+    "Saved from Chats": {},
+    "Scan first, then swipe through the suggestions.": {},
+    "Scan my iPhone": {},
+    "Scan: Keeproll finds similar photos, screenshots, blurry shots, large videos, duplicate contacts and old events.": {},
+    "Scanning": {},
+    "Scanning…": {},
+    "Scanning… see progress": {},
+    "Screenshot, %@, %@, %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Screenshot, %1$@, %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "Screenshots": {},
+    "Screenshots taking up space": {},
+    "See what to clean": {},
+    "Select": {},
+    "Select all": {},
+    "Select recommended · %@": {},
+    "Select to remove": {},
+    "Select very likely": {},
+    "Select year": {},
+    "Selected to remove": {},
+    "Set a passcode in Settings to use the vault. Without one, nothing can protect it.": {},
+    "Set up access": {},
+    "Settings": {},
+    "Share backup": {},
+    "Show the welcome again": {},
+    "Similar": {},
+    "Similar Photos": {},
+    "Similar shots, screenshots, blurry photos and large videos": {},
+    "Smaller copy saved": {},
+    "Smart select": {},
+    "Some signs, but it could be an export from an editing app. Check before you select.": {},
+    "Something went wrong reading your photo library. Please try again.": {},
+    "Start using Keeproll": {},
+    "Step %lld of %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Step %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Still scanning — groups appear as they're found": {},
+    "Swipe to sort": {},
+    "Tap Add to move private photos and videos here.": {},
+    "Tap Scan to see what can be freed": {},
+    "Tap a thumbnail to watch before you decide.": {},
+    "Tap an item to keep it.": {},
+    "Tap to allow access": {},
+    "Text is read on this iPhone and never stored. Only the kind and the date are kept.": {},
+    "The original is in Review. Remove it there to free %@.": {},
+    "The same person saved more than once": {},
+    "The same person saved twice": {},
+    "The sharpest shot in each group is marked Best. Tap a photo to compare; hold to make it Best.": {},
+    "The smaller copy couldn't be saved to your library. Nothing was changed.": {},
+    "The video couldn't be compressed. Nothing was changed.": {},
+    "These photos are no longer in the list.": {},
+    "This calendar doesn't allow changes.": {},
+    "This contact no longer exists.": {},
+    "This contact's account doesn't allow changes.": {},
+    "This event no longer exists or can't be changed.": {},
+    "This is the only copy Keeproll keeps. Save it to Photos first if you want to keep it.": {},
+    "This item is still in your library.": {},
+    "This video is already compact. A smaller copy wouldn't save much, so nothing was changed.": {},
+    "This video is no longer in your library.": {},
+    "Tickets": {},
+    "Tools": {},
+    "Undo": {},
+    "Unknown date": {},
+    "Unknown size": {},
+    "Unlock": {},
+    "Unlock your private vault": {},
+    "Untitled event": {},
+    "Up to": {},
+    "Up to %@ can be freed": {},
+    "Update results": {},
+    "Vault": {},
+    "Vault photo": {},
+    "Vault unavailable": {},
+    "Vault video": {},
+    "Version": {},
+    "Very likely": {},
+    "Videos": {},
+    "Was on %@": {},
+    "What Keeproll checks": {},
+    "You have no screenshots.": {},
+    "You have no videos.": {},
+    "You'll free up to": {},
+    "You're about to tidy": {},
+    "You've long since driven off · %@": {},
+    "Your library changed since the last scan.": {},
+    "Your vault is empty": {},
+    "^[%lld calendar event](inflect: true) to remove": {},
+    "^[%lld change](inflect: true)": {},
+    "^[%lld contact change](inflect: true)": {},
+    "^[%lld contact](inflect: true)": {},
+    "^[%lld contact](inflect: true) that look like the same people": {},
+    "^[%lld duplicate](inflect: true)": {},
+    "^[%lld event](inflect: true)": {},
+    "^[%lld group](inflect: true)": {},
+    "^[%lld group](inflect: true) · ^[%lld photo](inflect: true)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "^[%1$lld group](inflect: true) · ^[%2$lld photo](inflect: true)"
+          }
+        }
+      }
+    },
+    "^[%lld item](inflect: true)": {},
+    "^[%lld item](inflect: true) (%@) are only in iCloud. Removing them frees iCloud space, not iPhone storage.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "^[%1$lld item](inflect: true) (%2$@) are only in iCloud. Removing them frees iCloud space, not iPhone storage."
+          }
+        }
+      }
+    },
+    "^[%lld item](inflect: true) copied into your vault. The originals are still in your library until you remove them on Review.": {},
+    "^[%lld item](inflect: true) couldn't be removed. They're still in your review list.": {},
+    "^[%lld item](inflect: true) from Photos will be removed": {},
+    "^[%lld item](inflect: true) selected": {},
+    "^[%lld old event](inflect: true)": {},
+    "^[%lld photo](inflect: true)": {},
+    "^[%lld photo](inflect: true) out of focus": {},
+    "^[%lld photo](inflect: true) queued · %@. Nothing is removed until you confirm on Review.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "^[%1$lld photo](inflect: true) queued · %2$@. Nothing is removed until you confirm on Review."
+          }
+        }
+      }
+    },
+    "^[%lld photo](inflect: true) · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "^[%1$lld photo](inflect: true) · %2$@"
+          }
+        }
+      }
+    },
+    "^[%lld photo](inflect: true) · %@ to free": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "^[%1$lld photo](inflect: true) · %2$@ to free"
+          }
+        }
+      }
+    },
+    "^[%lld screenshot](inflect: true)": {},
+    "^[%lld screenshot](inflect: true) past their date": {},
+    "^[%lld video](inflect: true) · largest first": {},
+    "can be freed": {},
+    "chat-app file name": {},
+    "chat-app size": {},
+    "checking %lld%%": {},
+    "cleaned up": {},
+    "duplicates and events over a year old": {},
+    "free of %@": {},
+    "looks like a forward": {},
+    "no camera data": {},
+    "no location": {},
+    "not selected": {},
+    "selected": {},
+    "tidied up": {},
+    "· approx.": {}
+  },
+  "version": "1.0"
+}
