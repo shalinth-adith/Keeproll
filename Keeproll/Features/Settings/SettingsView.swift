@@ -89,7 +89,7 @@ struct SettingsView: View {
                     }
                     Divider().overlay(Color.keeproll.hairline).padding(.leading, 36 + Spacing.s)
                     actionRow(symbol: "sparkles.rectangle.stack", tint: Color.keeproll.accent, title: Text("Show the welcome again"),
-                              subtitle: Text("Replays the three onboarding pages.")) {
+                              subtitle: Text("Replays the welcome and access pages.")) {
                         vm.replayOnboarding()
                     }
                 }
@@ -97,7 +97,7 @@ struct SettingsView: View {
                 section(Text("About")) {
                     infoRow(title: Text("Version"), value: Text(vm.version))
                     Divider().overlay(Color.keeproll.hairline)
-                    infoRow(title: Text("Made for"), value: Text("AppFactory App Builder task"))
+                    infoRow(title: Text("Made by"), value: Text("Shalinth Adithyan"))
                     Divider().overlay(Color.keeproll.hairline)
                     VStack(alignment: .leading, spacing: Spacing.xxs) {
                         Text("Privacy").font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkPrimary)

@@ -65,3 +65,7 @@ With that library the expected result is: 4 similar groups (3 bursts + 1 exact-d
 - **Contacts are backed up** to a vCard before any merge or delete, since iOS has no Recently Deleted for contacts.
 
 Docs: [PRD](docs/PRD.md) · [Architecture](docs/ARCHITECTURE.md) · [Design system](docs/DESIGN_SYSTEM.md) · [Decisions](docs/DECISIONS.md) · [Agent instructions](CLAUDE.md)
+
+## App Store
+
+Listing copy, screenshot order and review notes: [`store/APP_STORE.md`](store/APP_STORE.md). Privacy policy and support pages are in [`docs/site/`](docs/site/) (served by GitHub Pages).
