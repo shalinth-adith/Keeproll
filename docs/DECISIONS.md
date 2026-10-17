@@ -128,3 +128,11 @@ Follows the compress-video shape exactly: the still is **added** first via `PHAs
 ### Amendment — 2026-10-17 (D12: storage forecast)
 A least-squares trend over at most 30 daily samples, never fewer than three distinct days. "Full" is defined as 2 GB free (the point where iOS updates and the camera start failing), not zero, and the card says so. Drift under 20 MB a day (or 0.01 % of capacity, about 50 MB on a 512 GB phone) is reported as steady rather than extrapolated, because deleting and emptying Recently Deleted make small week-to-week noise. History is one tiny JSON array in UserDefaults, local only.
 
+### Amendment — 2026-10-18 (launch readiness: growth and diagnostics)
+- **Rating prompt**: Apple's `requestReview`, asked **once per install**, only after a Summary that freed ≥ 500 MB with no failures, and never in the first session (`ReviewPrompter`). Fires 1.6 s after the count-up so it doesn't cover the result.
+- **Share card**: an `ImageRenderer`-drawn 1440 px square ("I freed 3.1 GB · nothing left my iPhone"), offered via `ShareLink` on Summary only when photos were removed. User-initiated; no referral code, no tracking.
+- **What's New**: keyed by **build number** (so TestFlight testers see it), shown once when the build changed and an entry exists; fresh installs mark the current build seen at the end of onboarding.
+- **Diagnostics**: `MXMetricManager` subscriber writes payloads to Application Support/Diagnostics (last 30 kept); Settings → About → Diagnostics shares the newest. Payloads arrive only if the user shares analytics with developers. No SDK, no network.
+- **Localisation**: Hindi and Tamil for every app and widget string and the permission prompts, from maintained tables in `scripts/l10n/`. English `^[…](inflect:)` plurals map to a single form in both languages. `knownRegions: [en, hi, ta]`.
+- **App Clip**: deferred until launch data says day-one retention is the problem (`docs/RELEASE.md`).
+

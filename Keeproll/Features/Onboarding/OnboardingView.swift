@@ -58,6 +58,7 @@ struct OnboardingView: View {
     private func finish() {
         Log.ui.debug("Onboarding finished")
         env.settings.hasCompletedOnboarding = true
+        env.settings.lastSeenBuild = WhatsNew.currentBuild
         env.scanStore.scan()
     }
 }

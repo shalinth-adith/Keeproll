@@ -14,7 +14,7 @@ struct ReviewFlowView: View {
         NavigationStack {
             Group {
                 if case .finished(let result) = vm.phase {
-                    SummaryView(result: result) { env.router.finishCleanup() }
+                    SummaryView(result: result, settings: env.settings) { env.router.finishCleanup() }
                 } else {
                     ReviewView(vm: vm)
                 }

@@ -136,6 +136,8 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 | `StorageBar` | Results summary graphic: a 6 pt capsule of the device's storage with the same segment logic as the ring. | `snapshot`, `segments` |
 | `ForecastCard` | Home: "Storage forecast" label, one headline ("About 6 weeks until it's full" / "Holding steady" / "Gaining 1.2 GB a week" / "Learning your pace"), one caption explaining the rate and what "full" means, a 72 × 32 `Sparkline` of free space over the window. Accent tint; `warning` only within 14 days of the floor; `success` when freeing up. | `forecast`, `points` |
 | `Sparkline` | A single stroked path through values scaled to its frame; no axes or dots | `values`, `tint` |
+| `ShareCard` | The Summary share image: brand tile + wordmark, "I freed" / amount / items line, privacy pill, on the hero gradient. Rendered at 2× by `ImageRenderer`. | `bytesFreed`, `itemCount` |
+| `WhatsNewSheet` | Post-update sheet: title, version, rows of `WhatsNewItem`, Continue | `items`, `onDone` |
 | `StatTile` | Home metric card: tinted symbol circle, caption label, `metric` value ("Freed so far", "Last scan") | `symbol`, `tint`, `label`, `value` |
 | `CategoryTile` | The category's symbol on its gradient tile, any size. The one visual identity of a category (Home checks, Results cards, Review headers, Summary rows, onboarding). | `category`, `side` |
 | `CategoryCard` (chats, expired) | Same card; `catChats` and `catExpired` tiles; values are bytes | as above |
@@ -186,6 +188,10 @@ Each component has a `#Preview` showing all of its states, in light and dark.
 **Expired Screenshots.** `CategoryHeader` (total, "N screenshots past their date", a hint that text is read on-device and never stored), then a `.card()` per kind (One-time codes, Boarding passes, Tickets, Deliveries, Coupons, Reservations, Parking) with rows: 56 × 72 thumbnail, a plain sentence ("Flight was on 12 Mar"), size and "% sure", selection check. Toolbar: Select all. Tiles use `catExpired` (ochre).
 
 **Live Photos.** `CategoryHeader` (clip total, "N Live Photos · clips only", a hint explaining still + clip), a `SelectableMediaGrid` where selection means "convert", and a bottom `PrimaryButton` "Convert N Live Photos · save X" that appears once anything is selected. The **Convert to stills** sheet mirrors the compress sheet: ready (saving + the safety banner) → working (N of M) → done (stills saved; originals are in Review). Tiles use `catLive` (cyan).
+
+**Summary (additions).** Below the result, a `SecondaryButton`-styled **Share** (only when photos were removed) offers the `ShareCard`: a 720 pt square on the hero gradient with the mark, "I freed / 3.1 GB / N items reviewed and removed" and a "Nothing left my iPhone." pill. The system rating sheet may appear 1.6 s after the count-up, once per install, after a ≥ 500 MB cleanup, never in the first session.
+
+**What's new.** A medium-detent sheet on the first launch after an update: rounded "What's new" title, version caption, one `.card()` of rows (accent symbol tile, title, detail) and a **Continue** button. Keyed by build; never shown on a fresh install.
 
 **Settings.** Reached from the gear on Home; inline title. Three `.card()` sections: **Access** (Photos, Contacts, Calendar rows with a status line in `success`/`warning`/`inkSecondary` and an Allow / Change action: first request through the system prompt, later ones open iOS Settings), a `HintRow` restating the privacy promise, **Data on this iPhone** (Clear scan cache with a confirmation, Reset freed total with a destructive confirmation, Show the welcome again), and **About** (version, purpose, privacy paragraph). No toggles: there is nothing to sync, no account, no analytics.
 

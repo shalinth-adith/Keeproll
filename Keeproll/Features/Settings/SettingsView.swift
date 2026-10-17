@@ -97,6 +97,8 @@ struct SettingsView: View {
                 section(Text("About")) {
                     infoRow(title: Text("Version"), value: Text(vm.version))
                     Divider().overlay(Color.keeproll.hairline)
+                    diagnosticsRow
+                    Divider().overlay(Color.keeproll.hairline)
                     infoRow(title: Text("Made by"), value: Text("Shalinth Adithyan"))
                     Divider().overlay(Color.keeproll.hairline)
                     VStack(alignment: .leading, spacing: Spacing.xxs) {
@@ -123,6 +125,31 @@ struct SettingsView: View {
         }
         .confirmationDialog("Reset the freed total?", isPresented: $confirmReset, titleVisibility: .visible) {
             Button("Reset to zero", role: .destructive) { vm.resetFreedTotal() }
+        }
+    }
+
+    /// Crash and performance reports the system handed us, if the user shares analytics
+    /// with developers in iOS Settings. Attach the newest to a bug report; nothing is sent.
+    @ViewBuilder private var diagnosticsRow: some View {
+        let reports = DiagnosticsService.reports()
+        if let latest = reports.first {
+            ShareLink(item: latest) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Diagnostics").font(Font.keeproll.body).foregroundStyle(Color.keeproll.inkPrimary)
+                        Text("^[\(reports.count) report](inflect: true) kept on this iPhone. Share the latest with a bug report.")
+                            .font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
+                            .fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
+                    }
+                    Spacer()
+                    Image(systemName: "square.and.arrow.up").font(Font.keeproll.caption.weight(.bold)).foregroundStyle(Color.keeproll.accent)
+                }
+                .padding(.vertical, Spacing.s)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        } else {
+            infoRow(title: Text("Diagnostics"), value: Text("No reports"))
         }
     }
 

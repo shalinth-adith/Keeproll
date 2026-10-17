@@ -15,11 +15,32 @@ final class SettingsStore {
         didSet { defaults.set(lifetimeBytesFreed, forKey: Keys.lifetimeBytes) }
     }
 
+    /// Launches so far; the review prompt never fires in the first one.
+    private(set) var sessionCount: Int {
+        didSet { defaults.set(sessionCount, forKey: Keys.sessions) }
+    }
+
+    /// The review sheet is asked for once per install, ever.
+    private(set) var hasAskedForReview: Bool {
+        didSet { defaults.set(hasAskedForReview, forKey: Keys.askedReview) }
+    }
+
+    /// Build number the user last saw a What's New for; nil until onboarding finishes.
+    var lastSeenBuild: String? {
+        didSet { defaults.set(lastSeenBuild, forKey: Keys.lastSeenBuild) }
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         hasCompletedOnboarding = defaults.bool(forKey: Keys.onboarding)
         lifetimeBytesFreed = (defaults.object(forKey: Keys.lifetimeBytes) as? NSNumber)?.int64Value ?? 0
+        sessionCount = defaults.integer(forKey: Keys.sessions)
+        hasAskedForReview = defaults.bool(forKey: Keys.askedReview)
+        lastSeenBuild = defaults.string(forKey: Keys.lastSeenBuild)
     }
+
+    func recordSession() { sessionCount += 1 }
+    func markReviewAsked() { hasAskedForReview = true }
 
     /// Settings → "Reset freed total".
     func resetFreedTotal() {
@@ -35,5 +56,8 @@ final class SettingsStore {
     private enum Keys {
         static let onboarding = "hasCompletedOnboarding"
         static let lifetimeBytes = "lifetimeBytesFreed"
+        static let sessions = "sessionCount"
+        static let askedReview = "hasAskedForReview"
+        static let lastSeenBuild = "lastSeenBuild"
     }
 }

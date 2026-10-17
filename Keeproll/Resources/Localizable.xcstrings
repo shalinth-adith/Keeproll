@@ -14,6 +14,18 @@
             "state": "new",
             "value": "%1$@ free of %2$@"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ खाली, कुल %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ காலி, மொத்தம் %@"
+          }
         }
       }
     },
@@ -23,6 +35,18 @@
           "stringUnit": {
             "state": "new",
             "value": "%1$@ · %2$lld%% sure"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld%% पक्का"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld%% உறுதி"
           }
         }
       }
@@ -34,6 +58,18 @@
             "state": "new",
             "value": "%1$@ · %2$lld×%3$lld"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld×%lld"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld×%lld"
+          }
         }
       }
     },
@@ -44,16 +80,55 @@
             "state": "new",
             "value": "%1$@ · ^[%2$lld copy](inflect: true)"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld कॉपी"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld நகல்கள்"
+          }
         }
       }
     },
-    "%@ · only on this iPhone": {},
+    "%@ · only on this iPhone": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · सिर्फ़ इस iPhone पर"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · இந்த iPhone இல் மட்டும்"
+          }
+        }
+      }
+    },
     "%@ → %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "new",
             "value": "%1$@ → %2$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ → %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ → %@"
           }
         }
       }
@@ -65,6 +140,18 @@
             "state": "new",
             "value": "%1$@, %2$@, ^[%3$lld item](inflect: true)"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, %lld आइटम"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, %lld உருப்படிகள்"
+          }
         }
       }
     },
@@ -75,13 +162,85 @@
             "state": "new",
             "value": "%1$@, ^[%2$lld item](inflect: true)"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %lld आइटम"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %lld உருப்படிகள்"
+          }
         }
       }
     },
-    "%@, kept": {},
-    "%@, needs access": {},
-    "%@, nothing to clean": {},
-    "%@, scanning": {},
+    "%@, kept": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, रखी गई"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, வைக்கப்பட்டது"
+          }
+        }
+      }
+    },
+    "%@, needs access": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, एक्सेस चाहिए"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, அணுகல் தேவை"
+          }
+        }
+      }
+    },
+    "%@, nothing to clean": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, साफ़ करने को कुछ नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, சுத்தம் செய்ய எதுவும் இல்லை"
+          }
+        }
+      }
+    },
+    "%@, scanning": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, स्कैन हो रहा है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, ஸ்கேன் ஆகிறது"
+          }
+        }
+      }
+    },
     "%@. Up to %@ can be freed.": {
       "localizations": {
         "en": {
@@ -89,14 +248,101 @@
             "state": "new",
             "value": "%1$@. Up to %2$@ can be freed."
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@। अधिकतम %@ खाली हो सकता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@. அதிகபட்சம் %@ காலியாக்கலாம்."
+          }
         }
       }
     },
-    "%lld couldn't be copied and stay in your library.": {},
-    "%lld from other apps": {},
-    "%lld kept": {},
-    "%lld look like Telegram": {},
-    "%lld look like WhatsApp": {},
+    "%lld couldn't be copied and stay in your library.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld कॉपी नहीं हो सके और आपकी लाइब्रेरी में ही हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ஐ நகலெடுக்க முடியவில்லை; அவை உங்கள் லைப்ரரியில் உள்ளன."
+          }
+        }
+      }
+    },
+    "%lld from other apps": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld दूसरे ऐप से"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld வேறு ஆப்களிலிருந்து"
+          }
+        }
+      }
+    },
+    "%lld kept": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld रखे"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld வைக்கப்பட்டன"
+          }
+        }
+      }
+    },
+    "%lld look like Telegram": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Telegram जैसी"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Telegram போல"
+          }
+        }
+      }
+    },
+    "%lld look like WhatsApp": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld WhatsApp जैसी"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld WhatsApp போல"
+          }
+        }
+      }
+    },
     "%lld of %lld": {
       "localizations": {
         "en": {
@@ -104,39 +350,537 @@
             "state": "new",
             "value": "%1$lld of %2$lld"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld में से %lld"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld / %lld"
+          }
         }
       }
     },
-    "%lld selected": {},
-    "%lld selected for review": {},
-    "%lld to remove": {},
+    "%lld selected": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld चुने गए"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld தேர்வானவை"
+          }
+        }
+      }
+    },
+    "%lld selected for review": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld समीक्षा के लिए चुने"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld சரிபார்ப்புக்குத் தேர்வானவை"
+          }
+        }
+      }
+    },
+    "%lld to remove": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld हटाने के लिए"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld நீக்க"
+          }
+        }
+      }
+    },
+    "+%lld": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%lld"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%lld"
+          }
+        }
+      }
+    },
     ". ": {
       "shouldTranslate": false
     },
-    "A backup of the changed contacts and events was saved before anything changed.": {},
-    "About": {},
-    "Access": {},
-    "Add": {},
-    "Add photos": {},
-    "All": {},
-    "All clear": {},
-    "All done": {},
-    "All results": {},
-    "All sorted": {},
-    "All tidy": {},
-    "All tidy. Nothing to clean right now": {},
-    "Allow": {},
-    "Allow access": {},
-    "Allow all": {},
-    "Allowed": {},
-    "AppFactory App Builder task": {},
-    "Back": {},
-    "Back to dashboard": {},
-    "Backed up first": {},
-    "Best": {},
-    "Biggest clips, compressible": {},
-    "Blurry": {},
-    "Blurry Photos": {},
+    "A Live Photo is a still plus a short clip. Converting saves the still with the same date and place; the original then goes to Review.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Photo = एक स्थिर फ़ोटो + एक छोटी क्लिप। बदलने पर स्थिर फ़ोटो उसी तारीख़ और जगह के साथ सेव होती है; फिर असली समीक्षा में जाती है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Photo = ஒரு நிலைப் படம் + ஒரு சிறு கிளிப். மாற்றினால் நிலைப் படம் அதே தேதி, இடத்துடன் சேமிக்கப்படும்; அசல் சரிபார்ப்புக்குச் செல்லும்."
+          }
+        }
+      }
+    },
+    "A backup of the changed contacts and events was saved before anything changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कुछ भी बदलने से पहले बदले गए संपर्कों और इवेंट का बैकअप सेव किया गया।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எதுவும் மாறும் முன் மாற்றப்பட்ட தொடர்புகள் மற்றும் நிகழ்வுகளின் காப்புப் பிரதி சேமிக்கப்பட்டது."
+          }
+        }
+      }
+    },
+    "A still copy of each is already in your library, with the same date and place. This removes the Live Photo originals.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हर एक की स्थिर कॉपी उसी तारीख़ और जगह के साथ पहले से आपकी लाइब्रेरी में है। यह असली Live Photos हटाता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒவ்வொன்றின் நிலைப் படமும் அதே தேதி, இடத்துடன் ஏற்கனவே உங்கள் லைப்ரரியில் உள்ளது. இது அசல் Live Photos ஐ நீக்கும்."
+          }
+        }
+      }
+    },
+    "About": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ऐप के बारे में"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஆப் பற்றி"
+          }
+        }
+      }
+    },
+    "About ^[%lld day](inflect: true) until it's full": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "भरने में लगभग %lld दिन"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிரம்ப சுமார் %lld நாட்கள்"
+          }
+        }
+      }
+    },
+    "About ^[%lld week](inflect: true) until it's full": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "भरने में लगभग %lld हफ़्ते"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிரம்ப சுமார் %lld வாரங்கள்"
+          }
+        }
+      }
+    },
+    "Access": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक्सेस"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அணுகல்"
+          }
+        }
+      }
+    },
+    "Add": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जोड़ें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சேர்"
+          }
+        }
+      }
+    },
+    "Add photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो जोड़ें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புகைப்படங்களைச் சேர்"
+          }
+        }
+      }
+    },
+    "All": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सभी"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அனைத்தும்"
+          }
+        }
+      }
+    },
+    "All clear": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सब साफ़"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எல்லாம் சரி"
+          }
+        }
+      }
+    },
+    "All done": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सब हो गया"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எல்லாம் முடிந்தது"
+          }
+        }
+      }
+    },
+    "All results": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सभी नतीजे"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எல்லா முடிவுகள்"
+          }
+        }
+      }
+    },
+    "All sorted": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सब छँट गया"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எல்லாம் வகைப்படுத்தப்பட்டது"
+          }
+        }
+      }
+    },
+    "All tidy": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सब साफ़ है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எல்லாம் சுத்தம்"
+          }
+        }
+      }
+    },
+    "All tidy. Nothing to clean right now": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सब साफ़ है। अभी साफ़ करने को कुछ नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எல்லாம் சுத்தம். இப்போது சுத்தம் செய்ய எதுவும் இல்லை"
+          }
+        }
+      }
+    },
+    "Allow": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अनुमति दें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அனுமதி"
+          }
+        }
+      }
+    },
+    "Allow access": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक्सेस दें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அணுகல் அனுமதி"
+          }
+        }
+      }
+    },
+    "Allow all": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सभी को अनुमति दें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அனைத்தையும் அனுமதி"
+          }
+        }
+      }
+    },
+    "Allowed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अनुमति है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அனுமதிக்கப்பட்டது"
+          }
+        }
+      }
+    },
+    "AppFactory App Builder task": {
+      "extractionState": "stale",
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AppFactory App Builder task"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AppFactory App Builder task"
+          }
+        }
+      }
+    },
+    "Back": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वापस"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பின்"
+          }
+        }
+      }
+    },
+    "Back to dashboard": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "डैशबोर्ड पर वापस"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "டாஷ்போர்டுக்குத் திரும்பு"
+          }
+        }
+      }
+    },
+    "Backed up first": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पहले बैकअप लिया"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முதலில் காப்புப் பிரதி"
+          }
+        }
+      }
+    },
+    "Best": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सबसे अच्छी"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சிறந்தது"
+          }
+        }
+      }
+    },
+    "Biggest clips, compressible": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सबसे बड़ी क्लिप, कंप्रेस हो सकती हैं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெரிய கிளிப்புகள், சுருக்கலாம்"
+          }
+        }
+      }
+    },
+    "Blurry": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "धुंधली"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மங்கலானவை"
+          }
+        }
+      }
+    },
+    "Blurry Photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "धुंधली फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மங்கலான புகைப்படங்கள்"
+          }
+        }
+      }
+    },
     "Blurry photo, %@, %@%@": {
       "localizations": {
         "en": {
@@ -144,36 +888,485 @@
             "state": "new",
             "value": "Blurry photo, %1$@, %2$@%3$@"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "धुंधली फ़ोटो, %@, %@%@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மங்கலான புகைப்படம், %@, %@%@"
+          }
         }
       }
     },
-    "Boarding passes": {},
-    "Bursts and duplicate shots": {},
-    "Calendar": {},
-    "Calendar access needed": {},
-    "Calendar changes aren't available.": {},
-    "Calendar couldn't save the change.": {},
-    "Can't play this video": {},
-    "Change": {},
-    "Checking photos for blur…": {},
-    "Checking photos · %lld%%": {},
-    "Checking where photos came from…": {},
-    "Clear": {},
-    "Clear cache": {},
-    "Clear recommended": {},
-    "Clear scan cache": {},
-    "Clear the scan cache?": {},
-    "Clear very likely": {},
-    "Cleared. The next scan will take longer.": {},
-    "Close": {},
-    "Codes stop working within minutes · taken %@": {},
-    "Compare": {},
-    "Compress": {},
-    "Compress to save about %@": {},
-    "Compress video": {},
-    "Compressing": {},
-    "Compressing… %lld%%": {},
-    "Confirm ^[%lld change](inflect: true)": {},
+    "Boarding passes": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बोर्डिंग पास"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "போர்டிங் பாஸ்கள்"
+          }
+        }
+      }
+    },
+    "Bursts and duplicate shots": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बर्स्ट और डुप्लिकेट शॉट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பர்ஸ்ட் மற்றும் நகல் ஷாட்கள்"
+          }
+        }
+      }
+    },
+    "Calendar": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कैलेंडर"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காலண்டர்"
+          }
+        }
+      }
+    },
+    "Calendar access needed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कैलेंडर एक्सेस चाहिए"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காலண்டர் அணுகல் தேவை"
+          }
+        }
+      }
+    },
+    "Calendar changes aren't available.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कैलेंडर बदलाव उपलब्ध नहीं हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காலண்டர் மாற்றங்கள் கிடைக்கவில்லை."
+          }
+        }
+      }
+    },
+    "Calendar couldn't save the change.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कैलेंडर बदलाव सेव नहीं कर सका।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காலண்டரால் மாற்றத்தைச் சேமிக்க முடியவில்லை."
+          }
+        }
+      }
+    },
+    "Can't play this video": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह वीडियो नहीं चल सकता"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த வீடியோவை இயக்க முடியவில்லை"
+          }
+        }
+      }
+    },
+    "Change": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बदलें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மாற்று"
+          }
+        }
+      }
+    },
+    "Checking photos for blur…": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "धुंधलेपन के लिए फ़ोटो जाँच रहे हैं…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மங்கலுக்காகப் புகைப்படங்களைச் சரிபார்க்கிறது…"
+          }
+        }
+      }
+    },
+    "Checking photos · %lld%%": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो जाँच रहे हैं · %lld%%"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புகைப்படங்களைச் சரிபார்க்கிறது · %lld%%"
+          }
+        }
+      }
+    },
+    "Checking where photos came from…": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो कहाँ से आईं, जाँच रहे हैं…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புகைப்படங்கள் எங்கிருந்து வந்தன என்று சரிபார்க்கிறது…"
+          }
+        }
+      }
+    },
+    "Cleanups are outpacing new photos.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सफ़ाई नई फ़ोटो से आगे चल रही है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சுத்தம் செய்வது புதிய புகைப்படங்களை விட வேகமாக உள்ளது."
+          }
+        }
+      }
+    },
+    "Clear": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீக்கு"
+          }
+        }
+      }
+    },
+    "Clear cache": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कैश हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கேஷ் நீக்கு"
+          }
+        }
+      }
+    },
+    "Clear recommended": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सुझाव हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பரிந்துரைகளை நீக்கு"
+          }
+        }
+      }
+    },
+    "Clear scan cache": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्कैन कैश हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்கேன் கேஷை நீக்கு"
+          }
+        }
+      }
+    },
+    "Clear the scan cache?": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्कैन कैश हटाएँ?"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்கேன் கேஷை நீக்கவா?"
+          }
+        }
+      }
+    },
+    "Clear very likely": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "'बहुत संभावित' हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "'மிகச் சாத்தியம்' தேர்வை நீக்கு"
+          }
+        }
+      }
+    },
+    "Cleared. The next scan will take longer.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हटा दिया। अगला स्कैन ज़्यादा समय लेगा।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீக்கப்பட்டது. அடுத்த ஸ்கேன் அதிக நேரம் எடுக்கும்."
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बंद करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மூடு"
+          }
+        }
+      }
+    },
+    "Codes stop working within minutes · taken %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोड मिनटों में बेकार हो जाते हैं · %@ को लिया"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "குறியீடுகள் நிமிடங்களில் செயலிழக்கும் · %@ அன்று எடுத்தது"
+          }
+        }
+      }
+    },
+    "Codes, passes and tickets that are past their date, read on your iPhone.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोड, पास और टिकट जिनकी तारीख़ निकल गई, आपके iPhone पर पढ़े गए।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தேதி கடந்த குறியீடுகள், பாஸ்கள், டிக்கெட்டுகள், உங்கள் iPhone இல் படிக்கப்பட்டவை."
+          }
+        }
+      }
+    },
+    "Compare": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "तुलना करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒப்பிடு"
+          }
+        }
+      }
+    },
+    "Compress": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कंप्रेस करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சுருக்கு"
+          }
+        }
+      }
+    },
+    "Compress to save about %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "लगभग %@ बचाने के लिए कंप्रेस करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சுமார் %@ சேமிக்கச் சுருக்கு"
+          }
+        }
+      }
+    },
+    "Compress video": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वीडियो कंप्रेस करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வீடியோவைச் சுருக்கு"
+          }
+        }
+      }
+    },
+    "Compressing": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कंप्रेस हो रहा है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சுருக்குகிறது"
+          }
+        }
+      }
+    },
+    "Compressing… %lld%%": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कंप्रेस हो रहा है… %lld%%"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சுருக்குகிறது… %lld%%"
+          }
+        }
+      }
+    },
+    "Confirm ^[%lld change](inflect: true)": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld बदलाव पक्के करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld மாற்றங்களை உறுதிசெய்"
+          }
+        }
+      }
+    },
     "Confirm ^[%lld item](inflect: true) · %@": {
       "localizations": {
         "en": {
@@ -181,14 +1374,187 @@
             "state": "new",
             "value": "Confirm ^[%1$lld item](inflect: true) · %2$@"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld आइटम पक्के करें · %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld உருப்படிகளை உறுதிசெய் · %@"
+          }
         }
       }
     },
-    "Contact changes aren't available.": {},
-    "Contacts": {},
-    "Contacts & calendar": {},
-    "Contacts access needed": {},
-    "Copies of these are safe in your vault. This removes the originals from your library.": {},
+    "Contact changes aren't available.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "संपर्क बदलाव उपलब्ध नहीं हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தொடர்பு மாற்றங்கள் கிடைக்கவில்லை."
+          }
+        }
+      }
+    },
+    "Contacts": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "संपर्क"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தொடர்புகள்"
+          }
+        }
+      }
+    },
+    "Contacts & calendar": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "संपर्क और कैलेंडर"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தொடர்புகள் & காலண்டர்"
+          }
+        }
+      }
+    },
+    "Contacts access needed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "संपर्क एक्सेस चाहिए"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தொடர்புகள் அணுகல் தேவை"
+          }
+        }
+      }
+    },
+    "Continue": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जारी रखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தொடர்"
+          }
+        }
+      }
+    },
+    "Convert": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बदलें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மாற்று"
+          }
+        }
+      }
+    },
+    "Convert ^[%lld Live Photo](inflect: true) · save %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Convert ^[%1$lld Live Photo](inflect: true) · save %2$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Live Photos बदलें · %@ बचाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Live Photos ஐ மாற்று · %@ சேமி"
+          }
+        }
+      }
+    },
+    "Convert to stills": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्थिर फ़ोटो में बदलें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிலைப் படங்களாக மாற்று"
+          }
+        }
+      }
+    },
+    "Converting": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बदल रहे हैं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மாற்றுகிறது"
+          }
+        }
+      }
+    },
+    "Copies of these are safe in your vault. This removes the originals from your library.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इनकी कॉपी आपके वॉल्ट में सुरक्षित हैं। यह असली फ़ाइलें आपकी लाइब्रेरी से हटाता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இவற்றின் நகல்கள் உங்கள் பெட்டகத்தில் பாதுகாப்பாக உள்ளன. இது அசல்களை உங்கள் லைப்ரரியிலிருந்து நீக்கும்."
+          }
+        }
+      }
+    },
     "Copying %lld of %lld…": {
       "localizations": {
         "en": {
@@ -196,132 +1562,2370 @@
             "state": "new",
             "value": "Copying %1$lld of %2$lld…"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld में से %lld कॉपी हो रहे हैं…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld / %lld நகலெடுக்கிறது…"
+          }
         }
       }
     },
-    "Couldn't read this iPhone's storage.": {},
-    "Couldn't save a backup first, so nothing was changed.": {},
-    "Couldn't save to your library.": {},
-    "Coupons and offers": {},
-    "Currently %@": {},
-    "Data on this iPhone": {},
-    "Delete contact": {},
-    "Delete this contact": {},
-    "Deleted photos stay in Recently Deleted for 30 days. Empty it in the Photos app to get the space back now.": {},
-    "Delivered weeks ago · taken %@": {},
-    "Deliveries": {},
-    "Deselect": {},
-    "Deselect all": {},
-    "Don't delete": {},
-    "Done": {},
-    "Drag sideways across photos to select several at once.": {},
-    "Duplicate Contacts": {},
-    "Duplicate events": {},
-    "Duplicate events and events over a year old": {},
-    "Duplicates and events over a year old": {},
-    "Event was on %@": {},
-    "Every contact looks unique.": {},
-    "Every photo Keeproll checked looks like it was taken on this iPhone.": {},
-    "Every photo Keeproll checked looks sharp.": {},
-    "Exact copies": {},
-    "Expired": {},
-    "Expired %@": {},
-    "Expired Screenshots": {},
-    "Extra shots from similar groups and blurry photos. Nothing is removed until you confirm on Review.": {},
-    "Favourites are never suggested. Drag sideways to select several at once.": {},
-    "Flight was on %@": {},
-    "Forwards saved by WhatsApp and Telegram": {},
-    "Freed so far": {},
-    "From chats": {},
-    "Group cleaned": {},
-    "Home": {},
-    "It may still be downloading from iCloud.": {},
-    "JPEG": {},
-    "Just now": {},
-    "KEEP": {},
-    "Keep": {},
-    "Keep Keeproll open until it finishes.": {},
-    "Keep all": {},
-    "Keep as is": {},
-    "Keep best only": {},
-    "Keep one": {},
-    "Keep private photos out of your library, behind Face ID.": {},
-    "Keep this item": {},
-    "Keep what matters": {},
-    "Keeproll": {},
-    "Keeproll can only see the photos you chose. Anything outside that selection won't be scanned.": {},
-    "Keeproll checks contacts on this iPhone for duplicates. Nothing is uploaded.": {},
-    "Keeproll didn't find duplicates or near-identical shots.": {},
-    "Keeproll doesn't have access to your contacts.": {},
-    "Keeproll doesn't have access to your photos.": {},
-    "Keeproll has no account, no analytics and no network access. Photos, contacts and events are read on this iPhone and never leave it. Contacts and calendar changes are backed up to a file you can share before anything is changed.": {},
-    "Keeproll looks for duplicate events and events over a year old. Nothing is uploaded, and nothing is removed until you confirm on Review.": {},
-    "Keeproll needs access to your photos to find what's taking space. Nothing leaves your iPhone.": {},
-    "Keeproll needs access to your photos to move them into the vault.": {},
-    "Keeproll reads these on your iPhone only. Nothing is uploaded, and nothing is removed until you confirm on Review.": {},
-    "Keeproll saves a backup before changing any contact or event. They have no Recently Deleted, so the backup is your undo.": {},
-    "Keeproll saves a smaller copy (HEVC, up to 1080p) to your library first, with the same date and place. The original then goes to Review. Nothing is deleted until you confirm.": {},
-    "Large Videos": {},
-    "Last scan": {},
-    "Likely": {},
-    "Limited to selected photos": {},
-    "Loading storage": {},
-    "Locked": {},
-    "Locks again when Keeproll goes to the background.": {},
-    "Looking for similar photos…": {},
-    "Looking for things to clean…": {},
-    "Looking…": {},
-    "Made for": {},
-    "Make Best": {},
-    "Make primary": {},
-    "Merge ^[%lld contact](inflect: true) into one": {},
-    "Merge all": {},
-    "Merge into one": {},
-    "Merge queued": {},
-    "Merged result": {},
-    "Merging keeps every number and email. A backup is saved before anything changes.": {},
-    "Moved to Vault": {},
-    "Needs access · tap to allow": {},
-    "No blurry photos": {},
-    "No camera data plus one more sign.": {},
-    "No camera data, and the size or file name of a chat app.": {},
-    "No duplicate events, and nothing older than a year.": {},
-    "No duplicates": {},
-    "No large videos": {},
-    "No name": {},
-    "No screenshots are older than 30 days.": {},
-    "No screenshots of codes, passes or tickets that are past their date.": {},
-    "No similar photos": {},
-    "No videos match this size.": {},
-    "Not allowed": {},
-    "Not asked yet": {},
-    "Not now": {},
-    "Not yet": {},
-    "Nothing from chats": {},
-    "Nothing has expired": {},
-    "Nothing in your library changes. The next scan recomputes photo features, so it takes as long as the first one did.": {},
-    "Nothing scanned": {},
-    "Nothing selected": {},
-    "Nothing to clean": {},
-    "Nothing to clean here": {},
-    "Nothing to sort": {},
-    "Nothing to tidy": {},
-    "OK": {},
-    "Okay, let's go": {},
-    "Old Calendar Events": {},
-    "Old codes, passes and tickets": {},
-    "Older than 30 days": {},
-    "Older than a year": {},
-    "One photo at a time. Right to keep, left to remove.": {},
-    "One-time codes": {},
-    "Open Photos": {},
-    "Open Settings": {},
-    "Out-of-focus photos": {},
-    "Over 100 MB": {},
-    "Over 500 MB": {},
-    "Parking spots": {},
-    "Photo access needed": {},
-    "Photo features kept so rescans take seconds. Safe to clear.": {},
+    "Couldn't read this iPhone's storage.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इस iPhone का स्टोरेज पढ़ा नहीं जा सका।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த iPhone இன் சேமிப்பகத்தைப் படிக்க முடியவில்லை."
+          }
+        }
+      }
+    },
+    "Couldn't save a backup first, so nothing was changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पहले बैकअप नहीं बन सका, इसलिए कुछ नहीं बदला।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முதலில் காப்புப் பிரதி சேமிக்க முடியவில்லை, எனவே எதுவும் மாறவில்லை."
+          }
+        }
+      }
+    },
+    "Couldn't save to your library.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आपकी लाइब्रेरी में सेव नहीं हो सका।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உங்கள் லைப்ரரியில் சேமிக்க முடியவில்லை."
+          }
+        }
+      }
+    },
+    "Coupons and offers": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कूपन और ऑफ़र"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கூப்பன்கள் மற்றும் சலுகைகள்"
+          }
+        }
+      }
+    },
+    "Currently %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अभी %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தற்போது %@"
+          }
+        }
+      }
+    },
+    "Data on this iPhone": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इस iPhone पर डेटा"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த iPhone இல் உள்ள தரவு"
+          }
+        }
+      }
+    },
+    "Delete contact": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "संपर्क हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தொடர்பை நீக்கு"
+          }
+        }
+      }
+    },
+    "Delete this contact": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह संपर्क हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்தத் தொடர்பை நீக்கு"
+          }
+        }
+      }
+    },
+    "Deleted photos stay in Recently Deleted for 30 days. Empty it in the Photos app to get the space back now.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हटाई गई फ़ोटो 30 दिन 'हाल ही में हटाए गए' में रहती हैं। जगह अभी पाने के लिए फ़ोटो ऐप में उसे खाली करें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீக்கிய புகைப்படங்கள் 30 நாட்கள் 'சமீபத்தில் நீக்கியவை' இல் இருக்கும். இடத்தை இப்போதே பெற Photos ஆப்பில் அதைக் காலி செய்யவும்."
+          }
+        }
+      }
+    },
+    "Delivered weeks ago · taken %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हफ़्तों पहले डिलीवर · %@ को लिया"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வாரங்களுக்கு முன் டெலிவர் · %@ அன்று எடுத்தது"
+          }
+        }
+      }
+    },
+    "Deliveries": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "डिलीवरी"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "டெலிவரிகள்"
+          }
+        }
+      }
+    },
+    "Deselect": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चयन हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தேர்வு நீக்கு"
+          }
+        }
+      }
+    },
+    "Deselect all": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सभी का चयन हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அனைத்தின் தேர்வை நீக்கு"
+          }
+        }
+      }
+    },
+    "Diagnostics": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "डायग्नोस्टिक्स"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கண்டறிதல் அறிக்கைகள்"
+          }
+        }
+      }
+    },
+    "Don't delete": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "न हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீக்க வேண்டாம்"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हो गया"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முடிந்தது"
+          }
+        }
+      }
+    },
+    "Drag sideways across photos to select several at once.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कई फ़ोटो एक साथ चुनने के लिए उन पर आड़ा खींचें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பலவற்றை ஒரே நேரத்தில் தேர்வு செய்ய புகைப்படங்கள் மீது பக்கவாட்டில் இழுக்கவும்."
+          }
+        }
+      }
+    },
+    "Duplicate Contacts": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "डुप्लिकेट संपर्क"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நகல் தொடர்புகள்"
+          }
+        }
+      }
+    },
+    "Duplicate events": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "डुप्लिकेट इवेंट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நகல் நிகழ்வுகள்"
+          }
+        }
+      }
+    },
+    "Duplicate events and events over a year old": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "डुप्लिकेट इवेंट और एक साल से पुराने इवेंट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நகல் நிகழ்வுகளும் ஓராண்டுக்கும் பழைய நிகழ்வுகளும்"
+          }
+        }
+      }
+    },
+    "Duplicates and events over a year old": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "डुप्लिकेट और एक साल से पुराने इवेंट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நகல்களும் ஓராண்டுக்கும் பழைய நிகழ்வுகளும்"
+          }
+        }
+      }
+    },
+    "Event was on %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इवेंट %@ को था"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிகழ்வு %@ அன்று"
+          }
+        }
+      }
+    },
+    "Every contact looks unique.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हर संपर्क अलग लगता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒவ்வொரு தொடர்பும் தனித்துவமானது."
+          }
+        }
+      }
+    },
+    "Every photo Keeproll checked looks like it was taken on this iPhone.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll ने जो फ़ोटो जाँचीं, सब इसी iPhone पर ली गई लगती हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll சரிபார்த்த எல்லாப் புகைப்படங்களும் இந்த iPhone இல் எடுத்தவை போலத் தெரிகின்றன."
+          }
+        }
+      }
+    },
+    "Every photo Keeproll checked looks sharp.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll ने जो फ़ोटो जाँचीं, सब साफ़ हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll சரிபார்த்த எல்லாப் புகைப்படங்களும் தெளிவாக உள்ளன."
+          }
+        }
+      }
+    },
+    "Exact copies": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हूबहू कॉपी"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அப்படியே நகல்கள்"
+          }
+        }
+      }
+    },
+    "Expired": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "समय-सीमा समाप्त"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காலாவதி"
+          }
+        }
+      }
+    },
+    "Expired %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ को समाप्त"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ அன்று காலாவதி"
+          }
+        }
+      }
+    },
+    "Expired Screenshots": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पुराने स्क्रीनशॉट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காலாவதி ஸ்கிரீன்ஷாட்கள்"
+          }
+        }
+      }
+    },
+    "Extra shots from similar groups and blurry photos. Nothing is removed until you confirm on Review.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मिलते-जुलते समूहों की अतिरिक्त फ़ोटो और धुंधली फ़ोटो। समीक्षा में पुष्टि तक कुछ नहीं हटता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒத்த குழுக்களின் கூடுதல் ஷாட்களும் மங்கலான புகைப்படங்களும். சரிபார்ப்பில் உறுதிசெய்யும் வரை எதுவும் நீக்கப்படாது."
+          }
+        }
+      }
+    },
+    "Favourites are never suggested. Drag sideways to select several at once.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पसंदीदा कभी नहीं सुझाई जातीं। कई चुनने के लिए आड़ा खींचें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பிடித்தவை ஒருபோதும் பரிந்துரைக்கப்படாது. பலவற்றைத் தேர்வு செய்ய பக்கவாட்டில் இழுக்கவும்."
+          }
+        }
+      }
+    },
+    "Filling at %@ a week. “Full” means under %@ free, where iOS starts to struggle.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Filling at %1$@ a week. “Full” means under %2$@ free, where iOS starts to struggle."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हर हफ़्ते %@ भर रहा है। “भरा” का मतलब %@ से कम खाली, जहाँ iOS अटकने लगता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வாரத்திற்கு %@ நிரம்புகிறது. “நிரம்பியது” என்றால் %@ க்கும் குறைவான காலி இடம், அங்கே iOS சிரமப்படத் தொடங்கும்."
+          }
+        }
+      }
+    },
+    "Flight was on %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़्लाइट %@ को थी"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "விமானம் %@ அன்று"
+          }
+        }
+      }
+    },
+    "Forwards saved by WhatsApp and Telegram": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WhatsApp और Telegram से सेव हुए फ़ॉरवर्ड"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WhatsApp, Telegram சேமித்த ஃபார்வர்டுகள்"
+          }
+        }
+      }
+    },
+    "Free space has barely moved over the last few weeks.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पिछले कुछ हफ़्तों में खाली जगह लगभग नहीं बदली।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கடந்த சில வாரங்களாக காலி இடம் பெரிதாக மாறவில்லை."
+          }
+        }
+      }
+    },
+    "Freed so far": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अब तक खाली"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இதுவரை காலியானது"
+          }
+        }
+      }
+    },
+    "From chats": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चैट से"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சாட்டிலிருந்து"
+          }
+        }
+      }
+    },
+    "Gaining %@ a week": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हर हफ़्ते %@ बढ़ रहा है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வாரத்திற்கு %@ கூடுகிறது"
+          }
+        }
+      }
+    },
+    "Group cleaned": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "समूह साफ़ हुआ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "குழு சுத்தம் செய்யப்பட்டது"
+          }
+        }
+      }
+    },
+    "Holding steady": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्थिर है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிலையாக உள்ளது"
+          }
+        }
+      }
+    },
+    "Home": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "होम"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முகப்பு"
+          }
+        }
+      }
+    },
+    "Home tells you where your free space is heading.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "होम बताता है कि आपकी खाली जगह किधर जा रही है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உங்கள் காலி இடம் எங்கே செல்கிறது என்று முகப்பு சொல்லும்."
+          }
+        }
+      }
+    },
+    "I freed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मैंने खाली किया"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நான் காலியாக்கியது"
+          }
+        }
+      }
+    },
+    "I freed %@ with Keeproll": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मैंने Keeproll से %@ खाली किया"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll மூலம் நான் %@ காலியாக்கினேன்"
+          }
+        }
+      }
+    },
+    "It may still be downloading from iCloud.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "शायद यह अभी iCloud से डाउनलोड हो रहा है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இது இன்னும் iCloud இலிருந்து பதிவிறங்கிக் கொண்டிருக்கலாம்."
+          }
+        }
+      }
+    },
+    "JPEG": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "JPEG"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "JPEG"
+          }
+        }
+      }
+    },
+    "Just now": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अभी-अभी"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இப்போதுதான்"
+          }
+        }
+      }
+    },
+    "KEEP": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "रखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வைத்திரு"
+          }
+        }
+      }
+    },
+    "Keep": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "रखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வைத்திரு"
+          }
+        }
+      }
+    },
+    "Keep Keeproll open until it finishes.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पूरा होने तक Keeproll खुला रखें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முடியும் வரை Keeproll ஐத் திறந்து வைத்திருங்கள்."
+          }
+        }
+      }
+    },
+    "Keep all": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सभी रखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எல்லாம் வைத்திரு"
+          }
+        }
+      }
+    },
+    "Keep as is": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जैसा है वैसा रखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அப்படியே வைத்திரு"
+          }
+        }
+      }
+    },
+    "Keep best only": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सिर्फ़ सबसे अच्छी रखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சிறந்ததை மட்டும் வைத்திரு"
+          }
+        }
+      }
+    },
+    "Keep one": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक रखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒன்றை வைத்திரு"
+          }
+        }
+      }
+    },
+    "Keep private photos out of your library, behind Face ID.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "निजी फ़ोटो लाइब्रेरी से बाहर, Face ID के पीछे रखें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தனிப்பட்ட புகைப்படங்களை லைப்ரரிக்கு வெளியே, Face ID பின்னால் வைத்திருங்கள்."
+          }
+        }
+      }
+    },
+    "Keep the still, drop the clip": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्थिर फ़ोटो रखें, क्लिप हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிலைப் படத்தை வை, கிளிப்பை நீக்கு"
+          }
+        }
+      }
+    },
+    "Keep the still, drop the clip. Same date and place.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्थिर फ़ोटो रखें, क्लिप हटाएँ। वही तारीख़ और जगह।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிலைப் படத்தை வை, கிளிப்பை நீக்கு. அதே தேதி, இடம்."
+          }
+        }
+      }
+    },
+    "Keep this item": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इसे रखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இதை வைத்திரு"
+          }
+        }
+      }
+    },
+    "Keep what matters": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जो मायने रखता है, वही रखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முக்கியமானதை வைத்திரு"
+          }
+        }
+      }
+    },
+    "Keeproll": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll"
+          }
+        }
+      }
+    },
+    "Keeproll %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll %@"
+          }
+        }
+      }
+    },
+    "Keeproll can only see the photos you chose. Anything outside that selection won't be scanned.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll सिर्फ़ आपकी चुनी हुई फ़ोटो देख सकता है। उसके बाहर कुछ भी स्कैन नहीं होगा।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீங்கள் தேர்ந்த புகைப்படங்களை மட்டுமே Keeproll பார்க்க முடியும். அதற்கு வெளியே எதுவும் ஸ்கேன் ஆகாது."
+          }
+        }
+      }
+    },
+    "Keeproll checks contacts on this iPhone for duplicates. Nothing is uploaded.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll इस iPhone के संपर्कों में डुप्लिकेट जाँचता है। कुछ भी अपलोड नहीं होता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll இந்த iPhone இன் தொடர்புகளில் நகல்களைச் சரிபார்க்கிறது. எதுவும் பதிவேற்றப்படாது."
+          }
+        }
+      }
+    },
+    "Keeproll didn't find duplicates or near-identical shots.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll को डुप्लिकेट या लगभग एक जैसी फ़ोटो नहीं मिलीं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll க்கு நகல்களோ ஏறக்குறைய ஒத்த ஷாட்களோ கிடைக்கவில்லை."
+          }
+        }
+      }
+    },
+    "Keeproll doesn't have access to your contacts.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll के पास आपके संपर्कों का एक्सेस नहीं है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll க்கு உங்கள் தொடர்புகள் அணுகல் இல்லை."
+          }
+        }
+      }
+    },
+    "Keeproll doesn't have access to your photos.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll के पास आपकी फ़ोटो का एक्सेस नहीं है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll க்கு உங்கள் புகைப்பட அணுகல் இல்லை."
+          }
+        }
+      }
+    },
+    "Keeproll has no account, no analytics and no network access. Photos, contacts and events are read on this iPhone and never leave it. Contacts and calendar changes are backed up to a file you can share before anything is changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll में न अकाउंट है, न एनालिटिक्स, न नेटवर्क एक्सेस। फ़ोटो, संपर्क और इवेंट इसी iPhone पर पढ़े जाते हैं और कभी बाहर नहीं जाते। संपर्क और कैलेंडर बदलने से पहले उनका बैकअप एक फ़ाइल में होता है जिसे आप शेयर कर सकते हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll இல் கணக்கு இல்லை, அனலிட்டிக்ஸ் இல்லை, நெட்வொர்க் அணுகல் இல்லை. புகைப்படங்கள், தொடர்புகள், நிகழ்வுகள் இந்த iPhone இலேயே படிக்கப்படும், ஒருபோதும் வெளியேறாது. தொடர்பு மற்றும் காலண்டர் மாற்றங்களுக்கு முன் நீங்கள் பகிரக்கூடிய கோப்பில் காப்புப் பிரதி எடுக்கப்படும்."
+          }
+        }
+      }
+    },
+    "Keeproll looks for duplicate events and events over a year old. Nothing is uploaded, and nothing is removed until you confirm on Review.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll डुप्लिकेट इवेंट और एक साल से पुराने इवेंट खोजता है। कुछ अपलोड नहीं होता, और समीक्षा में पुष्टि तक कुछ नहीं हटता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll நகல் நிகழ்வுகளையும் ஓராண்டுக்கும் பழைய நிகழ்வுகளையும் தேடும். எதுவும் பதிவேற்றப்படாது, சரிபார்ப்பில் உறுதிசெய்யும் வரை எதுவும் நீக்கப்படாது."
+          }
+        }
+      }
+    },
+    "Keeproll needs access to your photos to find what's taking space. Nothing leaves your iPhone.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जगह क्या घेर रहा है यह जानने के लिए Keeproll को आपकी फ़ोटो का एक्सेस चाहिए। कुछ भी आपके iPhone से बाहर नहीं जाता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இடத்தை எது எடுக்கிறது என்று கண்டறிய Keeproll க்கு உங்கள் புகைப்பட அணுகல் தேவை. எதுவும் உங்கள் iPhone ஐ விட்டு வெளியேறாது."
+          }
+        }
+      }
+    },
+    "Keeproll needs access to your photos to move them into the vault.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो को वॉल्ट में ले जाने के लिए Keeproll को आपकी फ़ोटो का एक्सेस चाहिए।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புகைப்படங்களைப் பெட்டகத்திற்கு மாற்ற Keeproll க்கு உங்கள் புகைப்பட அணுகல் தேவை."
+          }
+        }
+      }
+    },
+    "Keeproll reads these on your iPhone only. Nothing is uploaded, and nothing is removed until you confirm on Review.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll इन्हें सिर्फ़ आपके iPhone पर पढ़ता है। कुछ अपलोड नहीं होता, और समीक्षा में पुष्टि तक कुछ नहीं हटता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll இவற்றை உங்கள் iPhone இல் மட்டுமே படிக்கும். எதுவும் பதிவேற்றப்படாது, சரிபார்ப்பில் உறுதிசெய்யும் வரை எதுவும் நீக்கப்படாது."
+          }
+        }
+      }
+    },
+    "Keeproll saves a backup before changing any contact or event. They have no Recently Deleted, so the backup is your undo.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "किसी भी संपर्क या इवेंट को बदलने से पहले Keeproll बैकअप सेव करता है। इनके लिए 'हाल ही में हटाए गए' नहीं होता, इसलिए बैकअप ही आपका पूर्ववत है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எந்தத் தொடர்பையோ நிகழ்வையோ மாற்றும் முன் Keeproll காப்புப் பிரதி சேமிக்கும். அவற்றுக்கு 'சமீபத்தில் நீக்கியவை' இல்லை, எனவே காப்புப் பிரதியே உங்கள் செயல்தவிர்ப்பு."
+          }
+        }
+      }
+    },
+    "Keeproll saves a smaller copy (HEVC, up to 1080p) to your library first, with the same date and place. The original then goes to Review. Nothing is deleted until you confirm.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll पहले आपकी लाइब्रेरी में छोटी कॉपी (HEVC, 1080p तक) सेव करता है, उसी तारीख़ और जगह के साथ। फिर असली फ़ाइल समीक्षा में जाती है। आपकी पुष्टि तक कुछ नहीं हटता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll முதலில் உங்கள் லைப்ரரியில் அதே தேதி மற்றும் இடத்துடன் சிறிய நகலை (HEVC, 1080p வரை) சேமிக்கும். பின்னர் அசல் சரிபார்ப்புக்குச் செல்லும். நீங்கள் உறுதிசெய்யும் வரை எதுவும் நீக்கப்படாது."
+          }
+        }
+      }
+    },
+    "Keeproll saves a still copy of each one to your library first, with the same date, place and favourite. The Live Photo originals then go to Review. Nothing is deleted until you confirm.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll पहले हर एक की स्थिर कॉपी उसी तारीख़, जगह और पसंदीदा निशान के साथ आपकी लाइब्रेरी में सेव करता है। फिर असली Live Photos समीक्षा में जाती हैं। आपकी पुष्टि तक कुछ नहीं हटता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll முதலில் ஒவ்வொன்றின் நிலைப் படத்தையும் அதே தேதி, இடம், பிடித்தக் குறியுடன் உங்கள் லைப்ரரியில் சேமிக்கும். பின்னர் அசல் Live Photos சரிபார்ப்புக்குச் செல்லும். நீங்கள் உறுதிசெய்யும் வரை எதுவும் நீக்கப்படாது."
+          }
+        }
+      }
+    },
+    "Large Videos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बड़े वीडियो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெரிய வீடியோக்கள்"
+          }
+        }
+      }
+    },
+    "Last scan": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पिछला स्कैन"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கடைசி ஸ்கேன்"
+          }
+        }
+      }
+    },
+    "Learning your pace": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आपकी रफ़्तार समझ रहे हैं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உங்கள் வேகத்தைக் கற்கிறது"
+          }
+        }
+      }
+    },
+    "Likely": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "संभावित"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சாத்தியம்"
+          }
+        }
+      }
+    },
+    "Limited to selected photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सिर्फ़ चुनी हुई फ़ोटो तक"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தேர்ந்த புகைப்படங்களுக்கு மட்டும்"
+          }
+        }
+      }
+    },
+    "Live Photo, clip %@, %@%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Live Photo, clip %1$@, %2$@%3$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Photo, क्लिप %@, %@%@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Photo, கிளிப் %@, %@%@"
+          }
+        }
+      }
+    },
+    "Live Photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Photos"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Photos"
+          }
+        }
+      }
+    },
+    "Live Photos to stills": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Photos से स्थिर फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Photos → நிலைப் படங்கள்"
+          }
+        }
+      }
+    },
+    "Loading storage": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्टोरेज लोड हो रहा है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சேமிப்பகம் ஏறுகிறது"
+          }
+        }
+      }
+    },
+    "Locked": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "लॉक"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பூட்டியுள்ளது"
+          }
+        }
+      }
+    },
+    "Locks again when Keeproll goes to the background.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll बैकग्राउंड में जाते ही फिर लॉक हो जाता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll பின்னணிக்குச் சென்றதும் மீண்டும் பூட்டப்படும்."
+          }
+        }
+      }
+    },
+    "Looking for Live Photos…": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Photos खोज रहे हैं…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Photos ஐத் தேடுகிறது…"
+          }
+        }
+      }
+    },
+    "Looking for similar photos…": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मिलती-जुलती फ़ोटो खोज रहे हैं…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒத்த புகைப்படங்களைத் தேடுகிறது…"
+          }
+        }
+      }
+    },
+    "Looking for things to clean…": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "साफ़ करने की चीज़ें खोज रहे हैं…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சுத்தம் செய்ய வேண்டியவற்றைத் தேடுகிறது…"
+          }
+        }
+      }
+    },
+    "Looking…": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "खोज रहे हैं…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தேடுகிறது…"
+          }
+        }
+      }
+    },
+    "Made by": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बनाया है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உருவாக்கியவர்"
+          }
+        }
+      }
+    },
+    "Made for": {
+      "extractionState": "stale",
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "किसके लिए बना"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இதற்காக"
+          }
+        }
+      }
+    },
+    "Make Best": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सबसे अच्छी बनाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சிறந்ததாக்கு"
+          }
+        }
+      }
+    },
+    "Make primary": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मुख्य बनाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முதன்மையாக்கு"
+          }
+        }
+      }
+    },
+    "Merge ^[%lld contact](inflect: true) into one": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld संपर्कों को एक में मिलाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld தொடர்புகளை ஒன்றாக இணை"
+          }
+        }
+      }
+    },
+    "Merge all": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सभी मिलाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அனைத்தையும் இணை"
+          }
+        }
+      }
+    },
+    "Merge into one": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक में मिलाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒன்றாக இணை"
+          }
+        }
+      }
+    },
+    "Merge queued": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मिलाना तय"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இணைக்க வரிசையில்"
+          }
+        }
+      }
+    },
+    "Merged result": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मिला हुआ नतीजा"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இணைந்த முடிவு"
+          }
+        }
+      }
+    },
+    "Merging keeps every number and email. A backup is saved before anything changes.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मिलाने पर हर नंबर और ईमेल बना रहता है। कुछ भी बदलने से पहले बैकअप सेव होता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இணைப்பதால் ஒவ்வொரு எண்ணும் மின்னஞ்சலும் அப்படியே இருக்கும். மாற்றும் முன் காப்புப் பிரதி சேமிக்கப்படும்."
+          }
+        }
+      }
+    },
+    "Moved to Vault": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वॉल्ट में ले जाए गए"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெட்டகத்திற்கு மாற்றப்பட்டவை"
+          }
+        }
+      }
+    },
+    "Needs access · tap to allow": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक्सेस चाहिए · टैप करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அணுகல் தேவை · தட்டவும்"
+          }
+        }
+      }
+    },
+    "No Live Photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई Live Photo नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Photos இல்லை"
+          }
+        }
+      }
+    },
+    "No blurry photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई धुंधली फ़ोटो नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மங்கலான புகைப்படங்கள் இல்லை"
+          }
+        }
+      }
+    },
+    "No camera data plus one more sign.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कैमरा डेटा नहीं, और एक और संकेत।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கேமரா தரவு இல்லை, மேலும் ஒரு அறிகுறி."
+          }
+        }
+      }
+    },
+    "No camera data, and the size or file name of a chat app.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कैमरा डेटा नहीं, और आकार या फ़ाइल नाम चैट ऐप जैसा।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கேமரா தரவு இல்லை, மேலும் சாட் ஆப்பின் அளவு அல்லது கோப்புப் பெயர்."
+          }
+        }
+      }
+    },
+    "No duplicate events, and nothing older than a year.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई डुप्लिकेट इवेंट नहीं, और कुछ भी एक साल से पुराना नहीं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நகல் நிகழ்வுகள் இல்லை, ஓராண்டுக்கும் பழையது எதுவுமில்லை."
+          }
+        }
+      }
+    },
+    "No duplicates": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई डुप्लिकेट नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நகல்கள் இல்லை"
+          }
+        }
+      }
+    },
+    "No large videos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई बड़ा वीडियो नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெரிய வீடியோக்கள் இல்லை"
+          }
+        }
+      }
+    },
+    "No name": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई नाम नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெயர் இல்லை"
+          }
+        }
+      }
+    },
+    "No reports": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई रिपोर्ट नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அறிக்கைகள் இல்லை"
+          }
+        }
+      }
+    },
+    "No screenshots are older than 30 days.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई स्क्रीनशॉट 30 दिन से पुराना नहीं है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 நாட்களுக்குப் பழைய ஸ்கிரீன்ஷாட்கள் இல்லை."
+          }
+        }
+      }
+    },
+    "No screenshots of codes, passes or tickets that are past their date.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोड, पास या टिकट का कोई स्क्रीनशॉट नहीं जिसकी तारीख़ निकल गई हो।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தேதி கடந்த குறியீடு, பாஸ் அல்லது டிக்கெட் ஸ்கிரீன்ஷாட்கள் இல்லை."
+          }
+        }
+      }
+    },
+    "No similar photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई मिलती-जुलती फ़ोटो नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒத்த புகைப்படங்கள் இல்லை"
+          }
+        }
+      }
+    },
+    "No videos match this size.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इस आकार का कोई वीडियो नहीं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த அளவில் வீடியோக்கள் இல்லை."
+          }
+        }
+      }
+    },
+    "Not allowed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अनुमति नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அனுமதி இல்லை"
+          }
+        }
+      }
+    },
+    "Not asked yet": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अभी पूछा नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இன்னும் கேட்கவில்லை"
+          }
+        }
+      }
+    },
+    "Not now": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अभी नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இப்போது வேண்டாம்"
+          }
+        }
+      }
+    },
+    "Not yet": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अभी नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இன்னும் இல்லை"
+          }
+        }
+      }
+    },
+    "Nothing from chats": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चैट से कुछ नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சாட்டிலிருந்து எதுவும் இல்லை"
+          }
+        }
+      }
+    },
+    "Nothing has expired": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कुछ भी समाप्त नहीं हुआ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எதுவும் காலாவதியாகவில்லை"
+          }
+        }
+      }
+    },
+    "Nothing here with a motion clip to drop.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यहाँ हटाने लायक क्लिप वाली कोई फ़ोटो नहीं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீக்கக்கூடிய கிளிப் உள்ளவை இங்கே இல்லை."
+          }
+        }
+      }
+    },
+    "Nothing in your library changes. The next scan recomputes photo features, so it takes as long as the first one did.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आपकी लाइब्रेरी में कुछ नहीं बदलता। अगला स्कैन फ़ोटो की जानकारी फिर से निकालेगा, इसलिए पहले जितना समय लेगा।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உங்கள் லைப்ரரியில் எதுவும் மாறாது. அடுத்த ஸ்கேன் புகைப்படத் தகவலை மீண்டும் கணக்கிடும், எனவே முதல் முறை எடுத்த நேரம் எடுக்கும்."
+          }
+        }
+      }
+    },
+    "Nothing left my iPhone.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कुछ भी मेरे iPhone से बाहर नहीं गया।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எதுவும் என் iPhone ஐ விட்டு வெளியேறவில்லை."
+          }
+        }
+      }
+    },
+    "Nothing scanned": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कुछ स्कैन नहीं हुआ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எதுவும் ஸ்கேன் ஆகவில்லை"
+          }
+        }
+      }
+    },
+    "Nothing selected": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कुछ चुना नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எதுவும் தேர்வாகவில்லை"
+          }
+        }
+      }
+    },
+    "Nothing to clean": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "साफ़ करने को कुछ नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சுத்தம் செய்ய எதுவும் இல்லை"
+          }
+        }
+      }
+    },
+    "Nothing to clean here": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यहाँ साफ़ करने को कुछ नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இங்கே சுத்தம் செய்ய எதுவும் இல்லை"
+          }
+        }
+      }
+    },
+    "Nothing to sort": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "छाँटने को कुछ नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வகைப்படுத்த எதுவும் இல்லை"
+          }
+        }
+      }
+    },
+    "Nothing to tidy": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "साफ़ करने को कुछ नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சுத்தம் செய்ய எதுவும் இல்லை"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ठीक है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சரி"
+          }
+        }
+      }
+    },
+    "Okay, let's go": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ठीक है, चलें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சரி, போகலாம்"
+          }
+        }
+      }
+    },
+    "Old Calendar Events": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पुराने कैलेंडर इवेंट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பழைய காலண்டர் நிகழ்வுகள்"
+          }
+        }
+      }
+    },
+    "Old codes, passes and tickets": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पुराने कोड, पास और टिकट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பழைய குறியீடுகள், பாஸ்கள், டிக்கெட்டுகள்"
+          }
+        }
+      }
+    },
+    "Older than 30 days": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 दिन से पुराने"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 நாட்களுக்குப் பழையவை"
+          }
+        }
+      }
+    },
+    "Older than a year": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक साल से पुराने"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஓராண்டுக்கும் பழையவை"
+          }
+        }
+      }
+    },
+    "One photo at a time. Right to keep, left to remove.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक बार में एक फ़ोटो। रखने के लिए दाएँ, हटाने के लिए बाएँ।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒரு நேரத்தில் ஒரு புகைப்படம். வைத்திருக்க வலது, நீக்க இடது."
+          }
+        }
+      }
+    },
+    "One-time codes": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक बार के कोड"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒருமுறைக் குறியீடுகள்"
+          }
+        }
+      }
+    },
+    "Open Keeproll on ^[%lld more day](inflect: true) to see where your storage is heading.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्टोरेज का रुझान देखने के लिए Keeproll को %lld और दिन खोलें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சேமிப்பகம் எங்கே செல்கிறது என்று பார்க்க Keeproll ஐ இன்னும் %lld நாட்கள் திறக்கவும்."
+          }
+        }
+      }
+    },
+    "Open Photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो ऐप खोलें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos ஆப்பைத் திற"
+          }
+        }
+      }
+    },
+    "Open Settings": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सेटिंग्स खोलें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அமைப்புகளைத் திற"
+          }
+        }
+      }
+    },
+    "Out-of-focus photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोकस से बाहर फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஃபோகஸ் இல்லாத புகைப்படங்கள்"
+          }
+        }
+      }
+    },
+    "Over 100 MB": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 MB से बड़े"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 MB க்கு மேல்"
+          }
+        }
+      }
+    },
+    "Over 500 MB": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 MB से बड़े"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 MB க்கு மேல்"
+          }
+        }
+      }
+    },
+    "Parking spots": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पार्किंग"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பார்க்கிங்"
+          }
+        }
+      }
+    },
+    "Photo access needed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो एक्सेस चाहिए"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புகைப்பட அணுகல் தேவை"
+          }
+        }
+      }
+    },
+    "Photo features kept so rescans take seconds. Safe to clear.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो की जानकारी रखी जाती है ताकि दोबारा स्कैन सेकंडों में हो। हटाना सुरक्षित है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மீண்டும் ஸ்கேன் நொடிகளில் முடிய புகைப்படத் தகவல் வைக்கப்படுகிறது. நீக்குவது பாதுகாப்பானது."
+          }
+        }
+      }
+    },
     "Photo from a chat app, %@, %@%@": {
       "localizations": {
         "en": {
@@ -329,10 +3933,37 @@
             "state": "new",
             "value": "Photo from a chat app, %1$@, %2$@%3$@"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चैट ऐप की फ़ोटो, %@, %@%@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சாட் ஆப் புகைப்படம், %@, %@%@"
+          }
         }
       }
     },
-    "Photo, %@": {},
+    "Photo, %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो, %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புகைப்படம், %@"
+          }
+        }
+      }
+    },
     "Photo, %@%@%@": {
       "localizations": {
         "en": {
@@ -340,56 +3971,844 @@
             "state": "new",
             "value": "Photo, %1$@%2$@%3$@"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो, %@%@%@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புகைப்படம், %@%@%@"
+          }
         }
       }
     },
-    "Photos": {},
-    "Photos & videos": {},
-    "Photos and videos go to Recently Deleted for 30 days. Contacts and events are backed up in Keeproll before they change.": {},
-    "Photos and videos go to Recently Deleted in the Photos app. The space comes back once you empty it, or automatically after 30 days.": {},
-    "Photos here are kept only on this iPhone, locked with Face ID or your passcode, and out of your photo library.": {},
-    "Photos kept behind Face ID": {},
-    "Photos taken by a camera carry lens and exposure data; forwards from chat apps don't. Favourites are never suggested.": {},
-    "Pick items to remove from any category.": {},
-    "Possible": {},
-    "Preview video": {},
-    "Primary contact": {},
-    "Privacy": {},
-    "Private Vault": {},
-    "Private vault": {},
-    "Private: everything stays on your iPhone. No account, no upload.": {},
-    "REMOVE": {},
-    "Reading screenshots…": {},
-    "Remove": {},
-    "Remove from vault?": {},
-    "Remove permanently": {},
-    "Repeating events are never touched. A calendar backup is saved before anything is removed.": {},
-    "Replays the three onboarding pages.": {},
-    "Rescan": {},
-    "Reservations": {},
-    "Reset freed total": {},
-    "Reset the freed total?": {},
-    "Reset to zero": {},
-    "Restricted on this iPhone": {},
-    "Result": {},
-    "Results": {},
-    "Review": {},
-    "Review originals": {},
-    "Review: you see every item and tap any to keep it. Nothing is removed until you confirm.": {},
-    "Same email": {},
-    "Same name": {},
-    "Same number": {},
-    "Save about %@": {},
-    "Save to Photos": {},
-    "Save ~%@": {},
-    "Saved a copy to your library.": {},
-    "Saved from Chats": {},
-    "Scan first, then swipe through the suggestions.": {},
-    "Scan my iPhone": {},
-    "Scan: Keeproll finds similar photos, screenshots, blurry shots, large videos, duplicate contacts and old events.": {},
-    "Scanning": {},
-    "Scanning…": {},
-    "Scanning… see progress": {},
+    "Photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புகைப்படங்கள்"
+          }
+        }
+      }
+    },
+    "Photos & videos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो और वीडियो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புகைப்படங்கள் & வீடியோக்கள்"
+          }
+        }
+      }
+    },
+    "Photos and videos go to Recently Deleted for 30 days. Contacts and events are backed up in Keeproll before they change.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो और वीडियो 30 दिन 'हाल ही में हटाए गए' में जाते हैं। संपर्क और इवेंट बदलने से पहले Keeproll में बैकअप होते हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புகைப்படங்களும் வீடியோக்களும் 30 நாட்கள் 'சமீபத்தில் நீக்கியவை' இல் இருக்கும். தொடர்புகளும் நிகழ்வுகளும் மாறும் முன் Keeproll இல் காப்புப் பிரதி எடுக்கப்படும்."
+          }
+        }
+      }
+    },
+    "Photos and videos go to Recently Deleted in the Photos app. The space comes back once you empty it, or automatically after 30 days.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो और वीडियो फ़ोटो ऐप के 'हाल ही में हटाए गए' में जाते हैं। उसे खाली करने पर, या 30 दिन बाद अपने-आप, जगह वापस मिलती है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புகைப்படங்களும் வீடியோக்களும் Photos ஆப்பின் 'சமீபத்தில் நீக்கியவை' இல் செல்லும். அதைக் காலி செய்தால், அல்லது 30 நாட்களுக்குப் பின் தானாக, இடம் திரும்பக் கிடைக்கும்."
+          }
+        }
+      }
+    },
+    "Photos here are kept only on this iPhone, locked with Face ID or your passcode, and out of your photo library.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यहाँ की फ़ोटो सिर्फ़ इस iPhone पर रहती हैं, Face ID या पासकोड से लॉक, और आपकी फ़ोटो लाइब्रेरी से बाहर।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இங்குள்ள புகைப்படங்கள் இந்த iPhone இல் மட்டுமே, Face ID அல்லது கடவுக்குறியீட்டால் பூட்டப்பட்டு, உங்கள் புகைப்பட லைப்ரரிக்கு வெளியே வைக்கப்படும்."
+          }
+        }
+      }
+    },
+    "Photos kept behind Face ID": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID के पीछे रखी फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID பின்னால் வைக்கப்பட்ட புகைப்படங்கள்"
+          }
+        }
+      }
+    },
+    "Photos taken by a camera carry lens and exposure data; forwards from chat apps don't. Favourites are never suggested.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कैमरे से ली फ़ोटो में लेंस और एक्सपोज़र डेटा होता है; चैट ऐप के फ़ॉरवर्ड में नहीं। पसंदीदा कभी नहीं सुझाई जातीं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கேமராவில் எடுத்த புகைப்படங்களில் லென்ஸ் மற்றும் எக்ஸ்போஷர் தரவு இருக்கும்; சாட் ஆப் ஃபார்வர்டுகளில் இருக்காது. பிடித்தவை ஒருபோதும் பரிந்துரைக்கப்படாது."
+          }
+        }
+      }
+    },
+    "Photos that arrived through WhatsApp and Telegram, told apart from the ones you shot.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WhatsApp और Telegram से आई फ़ोटो, आपकी खींची फ़ोटो से अलग पहचानी गईं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WhatsApp, Telegram வழியாக வந்த புகைப்படங்கள், நீங்கள் எடுத்தவற்றிலிருந்து பிரித்தறியப்பட்டவை."
+          }
+        }
+      }
+    },
+    "Pick items to remove from any category.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "किसी भी श्रेणी से हटाने के लिए आइटम चुनें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எந்த வகையிலிருந்தும் நீக்க உருப்படிகளைத் தேர்வு செய்."
+          }
+        }
+      }
+    },
+    "Possible": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "शायद"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இருக்கலாம்"
+          }
+        }
+      }
+    },
+    "Preview video": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वीडियो देखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வீடியோவைப் பார்"
+          }
+        }
+      }
+    },
+    "Primary contact": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मुख्य संपर्क"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முதன்மைத் தொடர்பு"
+          }
+        }
+      }
+    },
+    "Privacy": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "गोपनीयता"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தனியுரிமை"
+          }
+        }
+      }
+    },
+    "Private Vault": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "निजी वॉल्ट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தனிப் பெட்டகம்"
+          }
+        }
+      }
+    },
+    "Private vault": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "निजी वॉल्ट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தனிப் பெட்டகம்"
+          }
+        }
+      }
+    },
+    "Private: everything stays on your iPhone. No account, no upload.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "निजी: सब कुछ आपके iPhone पर रहता है। न अकाउंट, न अपलोड।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தனியுரிமை: எல்லாம் உங்கள் iPhone இலேயே இருக்கும். கணக்கு இல்லை, பதிவேற்றம் இல்லை."
+          }
+        }
+      }
+    },
+    "REMOVE": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீக்கு"
+          }
+        }
+      }
+    },
+    "Reading screenshots…": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्क्रीनशॉट पढ़े जा रहे हैं…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்கிரீன்ஷாட்களைப் படிக்கிறது…"
+          }
+        }
+      }
+    },
+    "Remove": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீக்கு"
+          }
+        }
+      }
+    },
+    "Remove from vault?": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वॉल्ट से हटाएँ?"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெட்டகத்திலிருந்து நீக்கவா?"
+          }
+        }
+      }
+    },
+    "Remove permanently": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हमेशा के लिए हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிரந்தரமாக நீக்கு"
+          }
+        }
+      }
+    },
+    "Repeating events are never touched. A calendar backup is saved before anything is removed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "दोहराए जाने वाले इवेंट कभी नहीं छुए जाते। कुछ भी हटाने से पहले कैलेंडर बैकअप सेव होता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மீண்டும் வரும் நிகழ்வுகள் ஒருபோதும் தொடப்படாது. எதையும் நீக்கும் முன் காலண்டர் காப்புப் பிரதி சேமிக்கப்படும்."
+          }
+        }
+      }
+    },
+    "Replays the three onboarding pages.": {
+      "extractionState": "stale",
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्वागत पेज फिर दिखाता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வரவேற்புப் பக்கங்களை மீண்டும் காட்டும்."
+          }
+        }
+      }
+    },
+    "Replays the welcome and access pages.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्वागत और एक्सेस पेज फिर दिखाता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வரவேற்பு மற்றும் அணுகல் பக்கங்களை மீண்டும் காட்டும்."
+          }
+        }
+      }
+    },
+    "Rescan": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फिर से स्कैन करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மீண்டும் ஸ்கேன்"
+          }
+        }
+      }
+    },
+    "Reservations": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "रिज़र्वेशन"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முன்பதிவுகள்"
+          }
+        }
+      }
+    },
+    "Reset freed total": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "खाली किए गए कुल को रीसेट करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காலியான மொத்தத்தை மீட்டமை"
+          }
+        }
+      }
+    },
+    "Reset the freed total?": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "खाली किए गए कुल को रीसेट करें?"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காலியான மொத்தத்தை மீட்டமைக்கவா?"
+          }
+        }
+      }
+    },
+    "Reset to zero": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "शून्य करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பூஜ்ஜியமாக்கு"
+          }
+        }
+      }
+    },
+    "Restricted on this iPhone": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इस iPhone पर प्रतिबंधित"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த iPhone இல் கட்டுப்படுத்தப்பட்டது"
+          }
+        }
+      }
+    },
+    "Result": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "नतीजा"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முடிவு"
+          }
+        }
+      }
+    },
+    "Results": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "नतीजे"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முடிவுகள்"
+          }
+        }
+      }
+    },
+    "Review": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "समीक्षा"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சரிபார்ப்பு"
+          }
+        }
+      }
+    },
+    "Review originals": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "असली फ़ाइलें देखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அசல்களைச் சரிபார்"
+          }
+        }
+      }
+    },
+    "Review: you see every item and tap any to keep it. Nothing is removed until you confirm.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "समीक्षा: आप हर आइटम देखते हैं और रखने के लिए टैप करते हैं। आपकी पुष्टि तक कुछ नहीं हटता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சரிபார்ப்பு: ஒவ்வொன்றையும் பார்த்து, வைத்திருக்க எதையும் தட்டலாம். நீங்கள் உறுதிசெய்யும் வரை எதுவும் நீக்கப்படாது."
+          }
+        }
+      }
+    },
+    "Running out of room now": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जगह अभी ख़त्म हो रही है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இடம் இப்போதே தீர்கிறது"
+          }
+        }
+      }
+    },
+    "Same email": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक ही ईमेल"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒரே மின்னஞ்சல்"
+          }
+        }
+      }
+    },
+    "Same name": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक ही नाम"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒரே பெயர்"
+          }
+        }
+      }
+    },
+    "Same number": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक ही नंबर"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒரே எண்"
+          }
+        }
+      }
+    },
+    "Save about %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "लगभग %@ बचाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சுமார் %@ சேமி"
+          }
+        }
+      }
+    },
+    "Save to Photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो में सेव करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos இல் சேமி"
+          }
+        }
+      }
+    },
+    "Save ~%@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~%@ बचाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~%@ சேமி"
+          }
+        }
+      }
+    },
+    "Saved a copy to your library.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आपकी लाइब्रेरी में एक कॉपी सेव हुई।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உங்கள் லைப்ரரியில் ஒரு நகல் சேமிக்கப்பட்டது."
+          }
+        }
+      }
+    },
+    "Saved from Chats": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चैट से सेव हुईं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சாட்டிலிருந்து சேமித்தவை"
+          }
+        }
+      }
+    },
+    "Saving stills… %lld of %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Saving stills… %1$lld of %2$lld"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्थिर फ़ोटो सेव हो रही हैं… %lld में से %lld"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிலைப் படங்களைச் சேமிக்கிறது… %lld / %lld"
+          }
+        }
+      }
+    },
+    "Scan first, then swipe through the suggestions.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पहले स्कैन करें, फिर सुझावों पर स्वाइप करें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முதலில் ஸ்கேன் செய்து, பின்னர் பரிந்துரைகளை ஸ்வைப் செய்யுங்கள்."
+          }
+        }
+      }
+    },
+    "Scan my iPhone": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मेरा iPhone स्कैन करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "என் iPhone ஐ ஸ்கேன் செய்"
+          }
+        }
+      }
+    },
+    "Scan: Keeproll finds similar photos, screenshots, blurry shots, large videos, duplicate contacts and old events.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्कैन: Keeproll मिलती-जुलती फ़ोटो, स्क्रीनशॉट, धुंधले शॉट, बड़े वीडियो, डुप्लिकेट संपर्क और पुराने इवेंट खोजता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்கேன்: Keeproll ஒத்த புகைப்படங்கள், ஸ்கிரீன்ஷாட்கள், மங்கலான ஷாட்கள், பெரிய வீடியோக்கள், நகல் தொடர்புகள், பழைய நிகழ்வுகளைக் கண்டறியும்."
+          }
+        }
+      }
+    },
+    "Scanning": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्कैन हो रहा है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்கேன் ஆகிறது"
+          }
+        }
+      }
+    },
+    "Scanning…": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्कैन हो रहा है…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்கேன் ஆகிறது…"
+          }
+        }
+      }
+    },
+    "Scanning… see progress": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्कैन हो रहा है… प्रगति देखें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்கேன் ஆகிறது… முன்னேற்றத்தைப் பார்"
+          }
+        }
+      }
+    },
     "Screenshot, %@, %@, %@": {
       "localizations": {
         "en": {
@@ -397,32 +4816,421 @@
             "state": "new",
             "value": "Screenshot, %1$@, %2$@, %3$@"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्क्रीनशॉट, %@, %@, %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்கிரீன்ஷாட், %@, %@, %@"
+          }
         }
       }
     },
-    "Screenshots": {},
-    "Screenshots taking up space": {},
-    "See what to clean": {},
-    "Select": {},
-    "Select all": {},
-    "Select recommended · %@": {},
-    "Select to remove": {},
-    "Select very likely": {},
-    "Select year": {},
-    "Selected to remove": {},
-    "Set a passcode in Settings to use the vault. Without one, nothing can protect it.": {},
-    "Set up access": {},
-    "Settings": {},
-    "Share backup": {},
-    "Show the welcome again": {},
-    "Similar": {},
-    "Similar Photos": {},
-    "Similar shots, screenshots, blurry photos and large videos": {},
-    "Smaller copy saved": {},
-    "Smart select": {},
-    "Some signs, but it could be an export from an editing app. Check before you select.": {},
-    "Something went wrong reading your photo library. Please try again.": {},
-    "Start using Keeproll": {},
+    "Screenshots": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्क्रीनशॉट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்கிரீன்ஷாட்கள்"
+          }
+        }
+      }
+    },
+    "Screenshots taking up space": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जगह घेरते स्क्रीनशॉट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இடத்தை எடுக்கும் ஸ்கிரீன்ஷாட்கள்"
+          }
+        }
+      }
+    },
+    "See what to clean": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "देखें क्या साफ़ करना है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "என்ன சுத்தம் செய்யலாம் என்று பார்"
+          }
+        }
+      }
+    },
+    "Select": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चुनें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தேர்வு"
+          }
+        }
+      }
+    },
+    "Select all": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सभी चुनें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அனைத்தையும் தேர்வு"
+          }
+        }
+      }
+    },
+    "Select recommended · %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सुझाए गए चुनें · %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பரிந்துரைகளைத் தேர்வு · %@"
+          }
+        }
+      }
+    },
+    "Select to remove": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हटाने के लिए चुनें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீக்கத் தேர்வு செய்"
+          }
+        }
+      }
+    },
+    "Select very likely": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "'बहुत संभावित' चुनें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "'மிகச் சாத்தியம்' தேர்வு"
+          }
+        }
+      }
+    },
+    "Select year": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "साल चुनें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஆண்டைத் தேர்வு"
+          }
+        }
+      }
+    },
+    "Selected to remove": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हटाने के लिए चुना"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீக்கத் தேர்வானது"
+          }
+        }
+      }
+    },
+    "Set a passcode in Settings to use the vault. Without one, nothing can protect it.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वॉल्ट इस्तेमाल करने के लिए सेटिंग्स में पासकोड सेट करें। इसके बिना इसकी सुरक्षा नहीं हो सकती।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெட்டகத்தைப் பயன்படுத்த அமைப்புகளில் கடவுக்குறியீடு அமைக்கவும். அது இல்லாமல் பாதுகாக்க முடியாது."
+          }
+        }
+      }
+    },
+    "Set up access": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक्सेस सेट करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அணுகலை அமை"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सेटिंग्स"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அமைப்புகள்"
+          }
+        }
+      }
+    },
+    "Shalinth Adithyan": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "शालिंत आदित्यन"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஷாலின்த் ஆதித்யன்"
+          }
+        }
+      }
+    },
+    "Share": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "शेयर करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பகிர்"
+          }
+        }
+      }
+    },
+    "Share backup": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बैकअप शेयर करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காப்புப் பிரதியைப் பகிர்"
+          }
+        }
+      }
+    },
+    "Show the welcome again": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्वागत फिर दिखाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வரவேற்பை மீண்டும் காட்டு"
+          }
+        }
+      }
+    },
+    "Similar": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मिलती-जुलती"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒத்தவை"
+          }
+        }
+      }
+    },
+    "Similar Photos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मिलती-जुलती फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒத்த புகைப்படங்கள்"
+          }
+        }
+      }
+    },
+    "Similar shots, screenshots, blurry photos and large videos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मिलते-जुलते शॉट, स्क्रीनशॉट, धुंधली फ़ोटो और बड़े वीडियो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒத்த ஷாட்கள், ஸ்கிரீன்ஷாட்கள், மங்கலான புகைப்படங்கள், பெரிய வீடியோக்கள்"
+          }
+        }
+      }
+    },
+    "Smaller copy saved": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "छोटी कॉपी सेव हुई"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சிறிய நகல் சேமிக்கப்பட்டது"
+          }
+        }
+      }
+    },
+    "Smart select": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्मार्ट चयन"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்மார்ட் தேர்வு"
+          }
+        }
+      }
+    },
+    "Some signs, but it could be an export from an editing app. Check before you select.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कुछ संकेत हैं, पर यह किसी एडिटिंग ऐप से निर्यात भी हो सकता है। चुनने से पहले जाँचें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சில அறிகுறிகள் உள்ளன, ஆனால் இது ஒரு எடிட்டிங் ஆப்பின் ஏற்றுமதியாகவும் இருக்கலாம். தேர்வு செய்யும் முன் சரிபார்க்கவும்."
+          }
+        }
+      }
+    },
+    "Something went wrong reading your photo library. Please try again.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आपकी फ़ोटो लाइब्रेरी पढ़ने में कुछ गड़बड़ हुई। कृपया फिर कोशिश करें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உங்கள் புகைப்பட லைப்ரரியைப் படிப்பதில் தவறு. மீண்டும் முயற்சிக்கவும்."
+          }
+        }
+      }
+    },
+    "Start using Keeproll": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll इस्तेमाल करना शुरू करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll ஐப் பயன்படுத்தத் தொடங்கு"
+          }
+        }
+      }
+    },
     "Step %lld of %lld": {
       "localizations": {
         "en": {
@@ -430,67 +5238,1099 @@
             "state": "new",
             "value": "Step %1$lld of %2$lld"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चरण %lld में से %lld"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "படி %lld / %lld"
+          }
         }
       }
     },
-    "Still scanning — groups appear as they're found": {},
-    "Swipe to sort": {},
-    "Tap Add to move private photos and videos here.": {},
-    "Tap Scan to see what can be freed": {},
-    "Tap a thumbnail to watch before you decide.": {},
-    "Tap an item to keep it.": {},
-    "Tap to allow access": {},
-    "Text is read on this iPhone and never stored. Only the kind and the date are kept.": {},
-    "The original is in Review. Remove it there to free %@.": {},
-    "The same person saved more than once": {},
-    "The same person saved twice": {},
-    "The sharpest shot in each group is marked Best. Tap a photo to compare; hold to make it Best.": {},
-    "The smaller copy couldn't be saved to your library. Nothing was changed.": {},
-    "The video couldn't be compressed. Nothing was changed.": {},
-    "These photos are no longer in the list.": {},
-    "This calendar doesn't allow changes.": {},
-    "This contact no longer exists.": {},
-    "This contact's account doesn't allow changes.": {},
-    "This event no longer exists or can't be changed.": {},
-    "This is the only copy Keeproll keeps. Save it to Photos first if you want to keep it.": {},
-    "This item is still in your library.": {},
-    "This video is already compact. A smaller copy wouldn't save much, so nothing was changed.": {},
-    "This video is no longer in your library.": {},
-    "Tickets": {},
-    "Tools": {},
-    "Undo": {},
-    "Unknown date": {},
-    "Unknown size": {},
-    "Unlock": {},
-    "Unlock your private vault": {},
-    "Untitled event": {},
-    "Up to": {},
-    "Up to %@ can be freed": {},
-    "Update results": {},
-    "Vault": {},
-    "Vault photo": {},
-    "Vault unavailable": {},
-    "Vault video": {},
-    "Version": {},
-    "Very likely": {},
-    "Videos": {},
-    "Was on %@": {},
-    "What Keeproll checks": {},
-    "You have no screenshots.": {},
-    "You have no videos.": {},
-    "You'll free up to": {},
-    "You're about to tidy": {},
-    "You've long since driven off · %@": {},
-    "Your library changed since the last scan.": {},
-    "Your vault is empty": {},
-    "^[%lld calendar event](inflect: true) to remove": {},
-    "^[%lld change](inflect: true)": {},
-    "^[%lld contact change](inflect: true)": {},
-    "^[%lld contact](inflect: true)": {},
-    "^[%lld contact](inflect: true) that look like the same people": {},
-    "^[%lld duplicate](inflect: true)": {},
-    "^[%lld event](inflect: true)": {},
-    "^[%lld group](inflect: true)": {},
+    "Still scanning — groups appear as they're found": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्कैन जारी है — समूह मिलते ही दिखेंगे"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இன்னும் ஸ்கேன் ஆகிறது — கிடைத்ததும் குழுக்கள் தோன்றும்"
+          }
+        }
+      }
+    },
+    "Storage forecast": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्टोरेज पूर्वानुमान"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சேமிப்பக முன்னறிவிப்பு"
+          }
+        }
+      }
+    },
+    "Swipe to sort": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्वाइप करके छाँटें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்வைப் செய்து வகைப்படுத்து"
+          }
+        }
+      }
+    },
+    "Tap Add to move private photos and videos here.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "निजी फ़ोटो और वीडियो यहाँ लाने के लिए 'जोड़ें' टैप करें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தனிப்பட்ட புகைப்படங்களையும் வீடியோக்களையும் இங்கே கொண்டுவர 'சேர்' தட்டவும்."
+          }
+        }
+      }
+    },
+    "Tap Scan to see what can be freed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "क्या खाली हो सकता है देखने के लिए स्कैन टैप करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "என்ன காலியாக்கலாம் என்று பார்க்க ஸ்கேன் தட்டவும்"
+          }
+        }
+      }
+    },
+    "Tap a thumbnail to watch before you decide.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "तय करने से पहले देखने के लिए थंबनेल टैप करें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முடிவு செய்யும் முன் பார்க்க சிறுபடத்தைத் தட்டவும்."
+          }
+        }
+      }
+    },
+    "Tap an item to keep it.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "रखने के लिए आइटम पर टैप करें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வைத்திருக்க ஒன்றைத் தட்டவும்."
+          }
+        }
+      }
+    },
+    "Tap to allow access": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक्सेस देने के लिए टैप करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அணுகல் தர தட்டவும்"
+          }
+        }
+      }
+    },
+    "Text is read on this iPhone and never stored. Only the kind and the date are kept.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "टेक्स्ट इसी iPhone पर पढ़ा जाता है और कभी सेव नहीं होता। सिर्फ़ किस्म और तारीख़ रखी जाती है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உரை இந்த iPhone இலேயே படிக்கப்படும், ஒருபோதும் சேமிக்கப்படாது. வகையும் தேதியும் மட்டுமே வைக்கப்படும்."
+          }
+        }
+      }
+    },
+    "The original is in Review. Remove it there to free %@.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "असली फ़ाइल समीक्षा में है। %@ खाली करने के लिए उसे वहाँ हटाएँ।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அசல் சரிபார்ப்பில் உள்ளது. %@ காலியாக்க அங்கே நீக்கவும்."
+          }
+        }
+      }
+    },
+    "The originals are in Review. Remove them there to free %@.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "असली फ़ाइलें समीक्षा में हैं। %@ खाली करने के लिए उन्हें वहाँ हटाएँ।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அசல்கள் சரிபார்ப்பில் உள்ளன. %@ காலியாக்க அங்கே நீக்கவும்."
+          }
+        }
+      }
+    },
+    "The same person saved more than once": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक ही व्यक्ति एक से ज़्यादा बार सेव"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒரே நபர் ஒன்றுக்கு மேற்பட்ட முறை சேமிக்கப்பட்டவர்"
+          }
+        }
+      }
+    },
+    "The same person saved twice": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक ही व्यक्ति दो बार सेव"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒரே நபர் இருமுறை சேமிக்கப்பட்டவர்"
+          }
+        }
+      }
+    },
+    "The sharpest shot in each group is marked Best. Tap a photo to compare; hold to make it Best.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हर समूह की सबसे साफ़ फ़ोटो 'सबसे अच्छी' है। तुलना के लिए टैप करें; सबसे अच्छी बनाने के लिए दबाए रखें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒவ்வொரு குழுவிலும் தெளிவான ஷாட் 'சிறந்தது' எனக் குறிக்கப்படும். ஒப்பிட தட்டவும்; சிறந்ததாக்க அழுத்திப் பிடிக்கவும்."
+          }
+        }
+      }
+    },
+    "The smaller copy couldn't be saved to your library. Nothing was changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "छोटी कॉपी आपकी लाइब्रेरी में सेव नहीं हो सकी। कुछ नहीं बदला।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சிறிய நகலை உங்கள் லைப்ரரியில் சேமிக்க முடியவில்லை. எதுவும் மாறவில்லை."
+          }
+        }
+      }
+    },
+    "The still couldn't be exported. Nothing was changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्थिर फ़ोटो निर्यात नहीं हो सकी। कुछ नहीं बदला।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிலைப் படத்தை ஏற்றுமதி செய்ய முடியவில்லை. எதுவும் மாறவில்லை."
+          }
+        }
+      }
+    },
+    "The still couldn't be saved to your library. Nothing was changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्थिर फ़ोटो आपकी लाइब्रेरी में सेव नहीं हो सकी। कुछ नहीं बदला।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிலைப் படத்தை உங்கள் லைப்ரரியில் சேமிக்க முடியவில்லை. எதுவும் மாறவில்லை."
+          }
+        }
+      }
+    },
+    "The still image couldn't be read. Nothing was changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्थिर फ़ोटो पढ़ी नहीं जा सकी। कुछ नहीं बदला।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிலைப் படத்தைப் படிக்க முடியவில்லை. எதுவும் மாறவில்லை."
+          }
+        }
+      }
+    },
+    "The video couldn't be compressed. Nothing was changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वीडियो कंप्रेस नहीं हो सका। कुछ नहीं बदला।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வீடியோவைச் சுருக்க முடியவில்லை. எதுவும் மாறவில்லை."
+          }
+        }
+      }
+    },
+    "These photos are no longer in the list.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ये फ़ोटो अब सूची में नहीं हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்தப் புகைப்படங்கள் இப்போது பட்டியலில் இல்லை."
+          }
+        }
+      }
+    },
+    "This Live Photo is no longer in your library.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह Live Photo अब आपकी लाइब्रेरी में नहीं है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த Live Photo இப்போது உங்கள் லைப்ரரியில் இல்லை."
+          }
+        }
+      }
+    },
+    "This calendar doesn't allow changes.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह कैलेंडर बदलाव की अनुमति नहीं देता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்தக் காலண்டர் மாற்றங்களை அனுமதிக்காது."
+          }
+        }
+      }
+    },
+    "This contact no longer exists.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह संपर्क अब मौजूद नहीं है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்தத் தொடர்பு இப்போது இல்லை."
+          }
+        }
+      }
+    },
+    "This contact's account doesn't allow changes.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इस संपर्क का अकाउंट बदलाव की अनुमति नहीं देता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்தத் தொடர்பின் கணக்கு மாற்றங்களை அனுமதிக்காது."
+          }
+        }
+      }
+    },
+    "This event no longer exists or can't be changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह इवेंट अब मौजूद नहीं है या बदला नहीं जा सकता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த நிகழ்வு இப்போது இல்லை அல்லது மாற்ற முடியாது."
+          }
+        }
+      }
+    },
+    "This is the only copy Keeproll keeps. Save it to Photos first if you want to keep it.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह Keeproll की इकलौती कॉपी है। रखना चाहते हैं तो पहले फ़ोटो में सेव करें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இது Keeproll வைத்திருக்கும் ஒரே நகல். வைத்திருக்க விரும்பினால் முதலில் Photos இல் சேமிக்கவும்."
+          }
+        }
+      }
+    },
+    "This item is still in your library.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह आइटम अभी भी आपकी लाइब्रेरी में है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இது இன்னும் உங்கள் லைப்ரரியில் உள்ளது."
+          }
+        }
+      }
+    },
+    "This video is already compact. A smaller copy wouldn't save much, so nothing was changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह वीडियो पहले से छोटा है। छोटी कॉपी से ज़्यादा बचत नहीं होती, इसलिए कुछ नहीं बदला।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த வீடியோ ஏற்கனவே சிறியது. சிறிய நகலால் பெரிதாகச் சேமிக்க முடியாது, எனவே எதுவும் மாறவில்லை."
+          }
+        }
+      }
+    },
+    "This video is no longer in your library.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह वीडियो अब आपकी लाइब्रेरी में नहीं है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த வீடியோ இப்போது உங்கள் லைப்ரரியில் இல்லை."
+          }
+        }
+      }
+    },
+    "Tickets": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "टिकट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "டிக்கெட்டுகள்"
+          }
+        }
+      }
+    },
+    "Tools": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "टूल"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கருவிகள்"
+          }
+        }
+      }
+    },
+    "Undo": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पूर्ववत"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "செயல்தவிர்"
+          }
+        }
+      }
+    },
+    "Unknown date": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "तारीख़ अज्ञात"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தேதி தெரியவில்லை"
+          }
+        }
+      }
+    },
+    "Unknown size": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आकार अज्ञात"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அளவு தெரியவில்லை"
+          }
+        }
+      }
+    },
+    "Unlock": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अनलॉक करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "திற"
+          }
+        }
+      }
+    },
+    "Unlock your private vault": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अपना निजी वॉल्ट अनलॉक करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உங்கள் தனிப் பெட்டகத்தைத் திற"
+          }
+        }
+      }
+    },
+    "Untitled event": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बिना नाम का इवेंट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெயரில்லா நிகழ்வு"
+          }
+        }
+      }
+    },
+    "Up to": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अधिकतम"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அதிகபட்சம்"
+          }
+        }
+      }
+    },
+    "Up to %@ can be freed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अधिकतम %@ खाली हो सकता है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அதிகபட்சம் %@ காலியாக்கலாம்"
+          }
+        }
+      }
+    },
+    "Update results": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "नतीजे अपडेट करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முடிவுகளைப் புதுப்பி"
+          }
+        }
+      }
+    },
+    "Vault": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वॉल्ट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெட்டகம்"
+          }
+        }
+      }
+    },
+    "Vault photo": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वॉल्ट फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெட்டகப் புகைப்படம்"
+          }
+        }
+      }
+    },
+    "Vault unavailable": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वॉल्ट उपलब्ध नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெட்டகம் கிடைக்கவில்லை"
+          }
+        }
+      }
+    },
+    "Vault video": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वॉल्ट वीडियो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பெட்டக வீடியோ"
+          }
+        }
+      }
+    },
+    "Version": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "संस्करण"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பதிப்பு"
+          }
+        }
+      }
+    },
+    "Very likely": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बहुत संभावित"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மிகச் சாத்தியம்"
+          }
+        }
+      }
+    },
+    "Videos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वीडियो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வீடியோக்கள்"
+          }
+        }
+      }
+    },
+    "Was on %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ को था"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ அன்று"
+          }
+        }
+      }
+    },
+    "What Keeproll checks": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll क्या जाँचता है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll எதைச் சரிபார்க்கிறது"
+          }
+        }
+      }
+    },
+    "What's new": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "नया क्या है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "புதிதாக என்ன"
+          }
+        }
+      }
+    },
+    "You have no screenshots.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आपके पास कोई स्क्रीनशॉट नहीं है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உங்களிடம் ஸ்கிரீன்ஷாட்கள் இல்லை."
+          }
+        }
+      }
+    },
+    "You have no videos.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आपके पास कोई वीडियो नहीं है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உங்களிடம் வீடியோக்கள் இல்லை."
+          }
+        }
+      }
+    },
+    "You'll free up to": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आप अधिकतम खाली करेंगे"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீங்கள் அதிகபட்சம் காலியாக்குவீர்கள்"
+          }
+        }
+      }
+    },
+    "You're about to tidy": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आप साफ़ करने वाले हैं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீங்கள் சுத்தம் செய்யப் போகிறீர்கள்"
+          }
+        }
+      }
+    },
+    "You've long since driven off · %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आप कब के निकल चुके · %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீங்கள் எப்போதோ கிளம்பிவிட்டீர்கள் · %@"
+          }
+        }
+      }
+    },
+    "Your library changed since the last scan.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पिछले स्कैन के बाद आपकी लाइब्रेरी बदली है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கடைசி ஸ்கேனுக்குப் பிறகு உங்கள் லைப்ரரி மாறியுள்ளது."
+          }
+        }
+      }
+    },
+    "Your vault is empty": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आपका वॉल्ट खाली है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "உங்கள் பெட்டகம் காலியாக உள்ளது"
+          }
+        }
+      }
+    },
+    "^[%lld Live Photo](inflect: true) couldn't be converted and ^[%lld was](inflect: true) left unchanged.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "^[%1$lld Live Photo](inflect: true) couldn't be converted and ^[%2$lld was](inflect: true) left unchanged."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Live Photos बदली नहीं जा सकीं और %lld वैसी ही रहीं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Live Photos ஐ மாற்ற முடியவில்லை; %lld மாறாமல் உள்ளன."
+          }
+        }
+      }
+    },
+    "^[%lld Live Photo](inflect: true) · clips only": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Live Photos · सिर्फ़ क्लिप"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Live Photos · கிளிப்புகள் மட்டும்"
+          }
+        }
+      }
+    },
+    "^[%lld calendar event](inflect: true) to remove": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld कैलेंडर इवेंट हटाने के लिए"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld காலண்டர் நிகழ்வுகள் நீக்க"
+          }
+        }
+      }
+    },
+    "^[%lld change](inflect: true)": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld बदलाव"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld மாற்றங்கள்"
+          }
+        }
+      }
+    },
+    "^[%lld contact change](inflect: true)": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld संपर्क बदलाव"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld தொடர்பு மாற்றங்கள்"
+          }
+        }
+      }
+    },
+    "^[%lld contact](inflect: true)": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld संपर्क"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld தொடர்புகள்"
+          }
+        }
+      }
+    },
+    "^[%lld contact](inflect: true) that look like the same people": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld संपर्क जो एक ही लोग लगते हैं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒரே நபர்கள் போலத் தெரியும் %lld தொடர்புகள்"
+          }
+        }
+      }
+    },
+    "^[%lld duplicate](inflect: true)": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld डुप्लिकेट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld நகல்கள்"
+          }
+        }
+      }
+    },
+    "^[%lld event](inflect: true)": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld इवेंट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld நிகழ்வுகள்"
+          }
+        }
+      }
+    },
+    "^[%lld group](inflect: true)": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld समूह"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld குழுக்கள்"
+          }
+        }
+      }
+    },
     "^[%lld group](inflect: true) · ^[%lld photo](inflect: true)": {
       "localizations": {
         "en": {
@@ -498,10 +6338,37 @@
             "state": "new",
             "value": "^[%1$lld group](inflect: true) · ^[%2$lld photo](inflect: true)"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld समूह · %lld फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld குழுக்கள் · %lld புகைப்படங்கள்"
+          }
         }
       }
     },
-    "^[%lld item](inflect: true)": {},
+    "^[%lld item](inflect: true)": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld आइटम"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld உருப்படிகள்"
+          }
+        }
+      }
+    },
     "^[%lld item](inflect: true) (%@) are only in iCloud. Removing them frees iCloud space, not iPhone storage.": {
       "localizations": {
         "en": {
@@ -509,22 +6376,167 @@
             "state": "new",
             "value": "^[%1$lld item](inflect: true) (%2$@) are only in iCloud. Removing them frees iCloud space, not iPhone storage."
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld आइटम (%@) सिर्फ़ iCloud में हैं। इन्हें हटाने से iCloud की जगह खाली होती है, iPhone की नहीं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld உருப்படிகள் (%@) iCloud இல் மட்டுமே உள்ளன. இவற்றை நீக்குவது iCloud இடத்தைக் காலியாக்கும், iPhone சேமிப்பகத்தை அல்ல."
+          }
         }
       }
     },
-    "^[%lld item](inflect: true) copied into your vault. The originals are still in your library until you remove them on Review.": {},
-    "^[%lld item](inflect: true) couldn't be removed. They're still in your review list.": {},
-    "^[%lld item](inflect: true) from Photos will be removed": {},
-    "^[%lld item](inflect: true) selected": {},
-    "^[%lld old event](inflect: true)": {},
-    "^[%lld photo](inflect: true)": {},
-    "^[%lld photo](inflect: true) out of focus": {},
+    "^[%lld item](inflect: true) copied into your vault. The originals are still in your library until you remove them on Review.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld आइटम आपके वॉल्ट में कॉपी हुए। समीक्षा में हटाने तक असली फ़ाइलें आपकी लाइब्रेरी में हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld உருப்படிகள் உங்கள் பெட்டகத்தில் நகலெடுக்கப்பட்டன. சரிபார்ப்பில் நீக்கும் வரை அசல்கள் உங்கள் லைப்ரரியில் இருக்கும்."
+          }
+        }
+      }
+    },
+    "^[%lld item](inflect: true) couldn't be removed. They're still in your review list.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld आइटम हटाए नहीं जा सके। वे अभी भी आपकी समीक्षा सूची में हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld உருப்படிகளை நீக்க முடியவில்லை. அவை இன்னும் உங்கள் சரிபார்ப்புப் பட்டியலில் உள்ளன."
+          }
+        }
+      }
+    },
+    "^[%lld item](inflect: true) from Photos will be removed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो से %lld आइटम हटाए जाएँगे"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos இலிருந்து %lld உருப்படிகள் நீக்கப்படும்"
+          }
+        }
+      }
+    },
+    "^[%lld item](inflect: true) reviewed and removed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld आइटम देखे और हटाए गए"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld உருப்படிகள் சரிபார்த்து நீக்கப்பட்டன"
+          }
+        }
+      }
+    },
+    "^[%lld item](inflect: true) selected": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld आइटम चुने गए"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld உருப்படிகள் தேர்வானவை"
+          }
+        }
+      }
+    },
+    "^[%lld old event](inflect: true)": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld पुराने इवेंट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld பழைய நிகழ்வுகள்"
+          }
+        }
+      }
+    },
+    "^[%lld photo](inflect: true)": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld புகைப்படங்கள்"
+          }
+        }
+      }
+    },
+    "^[%lld photo](inflect: true) out of focus": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld फ़ोटो फ़ोकस से बाहर"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld புகைப்படங்கள் ஃபோகஸ் இல்லாதவை"
+          }
+        }
+      }
+    },
     "^[%lld photo](inflect: true) queued · %@. Nothing is removed until you confirm on Review.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "new",
             "value": "^[%1$lld photo](inflect: true) queued · %2$@. Nothing is removed until you confirm on Review."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld फ़ोटो कतार में · %@। समीक्षा में पुष्टि तक कुछ नहीं हटता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld புகைப்படங்கள் வரிசையில் · %@. சரிபார்ப்பில் உறுதிசெய்யும் வரை எதுவும் நீக்கப்படாது."
           }
         }
       }
@@ -536,6 +6548,18 @@
             "state": "new",
             "value": "^[%1$lld photo](inflect: true) · %2$@"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld फ़ोटो · %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld புகைப்படங்கள் · %@"
+          }
         }
       }
     },
@@ -546,26 +6570,325 @@
             "state": "new",
             "value": "^[%1$lld photo](inflect: true) · %2$@ to free"
           }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld फ़ोटो · %@ खाली होगा"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld புகைப்படங்கள் · %@ காலியாகும்"
+          }
         }
       }
     },
-    "^[%lld screenshot](inflect: true)": {},
-    "^[%lld screenshot](inflect: true) past their date": {},
-    "^[%lld video](inflect: true) · largest first": {},
-    "can be freed": {},
-    "chat-app file name": {},
-    "chat-app size": {},
-    "checking %lld%%": {},
-    "cleaned up": {},
-    "duplicates and events over a year old": {},
-    "free of %@": {},
-    "looks like a forward": {},
-    "no camera data": {},
-    "no location": {},
-    "not selected": {},
-    "selected": {},
-    "tidied up": {},
-    "· approx.": {}
+    "^[%lld report](inflect: true) kept on this iPhone. Share the latest with a bug report.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld रिपोर्ट इस iPhone पर रखी हैं। बग रिपोर्ट के साथ नवीनतम शेयर करें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld அறிக்கைகள் இந்த iPhone இல் உள்ளன. பிழை அறிக்கையுடன் சமீபத்தியதைப் பகிரவும்."
+          }
+        }
+      }
+    },
+    "^[%lld screenshot](inflect: true)": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld स्क्रीनशॉट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ஸ்கிரீன்ஷாட்கள்"
+          }
+        }
+      }
+    },
+    "^[%lld screenshot](inflect: true) past their date": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld स्क्रीनशॉट जिनकी तारीख़ निकल गई"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ஸ்கிரீன்ஷாட்கள் தேதி கடந்தவை"
+          }
+        }
+      }
+    },
+    "^[%lld still](inflect: true) saved": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld स्थिर फ़ोटो सेव हुईं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld நிலைப் படங்கள் சேமிக்கப்பட்டன"
+          }
+        }
+      }
+    },
+    "^[%lld video](inflect: true) · largest first": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld वीडियो · सबसे बड़ा पहले"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld வீடியோக்கள் · பெரியது முதலில்"
+          }
+        }
+      }
+    },
+    "can be freed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "खाली हो सकता है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காலியாக்கலாம்"
+          }
+        }
+      }
+    },
+    "chat-app file name": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चैट ऐप जैसा फ़ाइल नाम"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சாட் ஆப் கோப்புப் பெயர்"
+          }
+        }
+      }
+    },
+    "chat-app size": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चैट ऐप का आकार"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சாட் ஆப் அளவு"
+          }
+        }
+      }
+    },
+    "checking %lld%%": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% जाँचा"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% சரிபார்த்தது"
+          }
+        }
+      }
+    },
+    "cleaned up": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "साफ़ किया"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சுத்தம் செய்யப்பட்டது"
+          }
+        }
+      }
+    },
+    "duplicates and events over a year old": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "डुप्लिकेट और एक साल से पुराने इवेंट"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நகல்களும் ஓராண்டுக்கும் பழைய நிகழ்வுகளும்"
+          }
+        }
+      }
+    },
+    "free of %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ में से खाली"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ இல் காலி"
+          }
+        }
+      }
+    },
+    "looks like a forward": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ॉरवर्ड जैसा दिखता है"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஃபார்வர்ட் போலத் தெரிகிறது"
+          }
+        }
+      }
+    },
+    "no camera data": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कैमरा डेटा नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கேமரா தரவு இல்லை"
+          }
+        }
+      }
+    },
+    "no location": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "लोकेशन नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இடம் இல்லை"
+          }
+        }
+      }
+    },
+    "not selected": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चुना नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தேர்வாகவில்லை"
+          }
+        }
+      }
+    },
+    "selected": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चुना गया"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தேர்வானது"
+          }
+        }
+      }
+    },
+    "tidied up": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "साफ़ किया"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சுத்தம் செய்யப்பட்டது"
+          }
+        }
+      }
+    },
+    "· approx.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· लगभग"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· தோராயம்"
+          }
+        }
+      }
+    }
   },
   "version": "1.0"
 }

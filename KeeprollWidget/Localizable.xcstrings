@@ -1,33 +1,150 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "%@ free" : {
-
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ free": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ खाली"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ காலி"
+          }
+        }
+      }
     },
-    "%lld%%" : {
-
+    "%lld%%": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        }
+      }
     },
-    "free" : {
-
+    "Free space on this iPhone, and how much Keeproll can clean.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इस iPhone की खाली जगह, और Keeproll कितना साफ़ कर सकता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த iPhone இன் காலி இடம், மற்றும் Keeproll எவ்வளவு சுத்தம் செய்யலாம்."
+          }
+        }
+      }
     },
-    "Free space on this iPhone, and how much Keeproll can clean." : {
-
+    "Keeproll": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll"
+          }
+        }
+      }
     },
-    "Keeproll" : {
-
+    "Open Keeproll to scan": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्कैन के लिए Keeproll खोलें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்கேன் செய்ய Keeproll ஐத் திறக்கவும்"
+          }
+        }
+      }
     },
-    "of %@" : {
-
+    "Storage": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्टोरेज"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சேமிப்பகம்"
+          }
+        }
+      }
     },
-    "Open Keeproll to scan" : {
-
+    "Up to %@ to clean": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अधिकतम %@ साफ़ करने को"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அதிகபட்சம் %@ சுத்தம் செய்ய"
+          }
+        }
+      }
     },
-    "Storage" : {
-
+    "free": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "खाली"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காலி"
+          }
+        }
+      }
     },
-    "Up to %@ to clean" : {
-
+    "of %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ में से"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ இல்"
+          }
+        }
+      }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

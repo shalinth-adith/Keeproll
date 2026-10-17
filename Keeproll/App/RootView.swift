@@ -4,6 +4,7 @@ import SwiftUI
 struct RootView: View {
     let env: AppEnvironment
     @Environment(\.scenePhase) private var scenePhase
+    @State private var showWhatsNew = false
 
     /// Watches the library once Photos access exists. Deleted photos disappear from every
     /// list and from the cart straight away.
@@ -47,7 +48,13 @@ struct RootView: View {
                         SelectionBar(cart: env.cart) { router.presentReview() }
                     }
                 }
-                .sheet(item: $router.sheet) { sheet in
+                .sheet(isPresented: $showWhatsNew) {
+            WhatsNewSheet(items: WhatsNew.items()) {
+                env.settings.lastSeenBuild = WhatsNew.currentBuild
+                showWhatsNew = false
+            }
+        }
+        .sheet(item: $router.sheet) { sheet in
                     switch sheet {
                     case .review: ReviewFlowView(env: env)
                     case .videoPreview(let id): VideoPreviewView(id: id, playback: env.videoPlayback)
@@ -69,6 +76,12 @@ struct RootView: View {
             if env.scanStore.isStale && !env.scanStore.isScanning { env.scanStore.scan() }
         }
         .task {
+            env.settings.recordSession()
+            DiagnosticsService.shared.start()
+            if env.settings.hasCompletedOnboarding {
+                if WhatsNew.shouldShow(lastSeen: env.settings.lastSeenBuild) { showWhatsNew = true }
+                else if env.settings.lastSeenBuild == nil { env.settings.lastSeenBuild = WhatsNew.currentBuild } // installs that predate the sheet
+            }
             startLibraryMonitor()
             #if DEBUG
             if env.scanStore.photosPermission.canRead {

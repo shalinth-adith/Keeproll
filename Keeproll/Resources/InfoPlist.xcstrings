@@ -1,0 +1,145 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Keeproll"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Keeproll"
+          }
+        }
+      }
+    },
+    "NSCalendarsFullAccessUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll looks for duplicate events and events over a year old in your calendars on this iPhone. Nothing is uploaded, and nothing is removed until you confirm."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll इस iPhone के कैलेंडर में डुप्लिकेट इवेंट और एक साल से पुराने इवेंट खोजता है। कुछ अपलोड नहीं होता, और आपकी पुष्टि तक कुछ नहीं हटता।"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll இந்த iPhone இன் காலண்டர்களில் நகல் நிகழ்வுகளையும் ஓராண்டுக்கும் பழைய நிகழ்வுகளையும் தேடும். எதுவும் பதிவேற்றப்படாது, நீங்கள் உறுதிசெய்யும் வரை எதுவும் நீக்கப்படாது."
+          }
+        }
+      }
+    },
+    "NSContactsUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll checks the contacts on this iPhone to find duplicates you can merge. Nothing is uploaded."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll इस iPhone के संपर्कों में ऐसे डुप्लिकेट खोजता है जिन्हें आप मिला सकें। कुछ भी अपलोड नहीं होता।"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll இந்த iPhone இன் தொடர்புகளில் நீங்கள் இணைக்கக்கூடிய நகல்களைக் கண்டறியும். எதுவும் பதிவேற்றப்படாது."
+          }
+        }
+      }
+    },
+    "NSFaceIDUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll uses Face ID to unlock your private vault."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll आपका निजी वॉल्ट अनलॉक करने के लिए Face ID इस्तेमाल करता है।"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "உங்கள் தனிப் பெட்டகத்தைத் திறக்க Keeproll Face ID ஐப் பயன்படுத்தும்."
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryAddUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll saves compressed videos and still copies of Live Photos to your library."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll कंप्रेस किए गए वीडियो और Live Photos की स्थिर कॉपी आपकी लाइब्रेरी में सेव करता है।"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll சுருக்கிய வீடியோக்களையும் Live Photos இன் நிலைப் படங்களையும் உங்கள் லைப்ரரியில் சேமிக்கும்."
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll looks at the photos and videos on this iPhone to find duplicates, screenshots and large videos. Nothing is uploaded."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll इस iPhone की फ़ोटो और वीडियो देखकर डुप्लिकेट, स्क्रीनशॉट और बड़े वीडियो खोजता है। कुछ भी अपलोड नहीं होता।"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeproll இந்த iPhone இன் புகைப்படங்களையும் வீடியோக்களையும் பார்த்து நகல்கள், ஸ்கிரீன்ஷாட்கள், பெரிய வீடியோக்களைக் கண்டறியும். எதுவும் பதிவேற்றப்படாது."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

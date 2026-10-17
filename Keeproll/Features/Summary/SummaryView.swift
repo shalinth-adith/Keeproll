@@ -1,11 +1,16 @@
+import StoreKit
 import SwiftUI
 
 /// Shown after cleaning: space freed, what was removed, and the Recently Deleted reminder (FR-SUM-1).
 struct SummaryView: View {
     let result: CleanupResult
+    /// Session count and the once-only review flag live here.
+    var settings: SettingsStore? = nil
     let onDone: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.requestReview) private var requestReview
+    @State private var shareImage: ShareCardImage?
     @State private var shownBytes: Int64 = 0
     @State private var appeared = false
 
@@ -99,9 +104,21 @@ struct SummaryView: View {
         }
         .background(Color.keeproll.canvas)
         .safeAreaInset(edge: .bottom) {
-            PrimaryButton(title: "Done", action: onDone)
-                .padding(.horizontal, Spacing.m)
-                .padding(.bottom, Spacing.xs)
+            VStack(spacing: Spacing.s) {
+                if photosRemoved, let shareImage {
+                    // The only growth loop a no-network app has: an honest card, user-initiated.
+                    ShareLink(item: shareImage, preview: SharePreview(Text("I freed \(ByteFormatter.string(result.bytesFreed)) with Keeproll"), image: Image(uiImage: shareImage.image))) {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                            .font(Font.keeproll.headline)
+                            .frame(maxWidth: .infinity, minHeight: 48)
+                            .foregroundStyle(Color.keeproll.accent)
+                            .background(Color.keeproll.accentSoft, in: Capsule())
+                    }
+                }
+                PrimaryButton(title: "Done", action: onDone)
+            }
+            .padding(.horizontal, Spacing.m)
+            .padding(.bottom, Spacing.xs)
         }
         .navigationTitle("All done")
         .navigationBarTitleDisplayMode(.inline)
@@ -110,6 +127,23 @@ struct SummaryView: View {
         .onAppear {
             withAnimation(reduceMotion ? nil : Motion.gentle) { appeared = true }
             withAnimation(reduceMotion ? nil : Motion.countUp.delay(0.2)) { shownBytes = result.bytesFreed }
+            if photosRemoved, let image = ShareCard.image(bytesFreed: result.bytesFreed, itemCount: result.deletedAssetIDs.count) {
+                shareImage = ShareCardImage(image: image)
+            }
+            maybeAskForReview()
+        }
+    }
+
+    /// Once per install, after a good cleanup, never in the first session (ReviewPrompter).
+    /// The sheet appears after the count-up so it doesn't cover the result.
+    private func maybeAskForReview() {
+        guard let settings,
+              ReviewPrompter.shouldAsk(bytesFreed: result.bytesFreed, sessionCount: settings.sessionCount,
+                                       alreadyAsked: settings.hasAskedForReview, failures: result.failures.count) else { return }
+        settings.markReviewAsked()
+        Task {
+            try? await Task.sleep(for: .seconds(1.6))
+            requestReview()
         }
     }
 
