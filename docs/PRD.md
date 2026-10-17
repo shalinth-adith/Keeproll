@@ -120,6 +120,12 @@ Two detectors no mainstream iOS cleaner ships, both fully on-device, both feedin
 - **FR-SMART-5** A screenshot naming a date still in the future is never flagged. Recognised text is never stored or logged; only the kind, the dates and a confidence are cached.
 - **FR-SMART-6** Both scans cache per asset (keyed by id + modification date) so a rescan does no header reads or OCR for unchanged photos, and both are cancellable with the rest of the scan.
 
+### 5.10 Live Photos to still (`FR-LIVE`, bonus, added 2026-10-17)
+- **FR-LIVE-1** List every Live Photo with the size of its motion clip (the part converting frees), largest first; the category total is the sum of clips.
+- **FR-LIVE-2** Converting saves a still copy to the library first, with the original's date, location and favourite flag (the edited full-size still if one exists), then adds the original to the cart. Nothing is removed until Review (D10).
+- **FR-LIVE-3** Selection on the screen is local to "convert"; the cart is touched only after a still is safely saved. Converted originals and their stills are remembered so neither is offered again.
+- **FR-LIVE-4** Batch conversion shows progress and reports per-item failures without stopping the batch.
+
 ## 6. Bonus features (only after §5 passes on a real device)
 
 Priority order, chosen for demo value relative to cost and how much already-built code each one reuses:
@@ -133,6 +139,7 @@ Priority order, chosen for demo value relative to cost and how much already-buil
 | B5 | **Home Screen storage widget** | Small; needs an App Group | StorageService |
 | B6 | PIN / Face ID private vault | Large, with separate security concerns | — (likely skip) |
 | B7 | Calendar cleanup | Off-theme for storage | — (likely skip) |
+| B9 | **Live Photos to still** (§5.10) | Table stakes in the category; reuses the compression pattern | Compression, grid, cart |
 | B8 | **Saved from chats** + **Expired screenshots** (§5.9) | Post-submission: a category no competitor has; resume feature | Cart, grid, ScanCache, Vision |
 
 ## 7. Non-functional requirements

@@ -59,6 +59,8 @@ final class ScanStore {
     private(set) var chats: Loadable<[ChatSavedItem]> = .idle
     /// Screenshots whose content has expired (bonus: smart categories).
     private(set) var expired: Loadable<[ExpiredScreenshot]> = .idle
+    /// Live Photos whose clip can be dropped once a still is saved (bonus).
+    private(set) var livePhotos: Loadable<[LivePhotoCandidate]> = .idle
     #if DEBUG
     /// Statistics from the last similar-photo scan, for the calibration screen.
     private(set) var calibration: CalibrationData?
@@ -92,6 +94,10 @@ final class ScanStore {
     private let calendarScanner: CalendarScanning?
     private let chatScanner: ChatMediaScanning?
     private let expiryScanner: ScreenshotExpiryScanning?
+    private let livePhotoScanner: LivePhotoScanning?
+    /// Live Photos already converted (and the stills made from them), so they aren't offered twice.
+    private(set) var convertedLivePhotos: Set<String>
+    private static let convertedLivePhotosKey = "convertedLivePhotos"
     private var scanTask: Task<Void, Never>?
 
     init(permissions: PermissionServicing,
@@ -102,6 +108,7 @@ final class ScanStore {
          calendarScanner: CalendarScanning? = nil,
          chatScanner: ChatMediaScanning? = nil,
          expiryScanner: ScreenshotExpiryScanning? = nil,
+         livePhotoScanner: LivePhotoScanning? = nil,
          defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.bestOverrides = Set(defaults.stringArray(forKey: Self.bestOverridesKey) ?? [])
@@ -114,6 +121,8 @@ final class ScanStore {
         self.calendarScanner = calendarScanner
         self.chatScanner = chatScanner
         self.expiryScanner = expiryScanner
+        self.livePhotoScanner = livePhotoScanner
+        self.convertedLivePhotos = Set(defaults.stringArray(forKey: Self.convertedLivePhotosKey) ?? [])
         self.calendarPermission = permissions.calendarState()
         self.photosPermission = permissions.photosState()
         self.contactsPermission = permissions.contactsState()
@@ -130,6 +139,7 @@ final class ScanStore {
             case .calendar: calendarScanner != nil
             case .chats: chatScanner != nil
             case .expired: expiryScanner != nil
+            case .livePhotos: livePhotoScanner != nil
             case .vault: false // reached from its own entry, never a scan card
             }
         }
@@ -141,6 +151,8 @@ final class ScanStore {
     var blurryBytes: Int64 { blurry.value?.reduce(0) { $0 + ($1.byteSize ?? 0) } ?? 0 }
     var chatBytes: Int64 { chats.value?.reduce(0) { $0 + ($1.item.byteSize ?? 0) } ?? 0 }
     var expiredBytes: Int64 { expired.value?.reduce(0) { $0 + ($1.item.byteSize ?? 0) } ?? 0 }
+    /// What converting every Live Photo would free: the clips only.
+    var liveBytes: Int64 { livePhotos.value?.reduce(0) { $0 + $1.videoBytes } ?? 0 }
 
     /// Everything that can be freed, counting each asset once even if it appears in
     /// several categories (FR-DASH-6).
@@ -151,6 +163,8 @@ final class ScanStore {
             + (similar.value ?? []).flatMap(\.othersThanBest)
             + (chats.value ?? []).map(\.item) + (expired.value ?? []).map(\.item)
         for item in candidates where seen.insert(item.id).inserted { total += item.byteSize ?? 0 }
+        // A Live Photo not already counted frees only its clip.
+        for live in livePhotos.value ?? [] where seen.insert(live.id).inserted { total += live.videoBytes }
         return total
     }
     var similarPhotoCount: Int { similar.value?.reduce(0) { $0 + $1.othersThanBest.count } ?? 0 }
@@ -196,8 +210,9 @@ final class ScanStore {
             async let f: Void = loadCalendar()
             async let g: Void = loadChats()
             async let h: Void = loadExpired()
+            async let i: Void = loadLivePhotos()
             async let e: Void = loadSimilar()
-            _ = await (a, b, c, d, e, f, g, h)
+            _ = await (a, b, c, d, e, f, g, h, i)
             guard !Task.isCancelled else { return }
             saveSummary()
             WidgetBridge.update(freeableBytes: totalFreeableBytes)
@@ -225,6 +240,9 @@ final class ScanStore {
         }
         if case .loaded(let items) = expired {
             expired = .loaded(items.filter { !ids.contains($0.id) })
+        }
+        if case .loaded(let items) = livePhotos {
+            livePhotos = .loaded(items.filter { !ids.contains($0.id) })
         }
         if case .loaded(let groups) = similar {
             similar = .loaded(groups.compactMap { group in
@@ -261,6 +279,7 @@ final class ScanStore {
         case .calendar: calendar.value != nil
         case .chats: chats.value != nil
         case .expired: expired.value != nil
+        case .livePhotos: livePhotos.value != nil
         case .vault: false
         }
     }
@@ -273,6 +292,7 @@ final class ScanStore {
         case .blurry: blurryBytes
         case .chats: chatBytes
         case .expired: expiredBytes
+        case .livePhotos: liveBytes
         case .contacts, .calendar, .vault: 0
         }
     }
@@ -287,6 +307,7 @@ final class ScanStore {
         case .calendar: calendar.value?.suggestionCount ?? 0
         case .chats: chats.value?.count ?? 0
         case .expired: expired.value?.count ?? 0
+        case .livePhotos: livePhotos.value?.count ?? 0
         case .vault: 0
         }
     }
@@ -330,6 +351,7 @@ final class ScanStore {
         for item in (screenshots.value ?? []) + (videos.value ?? []) + (blurry.value ?? []) { ids.insert(item.id) }
         for entry in chats.value ?? [] { ids.insert(entry.id) }
         for entry in expired.value ?? [] { ids.insert(entry.id) }
+        for entry in livePhotos.value ?? [] { ids.insert(entry.id) }
         for group in similar.value ?? [] { for member in group.members { ids.insert(member.id) } }
         return ids
     }
@@ -427,6 +449,21 @@ final class ScanStore {
         let items = await expiryScanner.findExpired()
         guard !Task.isCancelled else { return }
         expired = .loaded(items)
+    }
+
+    private func loadLivePhotos() async {
+        guard let livePhotoScanner, photosPermission.canRead else { livePhotos = .idle; return }
+        if livePhotos.value == nil { livePhotos = .loading }
+        let items = await livePhotoScanner.findLivePhotos()
+        guard !Task.isCancelled else { return }
+        livePhotos = .loaded(items.filter { !convertedLivePhotos.contains($0.id) })
+    }
+
+    /// Remembers a conversion so neither the original nor its still is offered again.
+    func markLivePhotoConverted(original: String, still: String) {
+        convertedLivePhotos.formUnion([original, still])
+        defaults.set(Array(convertedLivePhotos), forKey: Self.convertedLivePhotosKey)
+        if case .loaded(let items) = livePhotos { livePhotos = .loaded(items.filter { $0.id != original }) }
     }
 
     private func loadCalendar() async {

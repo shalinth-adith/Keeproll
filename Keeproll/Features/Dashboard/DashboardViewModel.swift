@@ -83,6 +83,7 @@ final class DashboardViewModel {
             case .blurry: StorageSegment(id: "blurry", label: "Blurry", bytes: scanStore.displayBytes(.blurry) ?? 0, color: Color.keeproll.catBlurry)
             case .chats: StorageSegment(id: "chats", label: "From chats", bytes: scanStore.displayBytes(.chats) ?? 0, color: Color.keeproll.catChats)
             case .expired: StorageSegment(id: "expired", label: "Expired", bytes: scanStore.displayBytes(.expired) ?? 0, color: Color.keeproll.catExpired)
+            case .livePhotos: StorageSegment(id: "live", label: "Live Photos", bytes: scanStore.displayBytes(.livePhotos) ?? 0, color: Color.keeproll.catLive)
             case .videos: StorageSegment(id: "videos", label: "Videos", bytes: scanStore.displayBytes(.videos) ?? 0, color: Color.keeproll.catVideos)
             case .contacts, .calendar, .vault: nil // no meaningful bytes (FR-DASH-2)
             }
@@ -116,6 +117,9 @@ final class DashboardViewModel {
         case .expired:
             guard scanStore.photosPermission.canRead else { return .locked }
             return state(scanStore.expired, bytes: scanStore.expiredBytes) { $0.count }
+        case .livePhotos:
+            guard scanStore.photosPermission.canRead else { return .locked }
+            return state(scanStore.livePhotos, bytes: scanStore.liveBytes) { $0.count }
         case .calendar:
             guard scanStore.calendarPermission.canRead else { return .locked }
             switch scanStore.calendar {
@@ -155,6 +159,7 @@ final class DashboardViewModel {
         case .videos: router.open(.videos)
         case .chats: router.open(.chats)
         case .expired: router.open(.expired)
+        case .livePhotos: router.open(.livePhotos)
         case .contacts: router.open(.contacts)
         case .calendar: router.open(.calendar)
         case .vault: router.open(.vault)

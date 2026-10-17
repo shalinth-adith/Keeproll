@@ -52,6 +52,7 @@ final class HomeViewModel {
             case .blurry: StorageSegment(id: "blurry", label: "Blurry", bytes: scanStore.displayBytes(.blurry) ?? 0, color: Color.keeproll.catBlurry)
             case .chats: StorageSegment(id: "chats", label: "From chats", bytes: scanStore.displayBytes(.chats) ?? 0, color: Color.keeproll.catChats)
             case .expired: StorageSegment(id: "expired", label: "Expired", bytes: scanStore.displayBytes(.expired) ?? 0, color: Color.keeproll.catExpired)
+            case .livePhotos: StorageSegment(id: "live", label: "Live Photos", bytes: scanStore.displayBytes(.livePhotos) ?? 0, color: Color.keeproll.catLive)
             case .videos: StorageSegment(id: "videos", label: "Videos", bytes: scanStore.displayBytes(.videos) ?? 0, color: Color.keeproll.catVideos)
             case .contacts, .calendar, .vault: nil
             }
@@ -67,6 +68,7 @@ final class HomeViewModel {
         case .videos: "Biggest clips, compressible"
         case .chats: "Forwards saved by WhatsApp and Telegram"
         case .expired: "Old codes, passes and tickets"
+        case .livePhotos: "Keep the still, drop the clip"
         case .contacts: scanStore.contactsPermission.canRead ? "The same person saved twice" : "Needs access · tap to allow"
         case .calendar: scanStore.calendarPermission.canRead ? "Duplicates and events over a year old" : "Needs access · tap to allow"
         case .vault: "Photos kept behind Face ID"
@@ -102,6 +104,7 @@ final class HomeViewModel {
         case .videos: router.open(.videos)
         case .chats: router.open(.chats)
         case .expired: router.open(.expired)
+        case .livePhotos: router.open(.livePhotos)
         case .contacts: router.open(.contacts)
         case .calendar: router.open(.calendar)
         case .vault: router.open(.vault)

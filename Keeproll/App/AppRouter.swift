@@ -3,7 +3,7 @@ import Foundation
 
 enum Route: Hashable {
     case dashboard, settings
-    case similar, screenshots, blurry, videos, chats, expired, contacts, calendar, vault, swipe, calibration
+    case similar, screenshots, blurry, videos, chats, expired, livePhotos, contacts, calendar, vault, swipe, calibration
     case compare(groupID: UUID, startID: String)
 }
 
@@ -11,12 +11,14 @@ enum Sheet: Identifiable {
     case review
     case videoPreview(id: String)
     case compress(MediaItem)
+    case convertLivePhotos([LivePhotoCandidate])
 
     var id: String {
         switch self {
         case .review: "review"
         case .videoPreview(let id): "video:\(id)"
         case .compress(let item): "compress:\(item.id)"
+        case .convertLivePhotos(let items): "live:\(items.count):\(items.first?.id ?? "")"
         }
     }
 }
@@ -42,6 +44,7 @@ final class AppRouter {
     }
     func presentReview() { sheet = .review }
     func previewVideo(_ id: String) { sheet = .videoPreview(id: id) }
+    func convertLivePhotos(_ items: [LivePhotoCandidate]) { sheet = .convertLivePhotos(items) }
 
     /// After cleaning, land on the results dashboard.
     func finishCleanup() {

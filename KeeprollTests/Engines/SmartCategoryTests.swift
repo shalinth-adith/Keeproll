@@ -130,3 +130,21 @@ struct ScreenshotExpiryEngineTests {
         #expect(ScreenshotExpiryEngine.verdict(text: text, capturedOn: now.addingTimeInterval(-400 * day), now: now) == nil)
     }
 }
+
+// MARK: - Live Photos
+
+struct LivePhotoCandidateTests {
+    @Test func freeableTotalCountsOnlyTheClip() {
+        let still = MediaItem(id: "l1", kind: .photo, creationDate: .now, pixelWidth: 3024, pixelHeight: 4032, duration: nil, isFavorite: false, byteSize: 5_000_000)
+        let candidate = LivePhotoCandidate(item: still, videoBytes: 3_200_000)
+        #expect(candidate.id == "l1")
+        #expect(candidate.videoBytes < candidate.item.byteSize ?? 0)
+    }
+
+    @Test func convertedOriginalsAreHiddenFromTheList() async throws {
+        let defaults = UserDefaults(suiteName: "test.live.\(UUID().uuidString)")!
+        let store = ScanStore(permissions: FakePermissions(), storage: FakeStorage(), photos: FakePhotos(screenshots: []), defaults: defaults)
+        store.markLivePhotoConverted(original: "orig", still: "new")
+        #expect(store.convertedLivePhotos == ["orig", "new"])
+    }
+}

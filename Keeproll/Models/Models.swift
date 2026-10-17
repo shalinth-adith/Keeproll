@@ -10,6 +10,8 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
     case chats
     /// Screenshots whose content has passed its use-by date: codes, passes, tickets (bonus: smart categories).
     case expired
+    /// Live Photos whose motion clip can go once a still copy is saved (bonus).
+    case livePhotos
     case contacts, calendar
     /// Originals of photos copied into the private vault. Never a dashboard card; it
     /// only appears on Review, so the user sees exactly what leaves the library.
@@ -24,6 +26,7 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .videos: "Large Videos"
         case .chats: "Saved from Chats"
         case .expired: "Expired Screenshots"
+        case .livePhotos: "Live Photos"
         case .contacts: "Duplicate Contacts"
         case .calendar: "Old Calendar Events"
         case .vault: "Moved to Vault"
@@ -39,6 +42,7 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .videos: "Videos"
         case .chats: "From chats"
         case .expired: "Expired"
+        case .livePhotos: "Live Photos"
         case .contacts: "Contacts"
         case .calendar: "Calendar"
         case .vault: "Vault"
@@ -53,6 +57,7 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .videos: "video"
         case .chats: "bubble.left.and.bubble.right"
         case .expired: "clock.badge.xmark"
+        case .livePhotos: "livephoto"
         case .contacts: "person.2"
         case .calendar: "calendar"
         case .vault: "lock.shield"
@@ -67,6 +72,7 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .videos: Color.keeproll.catVideos
         case .chats: Color.keeproll.catChats
         case .expired: Color.keeproll.catExpired
+        case .livePhotos: Color.keeproll.catLive
         case .contacts: Color.keeproll.catContacts
         case .calendar: Color.keeproll.catCalendar
         case .vault: Color.keeproll.catVault
@@ -348,6 +354,15 @@ nonisolated struct ExpiryVerdict: Sendable, Hashable {
 nonisolated struct ExpiredScreenshot: Identifiable, Hashable, Sendable {
     var item: MediaItem
     let verdict: ExpiryVerdict
+    var id: String { item.id }
+}
+
+/// A Live Photo and how much of it is the motion clip (bonus: Live Photos to still).
+nonisolated struct LivePhotoCandidate: Identifiable, Hashable, Sendable {
+    /// `byteSize` is the whole asset: still plus clip.
+    var item: MediaItem
+    /// The paired video's size: what converting to a still saves.
+    let videoBytes: Int64
     var id: String { item.id }
 }
 

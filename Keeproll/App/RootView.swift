@@ -32,6 +32,7 @@ struct RootView: View {
                             case .videos: LargeVideosView(env: env)
                             case .chats: ChatSavedView(env: env)
                             case .expired: ExpiredScreenshotsView(env: env)
+                            case .livePhotos: LivePhotosView(env: env)
                             case .contacts: DuplicateContactsView(env: env)
                             case .calendar: CalendarCleanupView(env: env)
                             case .vault: VaultView(env: env)
@@ -51,6 +52,7 @@ struct RootView: View {
                     case .review: ReviewFlowView(env: env)
                     case .videoPreview(let id): VideoPreviewView(id: id, playback: env.videoPlayback)
                     case .compress(let item): CompressVideoSheet(item: item, env: env).environment(\.thumbnails, env.thumbnails)
+                    case .convertLivePhotos(let items): ConvertLivePhotosSheet(items: items, env: env).environment(\.thumbnails, env.thumbnails)
                     }
                 }
             } else {
@@ -66,6 +68,13 @@ struct RootView: View {
             // The cache makes this a warm rescan (seconds, not a full re-analysis).
             if env.scanStore.isStale && !env.scanStore.isScanning { env.scanStore.scan() }
         }
-        .task { startLibraryMonitor() }
+        .task {
+            startLibraryMonitor()
+            #if DEBUG
+            if env.scanStore.photosPermission.canRead {
+                await LivePhotoSeedFixtures.seedIfRequested()
+            }
+            #endif
+        }
     }
 }

@@ -7,6 +7,7 @@ struct AppEnvironment {
     let thumbnails: ThumbnailProviding
     let videoPlayback: VideoPlaybackProviding
     let compression: VideoCompressing
+    let livePhotos: LivePhotoConverting
     let vault: VaultStoring
     let vaultAuth: VaultAuthenticating
     let deletion: DeletionServicing
@@ -29,12 +30,14 @@ struct AppEnvironment {
         let photos = PhotoLibraryService(sizes: sizes)
         let contacts = ContactsService()
         let calendar = CalendarService()
+        let livePhotoService = LivePhotoService(sizes: sizes)
 
         return AppEnvironment(
             permissions: permissions,
             thumbnails: ThumbnailProvider(),
             videoPlayback: VideoPlaybackService(),
             compression: VideoCompressionService(),
+            livePhotos: livePhotoService,
             vault: VaultStore(),
             vaultAuth: DeviceOwnerAuthenticator(),
             deletion: DeletionService(contacts: contacts, calendar: calendar),
@@ -43,7 +46,8 @@ struct AppEnvironment {
                                  similarity: SimilarityEngine(sizes: sizes, cache: cache), contactsScanner: contacts,
                                  calendarScanner: calendar,
                                  chatScanner: ChatMediaScanner(sizes: sizes, cache: cache),
-                                 expiryScanner: ScreenshotExpiryScanner(photos: photos, cache: cache)),
+                                 expiryScanner: ScreenshotExpiryScanner(photos: photos, cache: cache),
+                                 livePhotoScanner: livePhotoService),
             cart: CleanupCart(),
             settings: SettingsStore(),
             router: AppRouter()

@@ -174,6 +174,12 @@ struct ReviewView: View {
                     .font(Font.keeproll.metric)
                     .foregroundStyle(Color.keeproll.inkSecondary)
             }
+            if category == .livePhotos {
+                Label("A still copy of each is already in your library, with the same date and place. This removes the Live Photo originals.", systemImage: "livephoto")
+                    .font(Font.keeproll.caption)
+                    .foregroundStyle(Color.keeproll.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             if category == .vault {
                 Label("Copies of these are safe in your vault. This removes the originals from your library.", systemImage: "lock.shield")
                     .font(Font.keeproll.caption)
