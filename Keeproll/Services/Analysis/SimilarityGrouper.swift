@@ -9,6 +9,8 @@ nonisolated struct AssetFeatures: Sendable {
     var print: [Float]?
     let isFavorite: Bool
     let pixelCount: Int
+    /// Brightness statistics for Accidental Shots; nil if the thumbnail wasn't readable.
+    var exposure: ExposureStats? = nil
 }
 
 /// Builds similar-photo groups incrementally from features fed in date order

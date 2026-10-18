@@ -58,6 +58,8 @@ final class HomeViewModel {
             case .similar: StorageSegment(id: "similar", label: "Similar", bytes: scanStore.displayBytes(.similar) ?? 0, color: Color.keeproll.catSimilar)
             case .screenshots: StorageSegment(id: "screenshots", label: "Screenshots", bytes: scanStore.displayBytes(.screenshots) ?? 0, color: Color.keeproll.catScreenshots)
             case .blurry: StorageSegment(id: "blurry", label: "Blurry", bytes: scanStore.displayBytes(.blurry) ?? 0, color: Color.keeproll.catBlurry)
+            case .accidental: StorageSegment(id: "accidental", label: "Accidental", bytes: scanStore.displayBytes(.accidental) ?? 0, color: Color.keeproll.catAccidental)
+            case .trims: StorageSegment(id: "trims", label: "Smart Trim", bytes: scanStore.displayBytes(.trims) ?? 0, color: Color.keeproll.catTrim)
             case .chats: StorageSegment(id: "chats", label: "From chats", bytes: scanStore.displayBytes(.chats) ?? 0, color: Color.keeproll.catChats)
             case .expired: StorageSegment(id: "expired", label: "Expired", bytes: scanStore.displayBytes(.expired) ?? 0, color: Color.keeproll.catExpired)
             case .livePhotos: StorageSegment(id: "live", label: "Live Photos", bytes: scanStore.displayBytes(.livePhotos) ?? 0, color: Color.keeproll.catLive)
@@ -75,7 +77,9 @@ final class HomeViewModel {
         case .similar: "Bursts and duplicate shots"
         case .screenshots: "Screenshots taking up space"
         case .blurry: "Out-of-focus photos"
+        case .accidental: "Pocket shots and black frames"
         case .videos: "Biggest clips, compressible"
+        case .trims: "Cut dark parts of videos"
         case .chats: "Forwards from chat apps"
         case .expired: "Old codes, passes and tickets"
         case .livePhotos: "Keep the still, drop the clip"
@@ -112,7 +116,9 @@ final class HomeViewModel {
         case .similar: router.open(.similar)
         case .screenshots: router.open(.screenshots)
         case .blurry: router.open(.blurry)
+        case .accidental: router.open(.accidental)
         case .videos: router.open(.videos)
+        case .trims: router.open(.trims)
         case .chats: router.open(.chats)
         case .expired: router.open(.expired)
         case .livePhotos: router.open(.livePhotos)

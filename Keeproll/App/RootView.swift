@@ -30,6 +30,8 @@ struct RootView: View {
                             case .similar: SimilarPhotosView(env: env)
                             case .screenshots: ScreenshotsView(env: env)
                             case .blurry: BlurryPhotosView(env: env)
+                            case .accidental: AccidentalShotsView(env: env)
+                            case .trims: SmartTrimView(env: env)
                             case .videos: LargeVideosView(env: env)
                             case .chats: ChatSavedView(env: env)
                             case .expired: ExpiredScreenshotsView(env: env)
@@ -68,6 +70,7 @@ struct RootView: View {
                     case .videoPreview(let id): VideoPreviewView(id: id, playback: env.videoPlayback)
                     case .compress(let item): CompressVideoSheet(item: item, env: env).environment(\.thumbnails, env.thumbnails)
                     case .convertLivePhotos(let items): ConvertLivePhotosSheet(items: items, env: env).environment(\.thumbnails, env.thumbnails)
+                    case .trim(let candidate): TrimVideoSheet(candidate: candidate, env: env).environment(\.thumbnails, env.thumbnails)
                     }
                 }
             } else {

@@ -8,6 +8,7 @@ struct AppEnvironment {
     let videoPlayback: VideoPlaybackProviding
     let compression: VideoCompressing
     let livePhotos: LivePhotoConverting
+    let trimmer: VideoTrimming
     let vault: VaultStoring
     let vaultAuth: VaultAuthenticating
     let deletion: DeletionServicing
@@ -33,6 +34,7 @@ struct AppEnvironment {
         let contacts = ContactsService()
         let calendar = CalendarService()
         let livePhotoService = LivePhotoService(sizes: sizes)
+        let smartTrim = SmartTrimService(photos: photos, cache: cache)
 
         return AppEnvironment(
             permissions: permissions,
@@ -40,6 +42,7 @@ struct AppEnvironment {
             videoPlayback: VideoPlaybackService(),
             compression: VideoCompressionService(),
             livePhotos: livePhotoService,
+            trimmer: smartTrim,
             vault: VaultStore(),
             vaultAuth: DeviceOwnerAuthenticator(),
             deletion: DeletionService(contacts: contacts, calendar: calendar),
@@ -49,7 +52,8 @@ struct AppEnvironment {
                                  calendarScanner: calendar,
                                  chatScanner: ChatMediaScanner(sizes: sizes, cache: cache),
                                  expiryScanner: ScreenshotExpiryScanner(photos: photos, cache: cache),
-                                 livePhotoScanner: livePhotoService),
+                                 livePhotoScanner: livePhotoService,
+                                 trimScanner: smartTrim),
             cart: CleanupCart(),
             settings: SettingsStore(),
             router: AppRouter()

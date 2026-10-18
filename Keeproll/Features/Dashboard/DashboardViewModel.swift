@@ -87,6 +87,8 @@ final class DashboardViewModel {
             case .similar: StorageSegment(id: "similar", label: "Similar", bytes: scanStore.displayBytes(.similar) ?? 0, color: Color.keeproll.catSimilar)
             case .screenshots: StorageSegment(id: "screenshots", label: "Screenshots", bytes: scanStore.displayBytes(.screenshots) ?? 0, color: Color.keeproll.catScreenshots)
             case .blurry: StorageSegment(id: "blurry", label: "Blurry", bytes: scanStore.displayBytes(.blurry) ?? 0, color: Color.keeproll.catBlurry)
+            case .accidental: StorageSegment(id: "accidental", label: "Accidental", bytes: scanStore.displayBytes(.accidental) ?? 0, color: Color.keeproll.catAccidental)
+            case .trims: StorageSegment(id: "trims", label: "Smart Trim", bytes: scanStore.displayBytes(.trims) ?? 0, color: Color.keeproll.catTrim)
             case .chats: StorageSegment(id: "chats", label: "From chats", bytes: scanStore.displayBytes(.chats) ?? 0, color: Color.keeproll.catChats)
             case .expired: StorageSegment(id: "expired", label: "Expired", bytes: scanStore.displayBytes(.expired) ?? 0, color: Color.keeproll.catExpired)
             case .livePhotos: StorageSegment(id: "live", label: "Live Photos", bytes: scanStore.displayBytes(.livePhotos) ?? 0, color: Color.keeproll.catLive)
@@ -117,6 +119,19 @@ final class DashboardViewModel {
             guard scanStore.photosPermission.canRead else { return .locked }
             if let progress = scanStore.similarProgress, (scanStore.blurry.value ?? []).isEmpty { return .scanning(progress: progress) }
             return state(scanStore.blurry, bytes: scanStore.blurryBytes) { $0.count }
+        case .accidental:
+            guard scanStore.photosPermission.canRead else { return .locked }
+            if let progress = scanStore.similarProgress, (scanStore.accidental.value ?? []).isEmpty { return .scanning(progress: progress) }
+            return state(scanStore.accidental, bytes: scanStore.accidentalBytes) { $0.count }
+        case .trims:
+            guard scanStore.photosPermission.canRead else { return .locked }
+            switch scanStore.trims {
+            case .idle, .loading: return .scanning(progress: nil)
+            case .failed: return .empty
+            case .loaded:
+                let visible = scanStore.visibleTrims
+                return visible.isEmpty ? .empty : .ready(bytes: scanStore.trimBytes, count: visible.count)
+            }
         case .chats:
             guard scanStore.photosPermission.canRead else { return .locked }
             return state(scanStore.chats, bytes: scanStore.chatBytes) { $0.count }
@@ -162,7 +177,9 @@ final class DashboardViewModel {
         case .similar: router.open(.similar)
         case .screenshots: router.open(.screenshots)
         case .blurry: router.open(.blurry)
+        case .accidental: router.open(.accidental)
         case .videos: router.open(.videos)
+        case .trims: router.open(.trims)
         case .chats: router.open(.chats)
         case .expired: router.open(.expired)
         case .livePhotos: router.open(.livePhotos)

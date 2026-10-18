@@ -56,6 +56,10 @@ final class ScanStore {
     private(set) var similarProgress: Double?
     /// Photos the similarity scan scored as out of focus (bonus: blurry detection).
     private(set) var blurry: Loadable<[MediaItem]> = .idle
+    /// Pocket shots, black frames, a finger over the lens. From the same photo scan (bonus).
+    private(set) var accidental: Loadable<[AccidentalShot]> = .idle
+    /// Videos with dark or blank stretches, biggest saving first (bonus: Smart Trim).
+    private(set) var trims: Loadable<[TrimCandidate]> = .idle
     private(set) var contacts: Loadable<[DuplicateContactGroup]> = .idle
     /// Bumped after every contacts load, so the cart can drop stale contact changes.
     private(set) var contactsLoadCount = 0
@@ -99,6 +103,10 @@ final class ScanStore {
     private let chatScanner: ChatMediaScanning?
     private let expiryScanner: ScreenshotExpiryScanning?
     private let livePhotoScanner: LivePhotoScanning?
+    private let trimScanner: SmartTrimScanning?
+    /// Videos already trimmed (and the trimmed copies), so Smart Trim doesn't offer them again.
+    private(set) var trimmedVideos: Set<String>
+    private static let trimmedVideosKey = "trimmedVideos"
     /// Live Photos already converted (and the stills made from them), so they aren't offered twice.
     private(set) var convertedLivePhotos: Set<String>
     private static let convertedLivePhotosKey = "convertedLivePhotos"
@@ -116,6 +124,7 @@ final class ScanStore {
          chatScanner: ChatMediaScanning? = nil,
          expiryScanner: ScreenshotExpiryScanning? = nil,
          livePhotoScanner: LivePhotoScanning? = nil,
+         trimScanner: SmartTrimScanning? = nil,
          defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.bestOverrides = Set(defaults.stringArray(forKey: Self.bestOverridesKey) ?? [])
@@ -129,6 +138,8 @@ final class ScanStore {
         self.chatScanner = chatScanner
         self.expiryScanner = expiryScanner
         self.livePhotoScanner = livePhotoScanner
+        self.trimScanner = trimScanner
+        self.trimmedVideos = Set(defaults.stringArray(forKey: Self.trimmedVideosKey) ?? [])
         self.convertedLivePhotos = Set(defaults.stringArray(forKey: Self.convertedLivePhotosKey) ?? [])
         var history = defaults.data(forKey: Self.storageHistoryKey)
             .flatMap { try? JSONDecoder().decode([StorageSample].self, from: $0) } ?? []
@@ -155,7 +166,8 @@ final class ScanStore {
         CleanupCategory.allCases.filter { category in
             switch category {
             case .screenshots, .videos: true
-            case .similar, .blurry: similarity != nil
+            case .similar, .blurry, .accidental: similarity != nil
+            case .trims: trimScanner != nil
             case .contacts: contactsScanner != nil
             case .calendar: calendarScanner != nil
             case .chats: chatScanner != nil
@@ -170,6 +182,11 @@ final class ScanStore {
     var videoBytes: Int64 { videos.value?.reduce(0) { $0 + ($1.byteSize ?? 0) } ?? 0 }
     var similarBytes: Int64 { similar.value?.reduce(0) { $0 + $1.freeableBytes } ?? 0 }
     var blurryBytes: Int64 { blurry.value?.reduce(0) { $0 + ($1.byteSize ?? 0) } ?? 0 }
+    var accidentalBytes: Int64 { accidental.value?.reduce(0) { $0 + ($1.item.byteSize ?? 0) } ?? 0 }
+    /// What trimming every candidate would roughly free (whole clips for all-dead ones).
+    var trimBytes: Int64 { visibleTrims.reduce(0) { $0 + $1.estimatedSaving } }
+    /// Trim candidates not already trimmed.
+    var visibleTrims: [TrimCandidate] { (trims.value ?? []).filter { !trimmedVideos.contains($0.id) } }
     var chatBytes: Int64 { chats.value?.reduce(0) { $0 + ($1.item.byteSize ?? 0) } ?? 0 }
     var expiredBytes: Int64 { expired.value?.reduce(0) { $0 + ($1.item.byteSize ?? 0) } ?? 0 }
     /// What converting every Live Photo would free: the clips only.
@@ -183,7 +200,10 @@ final class ScanStore {
         let candidates = (screenshots.value ?? []) + (videos.value ?? []) + (blurry.value ?? [])
             + (similar.value ?? []).flatMap(\.othersThanBest)
             + (chats.value ?? []).map(\.item) + (expired.value ?? []).map(\.item)
+            + (accidental.value ?? []).map(\.item)
         for item in candidates where seen.insert(item.id).inserted { total += item.byteSize ?? 0 }
+        // A trim candidate not already counted frees only its dead stretches.
+        for trim in visibleTrims where seen.insert(trim.id).inserted { total += trim.estimatedSaving }
         // A Live Photo not already counted frees only its clip.
         for live in livePhotos.value ?? [] where seen.insert(live.id).inserted { total += live.videoBytes }
         return total
@@ -232,8 +252,9 @@ final class ScanStore {
             async let g: Void = loadChats()
             async let h: Void = loadExpired()
             async let i: Void = loadLivePhotos()
+            async let j: Void = loadTrims()
             async let e: Void = loadSimilar()
-            _ = await (a, b, c, d, e, f, g, h, i)
+            _ = await (a, b, c, d, e, f, g, h, i, j)
             guard !Task.isCancelled else { return }
             saveSummary()
             WidgetBridge.update(freeableBytes: totalFreeableBytes)
@@ -264,6 +285,12 @@ final class ScanStore {
         }
         if case .loaded(let items) = livePhotos {
             livePhotos = .loaded(items.filter { !ids.contains($0.id) })
+        }
+        if case .loaded(let items) = accidental {
+            accidental = .loaded(items.filter { !ids.contains($0.id) })
+        }
+        if case .loaded(let items) = trims {
+            trims = .loaded(items.filter { !ids.contains($0.id) })
         }
         if case .loaded(let groups) = similar {
             similar = .loaded(groups.compactMap { group in
@@ -296,6 +323,8 @@ final class ScanStore {
         case .videos: videos.value != nil
         case .similar: similar.value != nil && similarProgress == nil
         case .blurry: blurry.value != nil && similarProgress == nil
+        case .accidental: accidental.value != nil && similarProgress == nil
+        case .trims: trims.value != nil
         case .contacts: contacts.value != nil
         case .calendar: calendar.value != nil
         case .chats: chats.value != nil
@@ -311,6 +340,8 @@ final class ScanStore {
         case .videos: videoBytes
         case .similar: similarBytes
         case .blurry: blurryBytes
+        case .accidental: accidentalBytes
+        case .trims: trimBytes
         case .chats: chatBytes
         case .expired: expiredBytes
         case .livePhotos: liveBytes
@@ -324,6 +355,8 @@ final class ScanStore {
         case .videos: videos.value?.count ?? 0
         case .similar: similarPhotoCount
         case .blurry: blurry.value?.count ?? 0
+        case .accidental: accidental.value?.count ?? 0
+        case .trims: visibleTrims.count
         case .contacts: duplicateContactCount
         case .calendar: calendar.value?.suggestionCount ?? 0
         case .chats: chats.value?.count ?? 0
@@ -373,6 +406,8 @@ final class ScanStore {
         for entry in chats.value ?? [] { ids.insert(entry.id) }
         for entry in expired.value ?? [] { ids.insert(entry.id) }
         for entry in livePhotos.value ?? [] { ids.insert(entry.id) }
+        for entry in accidental.value ?? [] { ids.insert(entry.id) }
+        for entry in trims.value ?? [] { ids.insert(entry.id) }
         for group in similar.value ?? [] { for member in group.members { ids.insert(member.id) } }
         return ids
     }
@@ -381,7 +416,8 @@ final class ScanStore {
     var cloudOnlyIDs: Set<String> {
         var ids = Set<String>()
         for item in (screenshots.value ?? []) + (videos.value ?? []) + (blurry.value ?? []) where item.isCloudOnly { ids.insert(item.id) }
-        for entry in (chats.value ?? []).map(\.item) + (expired.value ?? []).map(\.item) where entry.isCloudOnly { ids.insert(entry.id) }
+        for entry in (chats.value ?? []).map(\.item) + (expired.value ?? []).map(\.item)
+            + (accidental.value ?? []).map(\.item) where entry.isCloudOnly { ids.insert(entry.id) }
         for group in similar.value ?? [] { for member in group.members where member.isCloudOnly { ids.insert(member.id) } }
         return ids
     }
@@ -420,6 +456,12 @@ final class ScanStore {
         group.bestID = id
         group.members.sort { ($0.id == id ? 0 : 1) < ($1.id == id ? 0 : 1) }
         return group
+    }
+
+    /// The original keeps its place on Review; neither it nor the copy is offered again.
+    func markTrimmed(original: String, copy: String) {
+        trimmedVideos.formUnion([original, copy])
+        defaults.set(Array(trimmedVideos), forKey: Self.trimmedVideosKey)
     }
 
     func markCompressed(original: String, copy: String) {
@@ -483,6 +525,14 @@ final class ScanStore {
         expired = .loaded(items)
     }
 
+    private func loadTrims() async {
+        guard let trimScanner, photosPermission.canRead else { trims = .idle; return }
+        if trims.value == nil { trims = .loading }
+        let items = await trimScanner.findCandidates()
+        guard !Task.isCancelled else { return }
+        trims = .loaded(items)
+    }
+
     private func loadLivePhotos() async {
         guard let livePhotoScanner, photosPermission.canRead else { livePhotos = .idle; return }
         if livePhotos.value == nil { livePhotos = .loading }
@@ -534,6 +584,7 @@ final class ScanStore {
         guard let similarity, photosPermission.canRead else {
             similar = .idle
             blurry = .idle
+            accidental = .idle
             return
         }
         if similar.value == nil { similar = .loading }
@@ -541,6 +592,7 @@ final class ScanStore {
         var groups: [UUID: SimilarGroup] = [:]
         var order: [UUID] = []
         var blurryItems: [MediaItem] = []
+        var accidentalShots: [AccidentalShot] = []
         var lastPublish = Date.distantPast
 
         for await event in similarity.scan() {
@@ -556,6 +608,8 @@ final class ScanStore {
                 order.removeAll { $0 == id }
             case .blurry(let items):
                 blurryItems.append(contentsOf: items)
+            case .accidental(let shots):
+                accidentalShots.append(contentsOf: shots)
             #if DEBUG
             case .calibration(let data):
                 calibration = data
@@ -564,17 +618,18 @@ final class ScanStore {
             // Publish at most twice a second: re-sorting and re-diffing a thousand groups
             // more often than that makes scrolling stutter on big libraries.
             if Date().timeIntervalSince(lastPublish) > 0.5 {
-                publish(order.compactMap { groups[$0] }, blurryItems)
+                publish(order.compactMap { groups[$0] }, blurryItems, accidentalShots)
                 lastPublish = Date()
             }
         }
-        publish(order.compactMap { groups[$0] }, blurryItems)
+        publish(order.compactMap { groups[$0] }, blurryItems, accidentalShots)
         similarProgress = nil
     }
 
     /// Newest groups first, as the list reads (FR-SIM-2).
-    private func publish(_ groups: [SimilarGroup], _ blurryItems: [MediaItem]) {
+    private func publish(_ groups: [SimilarGroup], _ blurryItems: [MediaItem], _ accidentalShots: [AccidentalShot]) {
         similar = .loaded(groups.map(applyingOverrides).sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) })
         blurry = .loaded(blurryItems.sorted { ($0.creationDate ?? .distantPast) > ($1.creationDate ?? .distantPast) })
+        accidental = .loaded(accidentalShots.sorted { ($0.item.creationDate ?? .distantPast) > ($1.item.creationDate ?? .distantPast) })
     }
 }

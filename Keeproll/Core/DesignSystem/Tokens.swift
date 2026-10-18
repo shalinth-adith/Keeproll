@@ -35,6 +35,8 @@ enum KeeprollColor {
     static let catChats = Color(.catChats)
     static let catExpired = Color(.catExpired)
     static let catLive = Color(.catLive)
+    static let catAccidental = Color(.catAccidental)
+    static let catTrim = Color(.catTrim)
     static let catOther = Color(.catOther)
     static let catFree = Color(.catFree)
 }

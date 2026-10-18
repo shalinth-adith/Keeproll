@@ -6,7 +6,12 @@ import SwiftUI
 // Contacts objects (those are not Sendable).
 
 nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Identifiable {
-    case similar, screenshots, blurry, videos
+    case similar, screenshots, blurry
+    /// Pocket shots, black frames, a finger over the lens (bonus: Accidental Shots).
+    case accidental
+    case videos
+    /// Videos with dark or blank stretches that a trimmed copy can drop (bonus: Smart Trim).
+    case trims
     /// Images that arrived through messaging apps rather than the camera (bonus: smart categories).
     case chats
     /// Screenshots whose content has passed its use-by date: codes, passes, tickets (bonus: smart categories).
@@ -23,7 +28,7 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
     /// it (it has its own lock and picker); contacts and calendar ask for their own access.
     var needsPhotoLibrary: Bool {
         switch self {
-        case .similar, .screenshots, .blurry, .videos, .chats, .expired, .livePhotos: true
+        case .similar, .screenshots, .blurry, .accidental, .videos, .trims, .chats, .expired, .livePhotos: true
         case .contacts, .calendar, .vault: false
         }
     }
@@ -33,7 +38,9 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .similar: "Similar Photos"
         case .screenshots: "Screenshots"
         case .blurry: "Blurry Photos"
+        case .accidental: "Accidental Shots"
         case .videos: "Large Videos"
+        case .trims: "Smart Trim"
         case .chats: "Saved from Chats"
         case .expired: "Expired Screenshots"
         case .livePhotos: "Live Photos"
@@ -49,7 +56,9 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .similar: "Similar"
         case .screenshots: "Screenshots"
         case .blurry: "Blurry"
+        case .accidental: "Accidental"
         case .videos: "Videos"
+        case .trims: "Smart Trim"
         case .chats: "From chats"
         case .expired: "Expired"
         case .livePhotos: "Live Photos"
@@ -64,7 +73,9 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .similar: "square.on.square"
         case .screenshots: "camera.viewfinder"
         case .blurry: "camera.metering.unknown"
+        case .accidental: "hand.raised.fingers.spread"
         case .videos: "video"
+        case .trims: "scissors"
         case .chats: "bubble.left.and.bubble.right"
         case .expired: "clock.badge.xmark"
         case .livePhotos: "livephoto"
@@ -79,7 +90,9 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         case .similar: Color.keeproll.catSimilar
         case .screenshots: Color.keeproll.catScreenshots
         case .blurry: Color.keeproll.catBlurry
+        case .accidental: Color.keeproll.catAccidental
         case .videos: Color.keeproll.catVideos
+        case .trims: Color.keeproll.catTrim
         case .chats: Color.keeproll.catChats
         case .expired: Color.keeproll.catExpired
         case .livePhotos: Color.keeproll.catLive
@@ -134,6 +147,7 @@ nonisolated enum SimilarityEvent: Sendable {
     case upsert(SimilarGroup)
     case remove(UUID)
     case blurry([MediaItem])
+    case accidental([AccidentalShot])
     #if DEBUG
     case calibration(CalibrationData)
     #endif

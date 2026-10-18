@@ -77,6 +77,7 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
         var emitted: [UUID: [String]] = [:]       // group id → member ids last sent
         var cacheHits = 0
         var blurry: [MediaItem] = []
+        var accidental: [AccidentalShot] = []
         var lastEmit = Date()
         #if DEBUG
         let probe = CalibrationProbe()
@@ -121,6 +122,11 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
                     sharpnessByID[features.id] = features.sharpness
                     let item = items[entry.index]
                     if features.sharpness < config.blurThreshold, !item.isFavorite { blurry.append(item) }
+                    // Accidental Shots come free from the same thumbnail (bonus).
+                    if let exposure = features.exposure,
+                       let reason = AccidentalShotEngine.verdict(stats: exposure, sharpness: features.sharpness, isFavorite: item.isFavorite) {
+                        accidental.append(AccidentalShot(item: item, reason: reason))
+                    }
                 }
 
                 // About once a second: stream new groups and blurry photos to the UI.
@@ -129,6 +135,10 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
                     if !blurry.isEmpty {
                         out.yield(.blurry(await sizes.fillSizes(blurry)))
                         blurry.removeAll()
+                    }
+                    if !accidental.isEmpty {
+                        out.yield(.accidental(await sized(accidental)))
+                        accidental.removeAll()
                     }
                     await emitChanges(grouper: grouper, itemsByID: itemsByID, sharpnessByID: sharpnessByID,
                                       groupIDs: &groupIDs, emitted: &emitted, out: out)
@@ -142,6 +152,7 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
         timings.addWall(load: Date().timeIntervalSince(loadStart))
 
         if !blurry.isEmpty { out.yield(.blurry(await sizes.fillSizes(blurry))) }
+        if !accidental.isEmpty { out.yield(.accidental(await sized(accidental))) }
         await emitChanges(grouper: grouper, itemsByID: itemsByID, sharpnessByID: sharpnessByID,
                           groupIDs: &groupIDs, emitted: &emitted, out: out)
         out.yield(.progress(processed: total, total: total))
@@ -171,14 +182,23 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
         }
         // Reuse the cache unless a print is wanted, missing, and Vision can still make one.
         // An empty cached print means "Vision tried and couldn't": don't retry every scan.
+        let cachedExposure = await cache.exposure(for: id, modified: item.modificationDate)
         if let cached = await cache.feature(for: id, modified: item.modificationDate),
            !wantsPrint || cached.print != nil || !printer.isAvailable {
             let print = wantsPrint && cached.print?.isEmpty == false ? cached.print : nil
+            var exposure = cachedExposure
+            // Libraries scanned before Accidental Shots existed: one cheap thumbnail read
+            // per photo, once, for the brightness statistics. No hashing or Vision again.
+            if exposure == nil, let image = await thumbnail(for: box.asset),
+               let stats = autoreleasepool(invoking: { AccidentalShotEngine.stats(image) }) {
+                await cache.store(stats, for: id, modified: item.modificationDate)
+                exposure = stats
+            }
             return Loaded(index: index, features: AssetFeatures(
                 id: id, date: item.creationDate, dHash: cached.dHash, sharpness: cached.sharpness,
                 print: print, isFavorite: item.isFavorite,
-                pixelCount: item.pixelWidth * item.pixelHeight
-            ), fromCache: true)
+                pixelCount: item.pixelWidth * item.pixelHeight, exposure: exposure
+            ), fromCache: cachedExposure != nil)
         }
         let t0 = Date()
         guard let image = await thumbnail(for: box.asset) else {
@@ -186,11 +206,11 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
             return Loaded(index: index, features: nil, fromCache: false)
         }
         let t1 = Date()
-        let computed: (UInt64, Float)? = autoreleasepool {
+        let computed: (UInt64, Float, ExposureStats?)? = autoreleasepool {
             guard let hash = ImageAnalysis.dHash(image) else { return nil }
-            return (hash, ImageAnalysis.sharpness(image))
+            return (hash, ImageAnalysis.sharpness(image), AccidentalShotEngine.stats(image))
         }
-        guard let (hash, sharpness) = computed else {
+        guard let (hash, sharpness, exposure) = computed else {
             return Loaded(index: index, features: nil, fromCache: false)
         }
         let t2 = Date()
@@ -202,10 +222,22 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
         let cachedPrint: [Float]? = wantsPrint && print == nil && printer.isAvailable ? [] : print
         await cache.store(.init(modified: item.modificationDate?.timeIntervalSinceReferenceDate ?? 0,
                                 dHash: hash, sharpness: sharpness, print: cachedPrint), for: id)
+        if let exposure { await cache.store(exposure, for: id, modified: item.modificationDate) }
         return Loaded(index: index, features: AssetFeatures(
             id: id, date: item.creationDate, dHash: hash, sharpness: sharpness, print: print,
-            isFavorite: item.isFavorite, pixelCount: item.pixelWidth * item.pixelHeight
+            isFavorite: item.isFavorite, pixelCount: item.pixelWidth * item.pixelHeight, exposure: exposure
         ), fromCache: false)
+    }
+
+    /// Accidental shots with file sizes filled in.
+    private func sized(_ shots: [AccidentalShot]) async -> [AccidentalShot] {
+        let filled = await sizes.fillSizes(shots.map(\.item))
+        let byID = Dictionary(filled.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        return shots.map { shot in
+            var shot = shot
+            if let item = byID[shot.id] { shot.item = item }
+            return shot
+        }
     }
 
     /// The fast local thumbnail, falling back to a local full-quality decode.

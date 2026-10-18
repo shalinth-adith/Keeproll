@@ -29,6 +29,28 @@
         }
       }
     },
+    "%@ of dark or empty video · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ of dark or empty video · %2$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ अंधेरा या खाली वीडियो · %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ இருண்ட அல்லது வெற்று வீடியோ · %@"
+          }
+        }
+      }
+    },
     "%@ · %@": {
       "localizations": {
         "en": {
@@ -168,6 +190,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ → %@"
+          }
+        }
+      }
+    },
+    "%@, %@, %@%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@, %2$@, %3$@%4$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, %@%@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@, %@%@"
           }
         }
       }
@@ -536,6 +580,22 @@
         }
       }
     },
+    "A soft, warm blur along one edge: a fingertip in front of the camera.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक किनारे पर हल्का, गर्म धुंधलापन: कैमरे के सामने उंगली।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஒரு ஓரத்தில் மென்மையான, வெதுவெதுப்பான மங்கல்: கேமராவின் முன் விரல்நுனி."
+          }
+        }
+      }
+    },
     "A still copy of each is already in your library, with the same date and place. This removes the Live Photo originals.": {
       "localizations": {
         "hi": {
@@ -548,6 +608,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "ஒவ்வொன்றின் நிலைப் படமும் அதே தேதி, இடத்துடன் ஏற்கனவே உங்கள் லைப்ரரியில் உள்ளது. இது அசல் Live Photos ஐ நீக்கும்."
+          }
+        }
+      }
+    },
+    "A trimmed copy is saved first. The original goes to Review, so nothing is lost until you confirm.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पहले काटी गई कॉपी सेव होती है। असली वीडियो समीक्षा में जाता है, इसलिए आपकी पुष्टि तक कुछ नहीं खोता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "முதலில் வெட்டிய நகல் சேமிக்கப்படும். அசல் மதிப்பாய்வுக்குச் செல்லும், எனவே நீங்கள் உறுதிசெய்யும் வரை எதுவும் இழக்கப்படாது."
           }
         }
       }
@@ -612,6 +688,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "அணுகல்"
+          }
+        }
+      }
+    },
+    "Accidental": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "गलती से"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தவறுதலாக"
+          }
+        }
+      }
+    },
+    "Accidental Shots": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "गलती से ली गई फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தவறுதலான படங்கள்"
           }
         }
       }
@@ -824,6 +932,22 @@
         }
       }
     },
+    "Almost black, with no light anywhere: usually taken in a pocket or face down.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "लगभग काली, कहीं रोशनी नहीं: अक्सर जेब में या उल्टा रखे फ़ोन से ली गई।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கிட்டத்தட்ட கருப்பு, எங்கும் ஒளி இல்லை: பெரும்பாலும் பையில் அல்லது கவிழ்ந்த நிலையில் எடுத்தது."
+          }
+        }
+      }
+    },
     "AppFactory App Builder task": {
       "extractionState": "stale",
       "localizations": {
@@ -901,6 +1025,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "காப்புப்பிரதிகள்"
+          }
+        }
+      }
+    },
+    "Backups in Settings": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सेटिंग्स में बैकअप"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "அமைப்புகளில் காப்புப்பிரதிகள்"
           }
         }
       }
@@ -1179,6 +1319,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "புகைப்படங்களைச் சரிபார்க்கிறது · %lld%%"
+          }
+        }
+      }
+    },
+    "Checking photos…": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़ोटो जाँच रहे हैं…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "படங்களைச் சரிபார்க்கிறது…"
           }
         }
       }
@@ -1505,6 +1661,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld உருப்படிகளை உறுதிசெய் · %@"
+          }
+        }
+      }
+    },
+    "Contact and calendar backups are now listed in Settings, to share or delete.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "संपर्क और कैलेंडर बैकअप अब सेटिंग्स में दिखते हैं, शेयर करने या हटाने के लिए।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தொடர்பு மற்றும் நாள்காட்டி காப்புப்பிரதிகள் இப்போது அமைப்புகளில் உள்ளன, பகிர அல்லது நீக்க."
           }
         }
       }
@@ -1837,6 +2009,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "தற்போது %@"
+          }
+        }
+      }
+    },
+    "Cut %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कटेगा %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வெட்டு %@"
+          }
+        }
+      }
+    },
+    "Cut dark parts of videos": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वीडियो के अंधेरे हिस्से काटें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வீடியோக்களின் இருண்ட பகுதிகளை வெட்டவும்"
+          }
+        }
+      }
+    },
+    "Cuts %@ of %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Cuts %1$@ of %2$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ कटेगा, कुल %@ में से"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ வெட்டப்படும், மொத்தம் %@"
+          }
+        }
+      }
+    },
+    "Cuts %@ · saves about %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Cuts %1$@ · saves about %2$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ कटेगा · लगभग %@ बचेगा"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ வெட்டப்படும் · சுமார் %@ சேமிக்கும்"
+          }
+        }
+      }
+    },
+    "Cuts the dark, empty stretches out of videos and keeps the rest at full quality.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वीडियो के अंधेरे, खाली हिस्से काटता है और बाकी पूरी क्वालिटी में रखता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வீடியோக்களின் இருண்ட, வெற்றுப் பகுதிகளை வெட்டி, மீதியை முழுத் தரத்தில் வைக்கிறது."
           }
         }
       }
@@ -2306,6 +2570,22 @@
         }
       }
     },
+    "Favourites are never suggested. Nothing is selected until you choose.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पसंदीदा कभी सुझाए नहीं जाते। आपके चुनने तक कुछ भी चुना नहीं जाता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பிடித்தவை ஒருபோதும் பரிந்துரைக்கப்படாது. நீங்கள் தேர்வுசெய்யும் வரை எதுவும் தேர்ந்தெடுக்கப்படாது."
+          }
+        }
+      }
+    },
     "Filling at %@ a week. “Full” means under %@ free, where iOS starts to struggle.": {
       "localizations": {
         "en": {
@@ -2324,6 +2604,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "வாரத்திற்கு %@ நிரம்புகிறது. “நிரம்பியது” என்றால் %@ க்கும் குறைவான காலி இடம், அங்கே iOS சிரமப்படத் தொடங்கும்."
+          }
+        }
+      }
+    },
+    "Finger over the lens": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "लेंस पर उंगली"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "லென்ஸ் மேல் விரல்"
           }
         }
       }
@@ -3003,6 +3299,22 @@
         }
       }
     },
+    "Keeproll saves a copy without the %@ of dark or empty video, at the same quality, date and place. The original then goes to Review. Nothing is deleted until you confirm.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll %@ अंधेरे या खाली वीडियो के बिना एक कॉपी सेव करता है, उसी क्वालिटी, तारीख़ और जगह के साथ। फिर असली वीडियो समीक्षा में जाता है। आपकी पुष्टि तक कुछ नहीं हटता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll %@ இருண்ட அல்லது வெற்று வீடியோ இல்லாமல், அதே தரம், தேதி, இடத்துடன் ஒரு நகலைச் சேமிக்கிறது. பிறகு அசல் மதிப்பாய்வுக்குச் செல்லும். நீங்கள் உறுதிசெய்யும் வரை எதுவும் நீக்கப்படாது."
+          }
+        }
+      }
+    },
     "Keeproll saves a smaller copy (HEVC, up to 1080p) to your library first, with the same date and place. The original then goes to Review. Nothing is deleted until you confirm.": {
       "localizations": {
         "hi": {
@@ -3031,6 +3343,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Keeproll முதலில் ஒவ்வொன்றின் நிலைப் படத்தையும் அதே தேதி, இடம், பிடித்தக் குறியுடன் உங்கள் லைப்ரரியில் சேமிக்கும். பின்னர் அசல் Live Photos சரிபார்ப்புக்குச் செல்லும். நீங்கள் உறுதிசெய்யும் வரை எதுவும் நீக்கப்படாது."
+          }
+        }
+      }
+    },
+    "Kept %@": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "रखा %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வைத்தது %@"
           }
         }
       }
@@ -3507,6 +3835,22 @@
         }
       }
     },
+    "No accidental shots": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "गलती से ली गई कोई फ़ोटो नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தவறுதலான படங்கள் இல்லை"
+          }
+        }
+      }
+    },
     "No backups yet": {
       "localizations": {
         "hi": {
@@ -3635,6 +3979,22 @@
         }
       }
     },
+    "No pocket shots, black frames or finger-over-lens photos.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जेब में ली गई, काली या लेंस पर उंगली वाली कोई फ़ोटो नहीं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பையில் எடுத்த, கருப்பு அல்லது லென்ஸ் மேல் விரல் உள்ள படங்கள் இல்லை."
+          }
+        }
+      }
+    },
     "No reports": {
       "localizations": {
         "hi": {
@@ -3711,6 +4071,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "இந்த அளவில் வீடியோக்கள் இல்லை."
+          }
+        }
+      }
+    },
+    "No videos with long dark or empty stretches.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "लंबे अंधेरे या खाली हिस्सों वाला कोई वीडियो नहीं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீண்ட இருண்ட அல்லது வெற்றுப் பகுதிகள் உள்ள வீடியோக்கள் இல்லை."
           }
         }
       }
@@ -3823,6 +4199,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "நீக்கக்கூடிய கிளிப் உள்ளவை இங்கே இல்லை."
+          }
+        }
+      }
+    },
+    "Nothing in the frame": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "फ़्रेम में कुछ नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சட்டகத்தில் எதுவும் இல்லை"
           }
         }
       }
@@ -3955,6 +4347,38 @@
         }
       }
     },
+    "Nothing to trim": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "काटने को कुछ नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வெட்ட எதுவும் இல்லை"
+          }
+        }
+      }
+    },
+    "Nothing worth keeping": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "रखने लायक कुछ नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வைத்திருக்கத் தகுந்தது எதுவும் இல்லை"
+          }
+        }
+      }
+    },
     "OK": {
       "localizations": {
         "hi": {
@@ -4047,6 +4471,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "ஓராண்டுக்கும் பழையவை"
+          }
+        }
+      }
+    },
+    "One flat colour with no detail, like a ceiling or the inside of a case.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बिना डिटेल का एक ही रंग, जैसे छत या कवर का अंदरूनी हिस्सा।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "விவரம் இல்லாத ஒரே நிறம், கூரை அல்லது கவரின் உட்பகுதி போல."
           }
         }
       }
@@ -4445,6 +4885,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "எந்த வகையிலிருந்தும் நீக்க உருப்படிகளைத் தேர்வு செய்."
+          }
+        }
+      }
+    },
+    "Pocket shots and black frames": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जेब में ली गई और काली फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பையில் எடுத்தவை, கருப்புப் படங்கள்"
+          }
+        }
+      }
+    },
+    "Pocket shots, black frames and a finger over the lens, found for you.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जेब में ली गई, काली और लेंस पर उंगली वाली फ़ोटो, आपके लिए खोजी गईं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பையில் எடுத்த, கருப்பு மற்றும் லென்ஸ் மேல் விரல் உள்ள படங்கள், உங்களுக்காகக் கண்டறியப்பட்டன."
           }
         }
       }
@@ -4958,6 +5430,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Photos இல் சேமி"
+          }
+        }
+      }
+    },
+    "Save trimmed copy": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "काटी गई कॉपी सेव करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வெட்டிய நகலைச் சேமி"
           }
         }
       }
@@ -5518,6 +6006,22 @@
         }
       }
     },
+    "Smart Trim": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्मार्ट ट्रिम"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ஸ்மார்ட் டிரிம்"
+          }
+        }
+      }
+    },
     "Smart select": {
       "localizations": {
         "hi": {
@@ -5908,6 +6412,22 @@
         }
       }
     },
+    "The trimmed copy wouldn't be smaller, because the dark parts take almost no space. Nothing was changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "काटी गई कॉपी छोटी नहीं होती, क्योंकि अंधेरे हिस्से लगभग कोई जगह नहीं लेते। कुछ नहीं बदला।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வெட்டிய நகல் சிறியதாக இருக்காது, ஏனெனில் இருண்ட பகுதிகள் கிட்டத்தட்ட இடம் எடுக்கவில்லை. எதுவும் மாற்றப்படவில்லை."
+          }
+        }
+      }
+    },
     "The vault is protected by your iPhone passcode and is included in your iPhone backups. Deleting Keeproll deletes the vault, so save anything you want to keep to Photos first.": {
       "localizations": {
         "hi": {
@@ -6132,6 +6652,22 @@
         }
       }
     },
+    "Too dark to see": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "देखने के लिए बहुत अंधेरा"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "பார்க்க மிகவும் இருட்டு"
+          }
+        }
+      }
+    },
     "Tools": {
       "localizations": {
         "hi": {
@@ -6144,6 +6680,70 @@
           "stringUnit": {
             "state": "translated",
             "value": "கருவிகள்"
+          }
+        }
+      }
+    },
+    "Trim": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "काटें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வெட்டு"
+          }
+        }
+      }
+    },
+    "Trimmed copy saved": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "काटी गई कॉपी सेव हुई"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வெட்டிய நகல் சேமிக்கப்பட்டது"
+          }
+        }
+      }
+    },
+    "Trimming": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "काट रहे हैं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வெட்டுகிறது"
+          }
+        }
+      }
+    },
+    "Trimming… %lld%%": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "काट रहे हैं… %lld%%"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வெட்டுகிறது… %lld%%"
           }
         }
       }
@@ -6416,6 +7016,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ அன்று"
+          }
+        }
+      }
+    },
+    "Watching videos for dead stretches…": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वीडियो में खाली हिस्से देख रहे हैं…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வீடியோக்களில் வெற்றுப் பகுதிகளைத் தேடுகிறது…"
           }
         }
       }
@@ -6956,6 +7572,22 @@
         }
       }
     },
+    "^[%lld photo](inflect: true) you probably didn't mean to take": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld फ़ोटो जो शायद गलती से ली गईं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தவறுதலாக எடுத்திருக்கக்கூடிய %lld படங்கள்"
+          }
+        }
+      }
+    },
     "^[%lld photo](inflect: true) · %@": {
       "localizations": {
         "en": {
@@ -7060,6 +7692,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld நிலைப் படங்கள் சேமிக்கப்பட்டன"
+          }
+        }
+      }
+    },
+    "^[%lld video](inflect: true) with dark or empty stretches": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld वीडियो जिनमें अंधेरे या खाली हिस्से हैं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இருண்ட அல்லது வெற்றுப் பகுதிகள் உள்ள %lld வீடியோக்கள்"
           }
         }
       }

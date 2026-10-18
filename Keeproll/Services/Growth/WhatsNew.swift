@@ -15,6 +15,11 @@ nonisolated enum WhatsNew {
 
     /// Newest first. Add an entry per release; the sheet shows the one for the running build.
     static let releases: [(build: String, items: [WhatsNewItem])] = [
+        ("5", [
+            WhatsNewItem(symbol: "hand.raised.fingers.spread", title: "Accidental Shots", detail: "Pocket shots, black frames and a finger over the lens, found for you."),
+            WhatsNewItem(symbol: "scissors", title: "Smart Trim", detail: "Cuts the dark, empty stretches out of videos and keeps the rest at full quality."),
+            WhatsNewItem(symbol: "externaldrive.badge.checkmark", title: "Backups in Settings", detail: "Contact and calendar backups are now listed in Settings, to share or delete."),
+        ]),
         ("4", [
             WhatsNewItem(symbol: "bubble.left.and.bubble.right", title: "Saved from Chats", detail: "Photos that arrived through WhatsApp and Telegram, told apart from the ones you shot."),
             WhatsNewItem(symbol: "clock.badge.xmark", title: "Expired Screenshots", detail: "Codes, passes and tickets that are past their date, read on your iPhone."),

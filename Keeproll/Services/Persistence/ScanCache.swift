@@ -38,7 +38,25 @@ actor ScanCache {
         let confidence: Float
     }
 
+    /// Brightness statistics for Accidental Shots (bonus). Added after v5 as a trailing
+    /// section, so older cache files still load (the section is simply absent).
+    nonisolated struct ExposureRecord: Sendable, Equatable {
+        let modified: Double
+        let stats: ExposureStats
+    }
+
+    /// Dead stretches found in a video, in seconds, for Smart Trim (bonus). An empty
+    /// list means "analysed, nothing to trim". Trailing section, like exposure.
+    nonisolated struct TrimRecord: Sendable, Equatable {
+        let modified: Double
+        let deadRanges: [TrimRange]
+        /// Compressed bytes inside the dead ranges; -1 = not measured.
+        let deadBytes: Int64
+    }
+
     private let url: URL
+    private var exposures: [String: ExposureRecord] = [:]
+    private var trims: [String: TrimRecord] = [:]
     private var features: [String: FeatureRecord] = [:]
     private var sizes: [String: SizeRecord] = [:]
     private var provenances: [String: ProvenanceRecord] = [:]
@@ -49,6 +67,10 @@ actor ScanCache {
     private static let magic: UInt32 = 0x5346_5443 // "SFTC"
     private static let version: UInt32 = 5 // 2: sharpness at 160 px; 3: iCloud-only flag; 4: contrast-normalised sharpness; 5: provenance + expiry
     private static let emptyPrint = UInt32.max
+    /// Bump when the Accidental Shots statistics change meaning; stale ones are dropped.
+    private static let exposureVersion: UInt8 = 2 // 2: finger score needs one side or corner
+    /// Bump when the Smart Trim rules change; stale dead ranges are dropped.
+    private static let trimVersion: UInt8 = 3 // 2: measured dead bytes; 3: only samples shown inside the range
 
     init(url: URL = ScanCache.defaultURL) {
         self.url = url
@@ -109,9 +131,35 @@ actor ScanCache {
         dirty = true
     }
 
+    func exposure(for id: String, modified: Date?) -> ExposureStats? {
+        loadIfNeeded()
+        guard let record = exposures[id], record.modified == Self.stamp(modified) else { return nil }
+        return record.stats
+    }
+
+    func store(_ stats: ExposureStats, for id: String, modified: Date?) {
+        loadIfNeeded()
+        exposures[id] = ExposureRecord(modified: Self.stamp(modified), stats: stats)
+        dirty = true
+    }
+
+    func trim(for id: String, modified: Date?) -> (ranges: [TrimRange], deadBytes: Int64?)? {
+        loadIfNeeded()
+        guard let record = trims[id], record.modified == Self.stamp(modified) else { return nil }
+        return (record.deadRanges, record.deadBytes >= 0 ? record.deadBytes : nil)
+    }
+
+    func store(trim ranges: [TrimRange], deadBytes: Int64? = nil, for id: String, modified: Date?) {
+        loadIfNeeded()
+        trims[id] = TrimRecord(modified: Self.stamp(modified), deadRanges: ranges, deadBytes: deadBytes ?? -1)
+        dirty = true
+    }
+
     func forget(_ ids: some Sequence<String>) {
         loadIfNeeded()
         for id in ids {
+            exposures[id] = nil
+            trims[id] = nil
             features[id] = nil
             sizes[id] = nil
             provenances[id] = nil
@@ -168,6 +216,29 @@ actor ScanCache {
             writer.append(record.expiresAt)
             writer.append(record.mentionedDate)
             writer.append(record.confidence)
+        }
+        writer.append(UInt32(exposures.count))
+        writer.append(Self.exposureVersion)
+        for (id, record) in exposures {
+            writer.append(id)
+            writer.append(record.modified)
+            writer.append(record.stats.mean)
+            writer.append(record.stats.standardDeviation)
+            writer.append(record.stats.p98)
+            writer.append(record.stats.maximum)
+            writer.append(record.stats.fingerScore)
+        }
+        writer.append(UInt32(trims.count))
+        writer.append(Self.trimVersion)
+        for (id, record) in trims {
+            writer.append(id)
+            writer.append(record.modified)
+            writer.append(record.deadBytes)
+            writer.append(UInt16(min(record.deadRanges.count, Int(UInt16.max))))
+            for range in record.deadRanges.prefix(Int(UInt16.max)) {
+                writer.append(range.start)
+                writer.append(range.end)
+            }
         }
         do {
             try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
@@ -232,6 +303,39 @@ actor ScanCache {
                 loadedExpiry[id] = ExpiryRecord(modified: modified, kind: kind, expiresAt: expires, mentionedDate: mentioned, confidence: confidence)
             }
         }
+        var loadedExposure: [String: ExposureRecord] = [:]
+        var loadedTrims: [String: TrimRecord] = [:]
+        if let exposureCount = reader.read(UInt32.self), let version = reader.read(UInt8.self) {
+            for _ in 0..<exposureCount {
+                guard let id = reader.readString(), let modified = reader.read(Double.self),
+                      let mean = reader.read(UInt8.self), let deviation = reader.read(UInt8.self),
+                      let p98 = reader.read(UInt8.self), let maximum = reader.read(UInt8.self),
+                      let finger = reader.read(UInt8.self) else { break }
+                loadedExposure[id] = ExposureRecord(modified: modified, stats: ExposureStats(
+                    mean: mean, standardDeviation: deviation, p98: p98, maximum: maximum, fingerScore: finger))
+            }
+            // Rules changed since these were computed: recompute on the next scan.
+            if version != Self.exposureVersion { loadedExposure = [:] }
+        }
+        var trimVersionRead: UInt8?
+        if let trimCount = reader.read(UInt32.self), let version = reader.read(UInt8.self) {
+            trimVersionRead = version
+            trimLoop: for _ in 0..<trimCount {
+                guard let id = reader.readString(), let modified = reader.read(Double.self),
+                      let deadBytes = reader.read(Int64.self),
+                      let rangeCount = reader.read(UInt16.self),
+                      Int(rangeCount) <= reader.remaining / 16 else { break }
+                var ranges: [TrimRange] = []
+                for _ in 0..<rangeCount {
+                    guard let start = reader.read(Double.self), let end = reader.read(Double.self) else { break trimLoop }
+                    ranges.append(TrimRange(start: start, end: end))
+                }
+                loadedTrims[id] = TrimRecord(modified: modified, deadRanges: ranges, deadBytes: deadBytes)
+            }
+        }
+        if let trimVersionRead, trimVersionRead != Self.trimVersion { loadedTrims = [:] }
+        exposures = loadedExposure
+        trims = loadedTrims
         features = loadedFeatures
         sizes = loadedSizes
         provenances = loadedProvenance

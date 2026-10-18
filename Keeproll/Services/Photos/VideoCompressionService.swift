@@ -78,13 +78,15 @@ nonisolated final class VideoCompressionService: VideoCompressing {
     // MARK: - Steps
 
     /// AVAsset is immutable once loaded; boxed to cross into the export task.
-    private struct AssetBox: @unchecked Sendable { let asset: AVAsset }
+    struct AssetBox: @unchecked Sendable { let asset: AVAsset }
 
-    private static func avAsset(for asset: PHAsset) async throws -> AssetBox {
+    /// Shared with Smart Trim. `allowsNetwork` is true only for an explicit user action
+    /// on their own video (D7); scans never download.
+    static func avAsset(for asset: PHAsset, allowsNetwork: Bool = true) async throws -> AssetBox {
         let options = PHVideoRequestOptions()
         options.version = .current
         options.deliveryMode = .highQualityFormat
-        options.isNetworkAccessAllowed = true // an explicit user action on their own video (D7)
+        options.isNetworkAccessAllowed = allowsNetwork
         return try await withCheckedThrowingContinuation { continuation in
             PHImageManager.default().requestAVAsset(forVideo: asset, options: options) { avAsset, _, info in
                 if let avAsset {
@@ -97,11 +99,11 @@ nonisolated final class VideoCompressionService: VideoCompressing {
         }
     }
 
-    /// Exports with the HEVC 1080p preset (720p H.264 if HEVC isn't available), polling
-    /// progress for the UI.
-    private static func export(_ asset: AVAsset, to url: URL, progress: @escaping @Sendable (Double) -> Void) async throws {
-        guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHEVC1920x1080)
-                ?? AVAssetExportSession(asset: asset, presetName: AVAssetExportPreset1280x720) else {
+    /// Exports with the first preset that works (by default HEVC 1080p, else 720p H.264),
+    /// reporting progress for the UI. Cancelling the task stops the export. Shared with Smart Trim.
+    static func export(_ asset: AVAsset, presets: [String] = [AVAssetExportPresetHEVC1920x1080, AVAssetExportPreset1280x720],
+                       to url: URL, progress: @escaping @Sendable (Double) -> Void) async throws {
+        guard let session = presets.lazy.compactMap({ AVAssetExportSession(asset: asset, presetName: $0) }).first else {
             throw CompressionError.exportFailed("no export session")
         }
         session.shouldOptimizeForNetworkUse = true
@@ -156,9 +158,9 @@ nonisolated final class VideoCompressionService: VideoCompressing {
     /// `AVAssetExportSession` is thread-safe for status/progress reads; boxed for the poller.
     private struct SessionBox: @unchecked Sendable { let session: AVAssetExportSession }
 
-    /// Adds the compressed file to the library with the original's date, place and
-    /// favourite flag, and returns the new asset's id.
-    private static func saveCopy(of file: URL, like original: PHAsset) async throws -> String {
+    /// Adds the file to the library with the original's date, place and favourite flag,
+    /// and returns the new asset's id. Shared with Smart Trim.
+    static func saveCopy(of file: URL, like original: PHAsset) async throws -> String {
         let creationDate = original.creationDate
         let location = original.location
         let isFavorite = original.isFavorite

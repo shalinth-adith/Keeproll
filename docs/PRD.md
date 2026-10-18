@@ -132,6 +132,17 @@ Two detectors no mainstream iOS cleaner ships, both fully on-device, both feedin
 - **FR-CAST-3** Report one of: filling (bytes per week and days until free space reaches 2 GB, where iOS starts to struggle), steady (drift under 20 MB a day or 0.01 % of the device), or freeing up.
 - **FR-CAST-4** The card is calm: accent colour by default, warning only within 14 days of the floor; a plain sparkline of the window; no notifications.
 
+### 5.12 Accidental Shots (`FR-ACC`, bonus, added 2026-10-18)
+- **FR-ACC-1** Flag photos taken by accident, in three groups: too dark to see (pocket or face down), a finger over the lens, and nothing in the frame (one flat colour). Screenshots are excluded, as in the similarity scan.
+- **FR-ACC-2** Computed from the 256 px thumbnail the similarity scan already loads: a 32 × 32 render gives mean, deviation, 98th percentile and maximum luma, plus a finger score. Cached per photo, so a rescan costs nothing.
+- **FR-ACC-3** Conservative: dark needs no bright point anywhere (a night sky with the moon is kept); blank needs near-zero deviation (a clear sky is kept); a finger must come in from one side or one corner, be skin-red, and its side is never the top (sunsets, warm backdrops, sand and wooden tables are kept). Favourites are never flagged. Nothing is pre-selected (D9).
+
+### 5.13 Smart Trim (`FR-TRIM`, bonus, added 2026-10-18)
+- **FR-TRIM-1** Find local, non-favourite videos of 15 s or more with dead stretches: frames that are nearly black with no bright point, or one flat colour. About one frame a second is sampled at 64 px (at most 600 a video), never from iCloud (D7). Results are cached per video.
+- **FR-TRIM-2** Only cut stretches that matter: 5 s or more at either end, 10 s or more in the middle, at least 5 s and 10 % of the clip in total. Well-lit frozen footage (a lecture, a sleeping baby) is never cut.
+- **FR-TRIM-3** Offer a trim only if it frees at least 1 MB, measured by summing the compressed samples shown inside the dead stretches (black frames compress to almost nothing, so time alone overstates). A clip that is dead from start to finish is offered for removal instead.
+- **FR-TRIM-4** Trimming follows the compression pattern: a passthrough (lossless) copy without the dead stretches is added to the library with the original's date, place and favourite flag; only then does the original go to Review (D10). Cancellable; nothing is saved if cancelled or if the copy isn't smaller.
+
 ## 6. Bonus features (only after §5 passes on a real device)
 
 Priority order, chosen for demo value relative to cost and how much already-built code each one reuses:
@@ -148,6 +159,8 @@ Priority order, chosen for demo value relative to cost and how much already-buil
 | B10 | **Storage forecast** (§5.11) | Makes Home useful between cleanups; no new permissions | Storage snapshot, UserDefaults |
 | B9 | **Live Photos to still** (§5.10) | Table stakes in the category; reuses the compression pattern | Compression, grid, cart |
 | B8 | **Saved from chats** + **Expired screenshots** (§5.9) | Post-submission: a category no competitor has; resume feature | Cart, grid, ScanCache, Vision |
+| B11 | **Accidental Shots** (§5.12) | No cleaner found in a 2026 survey targets pocket shots or fingers; almost free on top of the scan | Similarity thumbnails, ScanCache, grid |
+| B12 | **Smart Trim** (§5.13) | No cleaner found that finds dead stretches automatically; big wins on forgotten recordings | Compression export and save, Review |
 
 ## 7. Non-functional requirements
 
