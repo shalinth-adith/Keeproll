@@ -56,6 +56,19 @@ final class CleanupCart {
         if items.count != before { Log.cleanup.debug("Pruned \(before - self.items.count) stale contact changes") }
     }
 
+    /// Drops queued event removals that the latest calendar scan no longer suggests. If
+    /// the copy you kept was deleted elsewhere, the queued "extra" copy is now the only
+    /// one and must not be removed.
+    func pruneCalendar(to findings: CalendarFindings?) {
+        let suggested = Set((findings?.extraCopies ?? []).map(\.id) + (findings?.oldEvents ?? []).map(\.id))
+        let before = items.count
+        items = items.filter { _, item in
+            if case .calendarEvent(let id, _, _) = item { return suggested.contains(id) }
+            return true
+        }
+        if items.count != before { Log.cleanup.debug("Pruned \(before - self.items.count) stale calendar changes") }
+    }
+
     func items(in category: CleanupCategory) -> [CartItem] {
         items.values.filter { $0.category == category }
     }

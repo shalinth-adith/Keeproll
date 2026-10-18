@@ -214,3 +214,9 @@ T.update({
  "This contact is in more than one change. Open Duplicate Contacts and choose again.": "இந்தத் தொடர்பு ஒன்றுக்கு மேற்பட்ட மாற்றங்களில் உள்ளது. நகல் தொடர்புகளைத் திறந்து மீண்டும் தேர்வுசெய்யவும்.",
  "You won't be able to restore these contacts or events from it.": "இதிலிருந்து இந்தத் தொடர்புகளையோ நிகழ்வுகளையோ மீட்க முடியாது.",
 })
+# Security review wording.
+T.update({
+ "%@ · out of your photo library": "%@ · உங்கள் பட லைப்ரரிக்கு வெளியே",
+ "Keeproll has no account, no analytics and no network access. Photos, contacts and events are read on this iPhone, and Keeproll never sends them anywhere. Contacts and calendar changes are backed up to a file you can share before anything is changed.": "Keeproll-இல் கணக்கு இல்லை, பகுப்பாய்வு இல்லை, நெட்வொர்க் அணுகலும் இல்லை. படங்கள், தொடர்புகள், நிகழ்வுகள் இந்த iPhone-இலேயே படிக்கப்படுகின்றன, Keeproll அவற்றை எங்கும் அனுப்பாது. எதையும் மாற்றும் முன் தொடர்புகள் மற்றும் நாள்காட்டி மாற்றங்கள் நீங்கள் பகிரக்கூடிய ஒரு கோப்பில் காப்புப்பிரதி எடுக்கப்படும்.",
+ "Photos here are locked with Face ID or your passcode and kept out of your photo library. Keeproll never uploads them; they are included in your iPhone backups.": "இங்குள்ள படங்கள் Face ID அல்லது உங்கள் கடவுக்குறியீட்டால் பூட்டப்பட்டு, உங்கள் பட லைப்ரரிக்கு வெளியே வைக்கப்படுகின்றன. Keeproll அவற்றை ஒருபோதும் பதிவேற்றாது; அவை உங்கள் iPhone காப்புப்பிரதிகளில் சேர்க்கப்படும்.",
+})

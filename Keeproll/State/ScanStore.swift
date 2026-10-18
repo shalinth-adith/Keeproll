@@ -46,6 +46,8 @@ final class ScanStore {
     private(set) var calendarPermission: PermissionState
     /// Old and duplicate calendar events (bonus: calendar cleanup).
     private(set) var calendar: Loadable<CalendarFindings> = .idle
+    /// Bumped after every calendar load, so the cart can drop stale event removals.
+    private(set) var calendarLoadCount = 0
     private(set) var storage: Loadable<StorageSnapshot> = .idle
     private(set) var screenshots: Loadable<[MediaItem]> = .idle
     private(set) var videos: Loadable<[MediaItem]> = .idle
@@ -497,11 +499,16 @@ final class ScanStore {
     }
 
     private func loadCalendar() async {
-        guard let calendarScanner, calendarPermission.canRead else { calendar = .idle; return }
+        guard let calendarScanner, calendarPermission.canRead else {
+            calendar = .idle
+            calendarLoadCount += 1
+            return
+        }
         if calendar.value == nil { calendar = .loading }
         let findings = await calendarScanner.findCleanup()
         guard !Task.isCancelled else { return }
         calendar = .loaded(findings)
+        calendarLoadCount += 1
     }
 
     /// Removes calendar events that were deleted.

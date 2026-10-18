@@ -152,7 +152,7 @@ Priority order, chosen for demo value relative to cost and how much already-buil
 ## 7. Non-functional requirements
 
 - **Platform:** iPhone, **iOS 17.0+**, portrait. Built with Xcode 27 and Swift 6.
-- **Privacy:** no network entitlement is used, and the code has no `URLSession` or analytics/crash SDKs. Photos and contacts never leave the device. Logs never contain names, phone numbers, emails or image content.
+- **Privacy:** no network entitlement is used, and the code has no `URLSession` or analytics/crash SDKs. Keeproll never sends photos or contacts anywhere (app data, including the vault, is in iPhone backups). Logs never contain names, phone numbers, emails or image content.
 - **Performance:** see §4. The scan is cancellable, resumes from the cache and pauses cleanly when the app goes to the background.
 - **Accessibility:** Dynamic Type up to AX5, full VoiceOver labels, 44 pt touch targets, Reduce Motion honoured, and colour is never the only signal.
 - **Localization:** English only for v1, but every string goes through `Localizable.xcstrings`.

@@ -44,7 +44,8 @@ nonisolated protocol VaultStoring: Sendable {
 /// The private vault's storage (bonus: PIN or Face ID protected vault).
 ///
 /// Copies live in `Application Support/Vault` with `.complete` file protection, so they
-/// can't be read while the iPhone is locked. They never leave the device. Importing only
+/// can't be read while the iPhone is locked. Keeproll never uploads them, but like all app data
+/// they are included in iCloud and computer backups (the UI says so). Importing only
 /// *copies*: the library originals are handed back to the caller, which puts them in the
 /// cart, so they are removed from the library on Review like everything else (D10).
 actor VaultStore: VaultStoring {

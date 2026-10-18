@@ -224,4 +224,40 @@ struct QAFixTests {
         #expect(BackupStore.files(in: dir).map(\.url.lastPathComponent) == ["calendar-new.ics"])
         #expect(FileManager.default.fileExists(atPath: other.path))
     }
+
+    // MARK: Security review — calendar cart and alarm guard
+
+    @Test func calendarRemovalsNoLongerSuggestedArePruned() {
+        let start = Date(timeIntervalSince1970: 1_000_000)
+        func event(_ id: String) -> CalendarEventSummary {
+            CalendarEventSummary(id: id, title: "Standup", start: start, end: start.addingTimeInterval(900),
+                                 calendarTitle: "Work", isAllDay: false, calendarID: "work")
+        }
+        let cart = CleanupCart()
+        cart.add([.calendarEvent(id: "B", title: "Standup", start: start), .asset(id: "p", category: .similar, bytes: 1)])
+        // B is still the extra copy of A: kept in the cart.
+        cart.pruneCalendar(to: CalendarFindings(duplicateGroups: [[event("A"), event("B")]], oldEvents: []))
+        #expect(cart.count == 2)
+        // A was deleted elsewhere, so B is the only copy now and leaves the cart.
+        cart.pruneCalendar(to: CalendarFindings())
+        #expect(cart.count == 1)
+        #expect(cart.contains(assetID: "p"))
+    }
+
+    @Test func impossibleAlarmOffsetsAreSkippedNotCrashed() {
+        #expect(ICSWriter.trigger(for: .relative(.nan)) == nil)
+        #expect(ICSWriter.trigger(for: .relative(.infinity)) == nil)
+        #expect(ICSWriter.trigger(for: .relative(1e19)) == nil)
+        #expect(ICSWriter.trigger(for: .relative(-600)) == "TRIGGER:-PT600S")
+        let event = ICSWriter.Event(uid: "u", title: "T", start: Date(timeIntervalSince1970: 0),
+                                    end: Date(timeIntervalSince1970: 60), isAllDay: false, alarms: [.relative(.nan)])
+        #expect(!ICSWriter.document([event]).contains("VALARM"))
+    }
+
+    @Test func privacyManifestDeclaresFileTimestamps() throws {
+        let url = try #require(Bundle.main.url(forResource: "PrivacyInfo", withExtension: "xcprivacy"))
+        let text = try String(contentsOf: url, encoding: .utf8)
+        #expect(text.contains("NSPrivacyAccessedAPICategoryFileTimestamp"))
+        #expect(text.contains("C617.1"))
+    }
 }

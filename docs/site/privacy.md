@@ -16,7 +16,7 @@ With your permission, Keeproll reads information on your iPhone to do its job:
 - **Contacts**, to find duplicates and show you a merged preview.
 - **Calendar**, to find duplicate events and events over a year old.
 
-Everything is processed on your iPhone. Keeproll has no network access of any kind: no account, no server, no analytics, no crash reporting, no advertising.
+Everything is processed on your iPhone. Keeproll has no network access of any kind: no account, no server, no analytics, no advertising, and no crash reporting service.
 
 ## What Keeproll stores
 
@@ -26,6 +26,9 @@ Only on your iPhone, in the app's own storage:
 - Your settings, the last scan summary, a daily storage reading for the forecast, and which Live Photos you converted.
 - Backup files (`.vcf` for contacts, `.ics` for calendar) written before any contact or calendar change, which you can share or delete.
 - Photos you choose to move into the private vault, protected by Face ID or your passcode.
+- Crash and performance reports that iOS gives the app (MetricKit), if you share analytics with developers in iOS Settings. They stay on your iPhone, and are only sent if you share one yourself from Settings › About › Diagnostics.
+
+Like all app data, this storage is included in your iCloud or computer backups of the iPhone. That includes the private vault, so a backup restored to another device brings the vault with it, protected by that device's passcode.
 
 Deleting the app deletes all of it.
 

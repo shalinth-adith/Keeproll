@@ -108,7 +108,7 @@ struct SettingsView: View {
                     Divider().overlay(Color.keeproll.hairline)
                     VStack(alignment: .leading, spacing: Spacing.xxs) {
                         Text("Privacy").font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkPrimary)
-                        Text("Keeproll has no account, no analytics and no network access. Photos, contacts and events are read on this iPhone and never leave it. Contacts and calendar changes are backed up to a file you can share before anything is changed.")
+                        Text("Keeproll has no account, no analytics and no network access. Photos, contacts and events are read on this iPhone, and Keeproll never sends them anywhere. Contacts and calendar changes are backed up to a file you can share before anything is changed.")
                             .font(Font.keeproll.caption)
                             .foregroundStyle(Color.keeproll.inkSecondary)
                             .fixedSize(horizontal: false, vertical: true)

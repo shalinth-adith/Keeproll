@@ -252,3 +252,26 @@ All 25 findings have a code fix. "Device" means the fix still needs checking on 
 **Found and fixed during verification:** the first L1 attempt used `ViewThatFits`. On iOS 26, SwiftUI measured its variants on a background render thread during the page transition, which tripped Swift 6's main-actor check and crashed on "Not now". It now measures the available height instead. A fresh install was re-run with no crash.
 
 **Tests:** 107 pass, 16 of them new.
+
+---
+
+## Security review (18 Oct 2026, after the fixes)
+
+Four parallel read-only reviews covered:
+
+- The vault and authentication.
+- Delete paths and backups.
+- Parsing of untrusted photos, OCR text and cache files.
+- Configuration and debug-only code.
+
+They found no vault bypass, no deletion outside Review, no backup injection, and no crash reachable from crafted input. Five items were found and fixed:
+
+| ID | Severity | Finding | Fix |
+|---|---|---|---|
+| S1 | High (upload) | The privacy manifest didn't declare file-timestamp APIs, which the Backups and Diagnostics lists use. | Added `NSPrivacyAccessedAPICategoryFileTimestamp` / `C617.1`, with a test that the bundled manifest contains it. |
+| S2 | Medium | The vault was described as "only on this iPhone", but it is in iCloud and computer backups. | Kept backups, so the photos aren't lost with the phone. Corrected the vault screen, App Store description, privacy policy, PRD and code comment. |
+| S3 | Low | The privacy policy said "no crash reporting", but MetricKit reports are kept on the phone. | The policy now lists the reports, and says they are only sent if the user shares one. |
+| S4 | Low | Queued calendar removals weren't re-checked after a rescan. | `CleanupCart.pruneCalendar` runs after every calendar load. |
+| S5 | Hardening | `Int(Double)` on an invite-controlled alarm offset could trap. | `ICSWriter.trigger(for:)` skips non-finite or out-of-range offsets. |
+
+**Tests:** 110 pass.

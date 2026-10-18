@@ -48,6 +48,9 @@ struct RootView: View {
                 .onChange(of: env.scanStore.contactsLoadCount) { _, _ in
                     env.cart.pruneContacts(to: env.scanStore.contacts.value ?? [])
                 }
+                .onChange(of: env.scanStore.calendarLoadCount) { _, _ in
+                    env.cart.pruneCalendar(to: env.scanStore.calendar.value)
+                }
                 .safeAreaInset(edge: .bottom) {
                     if !router.hidesSelectionBar {
                         SelectionBar(cart: env.cart) { router.presentReview() }

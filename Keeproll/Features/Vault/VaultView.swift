@@ -174,7 +174,7 @@ struct VaultView: View {
                 .foregroundStyle(Color.keeproll.accent)
                 .accessibilityHidden(true)
             Text("Private Vault").font(.system(.largeTitle, design: .rounded, weight: .bold))
-            Text("Photos here are kept only on this iPhone, locked with Face ID or your passcode, and out of your photo library.")
+            Text("Photos here are locked with Face ID or your passcode and kept out of your photo library. Keeproll never uploads them; they are included in your iPhone backups.")
                 .font(Font.keeproll.body).foregroundStyle(Color.keeproll.inkSecondary).multilineTextAlignment(.center)
             PrimaryButton(title: "Unlock", systemImage: "faceid", isLoading: vm.lock == .unlocking) {
                 Task { await vm.unlock() }
@@ -188,7 +188,7 @@ struct VaultView: View {
             VStack(alignment: .leading, spacing: Spacing.m) {
                 CategoryHeader(
                     hero: Text("^[\(vm.items.count) item](inflect: true)"),
-                    caption: Text("\(ByteFormatter.string(vm.totalBytes)) · only on this iPhone"),
+                    caption: Text("\(ByteFormatter.string(vm.totalBytes)) · out of your photo library"),
                     hint: HintRow("lock.shield", Text("Locks again when Keeproll goes to the background."))
                 )
 

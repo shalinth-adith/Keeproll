@@ -106,22 +106,32 @@ nonisolated enum ICSWriter {
                 lines.append("URL:" + v)
             }
             for alarm in e.alarms {
+                guard let trigger = trigger(for: alarm) else { continue }
                 lines.append("BEGIN:VALARM")
                 lines.append("ACTION:DISPLAY")
                 lines.append("DESCRIPTION:" + escape(e.title.isEmpty ? "Reminder" : e.title))
-                switch alarm {
-                case .relative(let offset):
-                    let seconds = Int(offset.rounded())
-                    lines.append("TRIGGER:\(seconds < 0 ? "-" : "")PT\(abs(seconds))S")
-                case .absolute(let date):
-                    lines.append("TRIGGER;VALUE=DATE-TIME:" + utc(date))
-                }
+                lines.append(trigger)
                 lines.append("END:VALARM")
             }
             lines.append("END:VEVENT")
         }
         lines.append("END:VCALENDAR")
         return lines.map(fold).joined(separator: "\r\n") + "\r\n"
+    }
+
+    /// The TRIGGER line for an alarm, or nil for an offset no calendar could mean
+    /// (NaN, infinite, or more than ten years). An invite controls this value, and
+    /// `Int(Double)` traps on those, so it's checked first.
+    static func trigger(for alarm: Alarm) -> String? {
+        switch alarm {
+        case .relative(let offset):
+            guard offset.isFinite, abs(offset) <= 10 * 366 * 86_400 else { return nil }
+            let seconds = Int(offset.rounded())
+            return "TRIGGER:\(seconds < 0 ? "-" : "")PT\(abs(seconds))S"
+        case .absolute(let date):
+            guard date.timeIntervalSinceReferenceDate.isFinite else { return nil }
+            return "TRIGGER;VALUE=DATE-TIME:" + utc(date)
+        }
     }
 
     static func escape(_ s: String) -> String { BackupText.escape(s) }

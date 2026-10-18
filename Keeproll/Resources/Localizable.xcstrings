@@ -118,6 +118,7 @@
       }
     },
     "%@ · only on this iPhone": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -129,6 +130,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ · இந்த iPhone இல் மட்டும்"
+          }
+        }
+      }
+    },
+    "%@ · out of your photo library": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · आपकी फ़ोटो लाइब्रेरी से बाहर"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · உங்கள் பட லைப்ரரிக்கு வெளியே"
           }
         }
       }
@@ -2874,6 +2891,7 @@
       }
     },
     "Keeproll has no account, no analytics and no network access. Photos, contacts and events are read on this iPhone and never leave it. Contacts and calendar changes are backed up to a file you can share before anything is changed.": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -2885,6 +2903,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Keeproll இல் கணக்கு இல்லை, அனலிட்டிக்ஸ் இல்லை, நெட்வொர்க் அணுகல் இல்லை. புகைப்படங்கள், தொடர்புகள், நிகழ்வுகள் இந்த iPhone இலேயே படிக்கப்படும், ஒருபோதும் வெளியேறாது. தொடர்பு மற்றும் காலண்டர் மாற்றங்களுக்கு முன் நீங்கள் பகிரக்கூடிய கோப்பில் காப்புப் பிரதி எடுக்கப்படும்."
+          }
+        }
+      }
+    },
+    "Keeproll has no account, no analytics and no network access. Photos, contacts and events are read on this iPhone, and Keeproll never sends them anywhere. Contacts and calendar changes are backed up to a file you can share before anything is changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll में कोई अकाउंट, कोई एनालिटिक्स और कोई नेटवर्क एक्सेस नहीं है। फ़ोटो, संपर्क और इवेंट इसी iPhone पर पढ़े जाते हैं, और Keeproll उन्हें कहीं नहीं भेजता। कुछ भी बदलने से पहले संपर्क और कैलेंडर के बदलावों का बैकअप एक फ़ाइल में लिया जाता है, जिसे आप शेयर कर सकते हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeproll-இல் கணக்கு இல்லை, பகுப்பாய்வு இல்லை, நெட்வொர்க் அணுகலும் இல்லை. படங்கள், தொடர்புகள், நிகழ்வுகள் இந்த iPhone-இலேயே படிக்கப்படுகின்றன, Keeproll அவற்றை எங்கும் அனுப்பாது. எதையும் மாற்றும் முன் தொடர்புகள் மற்றும் நாள்காட்டி மாற்றங்கள் நீங்கள் பகிரக்கூடிய ஒரு கோப்பில் காப்புப்பிரதி எடுக்கப்படும்."
           }
         }
       }
@@ -4319,6 +4353,7 @@
       }
     },
     "Photos here are kept only on this iPhone, locked with Face ID or your passcode, and out of your photo library.": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -4330,6 +4365,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "இங்குள்ள புகைப்படங்கள் இந்த iPhone இல் மட்டுமே, Face ID அல்லது கடவுக்குறியீட்டால் பூட்டப்பட்டு, உங்கள் புகைப்பட லைப்ரரிக்கு வெளியே வைக்கப்படும்."
+          }
+        }
+      }
+    },
+    "Photos here are locked with Face ID or your passcode and kept out of your photo library. Keeproll never uploads them; they are included in your iPhone backups.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यहाँ की फ़ोटो Face ID या आपके पासकोड से लॉक रहती हैं और आपकी फ़ोटो लाइब्रेरी से बाहर रखी जाती हैं। Keeproll उन्हें कभी अपलोड नहीं करता; वे आपके iPhone बैकअप में शामिल होती हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இங்குள்ள படங்கள் Face ID அல்லது உங்கள் கடவுக்குறியீட்டால் பூட்டப்பட்டு, உங்கள் பட லைப்ரரிக்கு வெளியே வைக்கப்படுகின்றன. Keeproll அவற்றை ஒருபோதும் பதிவேற்றாது; அவை உங்கள் iPhone காப்புப்பிரதிகளில் சேர்க்கப்படும்."
           }
         }
       }

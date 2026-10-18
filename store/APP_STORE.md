@@ -47,7 +47,7 @@ Everything App Store Connect asks for, ready to paste. Character limits in brack
 > **Private by design**
 > • No account. No network access. No analytics.
 > • Everything is analysed on your iPhone, including the on-device text reading for expired screenshots. Text is read once and never stored.
-> • The private vault keeps photos behind Face ID or your passcode, on this phone only.
+> • The private vault keeps photos behind Face ID or your passcode, out of your photo library. Keeproll never uploads them.
 >
 > **Fast**
 > • Scans a 7,000-photo library in under a minute the first time, and in a couple of seconds after that.
