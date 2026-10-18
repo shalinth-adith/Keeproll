@@ -264,3 +264,19 @@ T.update({
  "Trimming… %lld%%": "काट रहे हैं… %lld%%",
  "Watching videos for dead stretches…": "वीडियो में खाली हिस्से देख रहे हैं…",
 })
+# Build 5 QA fixes.
+T.update({
+ "%@ → %@ · remove the original to free %@": "%@ → %@ · %@ खाली करने के लिए असली वीडियो हटाएँ",
+ "%@ with nothing to see or hear · %@": "%@ जिसमें देखने या सुनने को कुछ नहीं · %@",
+ "%lld": "%lld",
+ "%lld · %@": "%lld · %@",
+ "^[%lld item](inflect: true) selected, %@": "%lld चुने गए, %@",
+ "Almost done.": "लगभग हो गया।",
+ "Can be trimmed": "काटे जा सकते हैं",
+ "Dark and silent": "अंधेरा और शांत",
+ "One flat grey with no detail, like a ceiling or the inside of a case.": "बिना डिटेल का एक ही स्लेटी रंग, जैसे छत या कवर का अंदरूनी हिस्सा।",
+ "Saving the copy…": "कॉपी सेव हो रही है…",
+ "The trimmed copy wouldn't be much smaller, because the dark parts take almost no space. Nothing was changed.": "काटी गई कॉपी ज़्यादा छोटी नहीं होती, क्योंकि अंधेरे हिस्से लगभग कोई जगह नहीं लेते। कुछ नहीं बदला।",
+ "This video has extra tracks (Cinematic, slow motion or spatial) that a trimmed copy can't keep. Nothing was changed.": "इस वीडियो में अतिरिक्त ट्रैक हैं (Cinematic, स्लो मोशन या स्पेशियल) जिन्हें काटी गई कॉपी नहीं रख सकती। कुछ नहीं बदला।",
+ "Waiting for Review": "समीक्षा का इंतज़ार",
+})

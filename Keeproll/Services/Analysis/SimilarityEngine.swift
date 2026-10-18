@@ -189,8 +189,8 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
             var exposure = cachedExposure
             // Libraries scanned before Accidental Shots existed: one cheap thumbnail read
             // per photo, once, for the brightness statistics. No hashing or Vision again.
-            if exposure == nil, let image = await thumbnail(for: box.asset),
-               let stats = autoreleasepool(invoking: { AccidentalShotEngine.stats(image) }) {
+            if exposure == nil, let thumb = await thumbnailImage(for: box.asset),
+               let stats = autoreleasepool(invoking: { Self.upright(thumb).flatMap(AccidentalShotEngine.stats) }) {
                 await cache.store(stats, for: id, modified: item.modificationDate)
                 exposure = stats
             }
@@ -201,14 +201,17 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
             ), fromCache: cachedExposure != nil)
         }
         let t0 = Date()
-        guard let image = await thumbnail(for: box.asset) else {
+        guard let thumb = await thumbnailImage(for: box.asset), let image = thumb.cgImage else {
             timings.add(thumbnail: Date().timeIntervalSince(t0), analysis: 0, vision: 0, missing: true)
             return Loaded(index: index, features: nil, fromCache: false)
         }
         let t1 = Date()
         let computed: (UInt64, Float, ExposureStats?)? = autoreleasepool {
             guard let hash = ImageAnalysis.dHash(image) else { return nil }
-            return (hash, ImageAnalysis.sharpness(image), AccidentalShotEngine.stats(image))
+            // Hash and sharpness stay on the raw image (cached results depend on it); the
+            // brightness statistics use an upright copy, because the finger rule protects
+            // the top edge (QA A3).
+            return (hash, ImageAnalysis.sharpness(image), Self.upright(thumb).flatMap(AccidentalShotEngine.stats))
         }
         guard let (hash, sharpness, exposure) = computed else {
             return Loaded(index: index, features: nil, fromCache: false)
@@ -246,12 +249,23 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
     /// hashing, sharpness and Vision. It isn't always there (freshly imported photos have
     /// none yet: error 3303), so fall back to `.highQualityFormat`. Neither touches the
     /// network (D7); photos that exist only in iCloud are skipped.
-    private func thumbnail(for asset: PHAsset) async -> CGImage? {
+    private func thumbnailImage(for asset: PHAsset) async -> UIImage? {
         if let fast = await requestImage(asset, mode: .fastFormat) { return fast }
         return await requestImage(asset, mode: .highQualityFormat)
     }
 
-    private func requestImage(_ asset: PHAsset, mode: PHImageRequestOptionsDeliveryMode) async -> CGImage? {
+    /// The thumbnail as an upright `CGImage`. `UIImage.cgImage` ignores orientation, so a
+    /// rotated thumbnail is redrawn; an upright one (the usual case) is returned as is.
+    nonisolated static func upright(_ image: UIImage) -> CGImage? {
+        guard image.imageOrientation != .up else { return image.cgImage }
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: image.size, format: format).image { _ in
+            image.draw(in: CGRect(origin: .zero, size: image.size))
+        }.cgImage
+    }
+
+    private func requestImage(_ asset: PHAsset, mode: PHImageRequestOptionsDeliveryMode) async -> UIImage? {
         let options = PHImageRequestOptions()
         options.deliveryMode = mode
         options.resizeMode = .fast
@@ -264,7 +278,7 @@ nonisolated final class SimilarityEngine: SimilarityScanning {
                 continuation.resume(returning: image)
             }
         }
-        return image?.cgImage
+        return image
     }
 
     /// Sends upserts for groups that changed since the last emit and removes for groups

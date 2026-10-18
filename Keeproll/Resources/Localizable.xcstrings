@@ -30,6 +30,7 @@
       }
     },
     "%@ of dark or empty video · %@": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -47,6 +48,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ இருண்ட அல்லது வெற்று வீடியோ · %@"
+          }
+        }
+      }
+    },
+    "%@ with nothing to see or hear · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ with nothing to see or hear · %2$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ जिसमें देखने या सुनने को कुछ नहीं · %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ பார்க்கவோ கேட்கவோ எதுவும் இல்லை · %@"
           }
         }
       }
@@ -190,6 +213,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ → %@"
+          }
+        }
+      }
+    },
+    "%@ → %@ · remove the original to free %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ → %2$@ · remove the original to free %3$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ → %@ · %@ खाली करने के लिए असली वीडियो हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ → %@ · %@ விடுவிக்க அசலை நீக்கவும்"
           }
         }
       }
@@ -342,6 +387,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@. அதிகபட்சம் %@ காலியாக்கலாம்."
+          }
+        }
+      }
+    },
+    "%lld": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
           }
         }
       }
@@ -508,6 +569,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld நீக்க"
+          }
+        }
+      }
+    },
+    "%lld · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld · %2$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld · %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld · %@"
           }
         }
       }
@@ -948,6 +1031,22 @@
         }
       }
     },
+    "Almost done.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "लगभग हो गया।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "கிட்டத்தட்ட முடிந்தது."
+          }
+        }
+      }
+    },
     "AppFactory App Builder task": {
       "extractionState": "stale",
       "localizations": {
@@ -1239,6 +1338,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "காலண்டரால் மாற்றத்தைச் சேமிக்க முடியவில்லை."
+          }
+        }
+      }
+    },
+    "Can be trimmed": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "काटे जा सकते हैं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வெட்டக்கூடியவை"
           }
         }
       }
@@ -2101,6 +2216,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "வீடியோக்களின் இருண்ட, வெற்றுப் பகுதிகளை வெட்டி, மீதியை முழுத் தரத்தில் வைக்கிறது."
+          }
+        }
+      }
+    },
+    "Dark and silent": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अंधेरा और शांत"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இருட்டும் அமைதியும்"
           }
         }
       }
@@ -4364,6 +4495,7 @@
       }
     },
     "Nothing worth keeping": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -4476,6 +4608,7 @@
       }
     },
     "One flat colour with no detail, like a ceiling or the inside of a case.": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -4487,6 +4620,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "விவரம் இல்லாத ஒரே நிறம், கூரை அல்லது கவரின் உட்பகுதி போல."
+          }
+        }
+      }
+    },
+    "One flat grey with no detail, like a ceiling or the inside of a case.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बिना डिटेल का एक ही स्लेटी रंग, जैसे छत या कवर का अंदरूनी हिस्सा।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "விவரம் இல்லாத ஒரே சாம்பல் நிறம், கூரை அல்லது கவரின் உட்பகுதி போல."
           }
         }
       }
@@ -5536,6 +5685,22 @@
         }
       }
     },
+    "Saving the copy…": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कॉपी सेव हो रही है…"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நகலைச் சேமிக்கிறது…"
+          }
+        }
+      }
+    },
     "Scan first, then swipe through the suggestions.": {
       "localizations": {
         "hi": {
@@ -6412,7 +6577,24 @@
         }
       }
     },
+    "The trimmed copy wouldn't be much smaller, because the dark parts take almost no space. Nothing was changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "काटी गई कॉपी ज़्यादा छोटी नहीं होती, क्योंकि अंधेरे हिस्से लगभग कोई जगह नहीं लेते। कुछ नहीं बदला।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வெட்டிய நகல் அதிகம் சிறியதாக இருக்காது, ஏனெனில் இருண்ட பகுதிகள் கிட்டத்தட்ட இடம் எடுக்கவில்லை. எதுவும் மாற்றப்படவில்லை."
+          }
+        }
+      }
+    },
     "The trimmed copy wouldn't be smaller, because the dark parts take almost no space. Nothing was changed.": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -6600,6 +6782,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "இது இன்னும் உங்கள் லைப்ரரியில் உள்ளது."
+          }
+        }
+      }
+    },
+    "This video has extra tracks (Cinematic, slow motion or spatial) that a trimmed copy can't keep. Nothing was changed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इस वीडियो में अतिरिक्त ट्रैक हैं (Cinematic, स्लो मोशन या स्पेशियल) जिन्हें काटी गई कॉपी नहीं रख सकती। कुछ नहीं बदला।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த வீடியோவில் வெட்டிய நகல் வைத்திருக்க முடியாத கூடுதல் டிராக்குகள் உள்ளன (Cinematic, ஸ்லோ மோஷன் அல்லது ஸ்பேஷியல்). எதுவும் மாற்றப்படவில்லை."
           }
         }
       }
@@ -7000,6 +7198,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "வீடியோக்கள்"
+          }
+        }
+      }
+    },
+    "Waiting for Review": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "समीक्षा का इंतज़ार"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "மதிப்பாய்வுக்குக் காத்திருக்கிறது"
           }
         }
       }
@@ -7498,6 +7712,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld உருப்படிகள் தேர்வானவை"
+          }
+        }
+      }
+    },
+    "^[%lld item](inflect: true) selected, %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "^[%1$lld item](inflect: true) selected, %2$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld चुने गए, %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld தேர்ந்தெடுக்கப்பட்டன, %@"
           }
         }
       }

@@ -17,6 +17,8 @@ final class SmartTrimViewModel {
     }
 
     var candidates: [TrimCandidate] { scanStore.visibleTrims }
+    /// Trimmed originals still in the library, next to their copies.
+    var pending: [TrimPair] { scanStore.trimPairs }
     var isLoading: Bool { scanStore.trims.isLoading || (scanStore.trims.value == nil && scanStore.isScanning) }
     var totalBytes: Int64 { scanStore.trimBytes }
 
@@ -28,6 +30,13 @@ final class SmartTrimViewModel {
     }
 
     func trim(_ candidate: TrimCandidate) { router.trim(candidate) }
+    func rescan() { scanStore.scan() }
+
+    func isSelected(_ pair: TrimPair) -> Bool { cart.contains(assetID: pair.originalID) }
+    func toggleRemoval(_ pair: TrimPair) {
+        if isSelected(pair) { cart.removeAssets([pair.originalID]) }
+        else { cart.add([.asset(id: pair.originalID, category: .trims, bytes: pair.savedBytes)]) }
+    }
     func preview(_ candidate: TrimCandidate) { router.previewVideo(candidate.id) }
 }
 
@@ -40,7 +49,9 @@ struct SmartTrimView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: Spacing.s) {
+            // A plain stack: the list is short, and a lazy stack reused a Trim card for the
+            // pending row that took its place (same asset id).
+            VStack(alignment: .leading, spacing: Spacing.s) {
                 CategoryHeader(
                     hero: Text(ByteFormatter.string(vm.totalBytes)),
                     caption: Text("^[\(vm.candidates.count) video](inflect: true) with dark or empty stretches"),
@@ -49,7 +60,21 @@ struct SmartTrimView: View {
                 )
                 .animation(Motion.standard, value: vm.totalBytes)
 
-                if vm.candidates.isEmpty && !vm.isLoading {
+                if !vm.pending.isEmpty {
+                    Text("Waiting for Review").font(Font.keeproll.title).foregroundStyle(Color.keeproll.inkPrimary)
+                        .accessibilityAddTraits(.isHeader)
+                        .padding(.top, Spacing.xs)
+                    ForEach(vm.pending) { pair in
+                        PendingTrimRow(pair: pair, isSelected: vm.isSelected(pair)) { vm.toggleRemoval(pair) }
+                            .id("pending:\(pair.id)")
+                    }
+                    if !vm.candidates.isEmpty {
+                        Text("Can be trimmed").font(Font.keeproll.title).foregroundStyle(Color.keeproll.inkPrimary)
+                            .accessibilityAddTraits(.isHeader)
+                            .padding(.top, Spacing.s)
+                    }
+                }
+                if vm.candidates.isEmpty && vm.pending.isEmpty && !vm.isLoading {
                     EmptyState(systemImage: "scissors", title: Text("Nothing to trim"),
                                message: Text("No videos with long dark or empty stretches."))
                 } else {
@@ -58,6 +83,7 @@ struct SmartTrimView: View {
                                 onPreview: { vm.preview(candidate) },
                                 onTrim: { vm.trim(candidate) },
                                 onToggleRemoval: { vm.toggleRemoval(candidate) })
+                            .id("trim:\(candidate.id)")
                     }
                 }
             }
@@ -65,6 +91,8 @@ struct SmartTrimView: View {
             .padding(.bottom, Spacing.xxl)
         }
         .background(Color.keeproll.canvas)
+        // New videos added while Keeproll is open show up after a pull (QA U2).
+        .refreshable { vm.rescan() }
         .navigationTitle("Smart Trim")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -94,8 +122,8 @@ private struct TrimRow: View {
                 .accessibilityLabel(Text("Preview video"))
                 VStack(alignment: .leading, spacing: 2) {
                     if candidate.isAllDead {
-                        Text("Nothing worth keeping").font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkPrimary)
-                        Text("\(DurationFormatter.string(candidate.duration)) of dark or empty video · \(ByteFormatter.string(candidate.item.byteSize ?? 0))")
+                        Text("Dark and silent").font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkPrimary)
+                        Text("\(DurationFormatter.string(candidate.duration)) with nothing to see or hear · \(ByteFormatter.string(candidate.item.byteSize ?? 0))")
                             .font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
                     } else {
                         Text("\(DurationFormatter.string(candidate.duration)) → \(DurationFormatter.string(candidate.keptSeconds))")
@@ -128,6 +156,40 @@ private struct TrimRow: View {
                 }
                 .buttonStyle(PressableStyle())
             }
+        }
+        .card(padding: Spacing.s)
+    }
+}
+
+/// A trimmed original still in the library. Its copy is already saved; removing the
+/// original frees what the trim saved (QA T2).
+private struct PendingTrimRow: View {
+    let pair: TrimPair
+    let isSelected: Bool
+    let onToggle: () -> Void
+
+    var body: some View {
+        HStack(spacing: Spacing.s) {
+            ThumbnailView(id: pair.originalID, pointSize: 120)
+                .frame(width: 72, height: 48)
+                .clipShape(RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous))
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Trimmed copy saved").font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkPrimary)
+                Text("\(DurationFormatter.string(pair.originalDuration)) → \(DurationFormatter.string(pair.keptDuration)) · remove the original to free \(ByteFormatter.string(pair.savedBytes))")
+                    .font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: Spacing.xs)
+            Button(action: onToggle) {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.title2)
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(isSelected ? Color.keeproll.onAccent : Color.keeproll.inkTertiary, isSelected ? Color.keeproll.accent : .clear)
+                    .frame(width: Layout.minTouchTarget, height: Layout.minTouchTarget)
+            }
+            .buttonStyle(.plain)
+            .sensoryFeedback(.selection, trigger: isSelected)
+            .accessibilityLabel(Text(isSelected ? "Selected to remove" : "Select to remove"))
         }
         .card(padding: Spacing.s)
     }

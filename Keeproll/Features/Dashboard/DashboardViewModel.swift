@@ -129,8 +129,8 @@ final class DashboardViewModel {
             case .idle, .loading: return .scanning(progress: nil)
             case .failed: return .empty
             case .loaded:
-                let visible = scanStore.visibleTrims
-                return visible.isEmpty ? .empty : .ready(bytes: scanStore.trimBytes, count: visible.count)
+                let count = scanStore.visibleTrims.count + scanStore.trimPairs.count
+                return count == 0 ? .empty : .ready(bytes: scanStore.trimBytes, count: count)
             }
         case .chats:
             guard scanStore.photosPermission.canRead else { return .locked }

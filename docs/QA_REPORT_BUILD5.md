@@ -140,3 +140,33 @@ But both detectors have look-alikes that real photos will hit. Smart Trim can al
 1. A1 and T1: a wrong label on real photos, and possible content loss after Review.
 2. A2, T2, T3, T4, A3.
 3. The Low items, and the privacy policy wording (S1) before the App Store update.
+
+---
+
+## Fix status (18 Oct 2026)
+
+All 15 findings are fixed. "Simulator" means it was checked on screen or in the Photos database; "test" means a unit test covers it.
+
+| ID | Status | What changed |
+|---|---|---|
+| A1 | Fixed, simulator and test | A finger's edge must be soft (out of focus). The orange-top portrait is no longer flagged; a soft-edged finger still is. |
+| T1 | Fixed, test | Cinematic, slow-motion, spatial and multi-video-track videos are never offered. Every audio and metadata track is copied, and the original's metadata is passed to the export. |
+| A2 | Fixed, simulator and test | Brightness is measured at thumbnail size, and scattered lit pixels count as light. Both starfields are no longer flagged. |
+| T2 | Fixed, simulator and test | Trimmed originals are remembered with their copies. After a relaunch the original appears under "Waiting for Review". Pairs clear when either side is gone. |
+| T3 | Fixed | Once the export finishes, Cancel is replaced by "Saving the copy…", and a finished save is always recorded. Compression works the same way. |
+| T4 | Fixed, simulator and test | A dead stretch must be dark and silent. A dark clip with sound is not offered; speech in the middle of a dark stretch splits it. The all-dark label reads "Dark and silent". |
+| A3 | Fixed | Brightness stats use an upright copy of the thumbnail. |
+| T5 | Fixed, simulator | Trimmed and compressed originals count at the net saving: Review and Summary showed 1.3 MB. |
+| T6 | Fixed | The 1 MB minimum is enforced when trimming, and a failed passthrough falls back to a highest-quality re-encode. |
+| T7 | Fixed | A track that can't be copied fails the trim instead of going missing. |
+| T8 | Fixed | A cancelled measurement isn't cached. |
+| A4 | Fixed, simulator and test | Blank requires grey. The colour swatch is no longer flagged. |
+| U1 | Fixed | At large text sizes the selection bar is one line ("3 · 2.3 MB"), capped at the first accessibility size. |
+| U2 | Fixed | Pull to refresh on Accidental Shots and Smart Trim. |
+| S1 | Fixed | The privacy policy lists brightness and trim data, trimmed videos, and the copies Keeproll adds to the library. |
+
+**Also fixed during verification:**
+- **Pending row:** in a lazy stack it reused the Trim card it replaced, because both had the same asset id. It now uses a plain stack with distinct row ids.
+- **Home subtitles:** they wrap to two lines instead of cutting off.
+
+**Tests:** 143 pass. Release build clean, no warnings.

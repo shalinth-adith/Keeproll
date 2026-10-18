@@ -68,9 +68,12 @@ actor ScanCache {
     private static let version: UInt32 = 5 // 2: sharpness at 160 px; 3: iCloud-only flag; 4: contrast-normalised sharpness; 5: provenance + expiry
     private static let emptyPrint = UInt32.max
     /// Bump when the Accidental Shots statistics change meaning; stale ones are dropped.
-    private static let exposureVersion: UInt8 = 2 // 2: finger score needs one side or corner
+    /// 3 adds lit share and saturation, a soft-edge finger score, and a byte length per
+    /// section so a stale section is skipped cleanly.
+    private static let exposureVersion: UInt8 = 3
     /// Bump when the Smart Trim rules change; stale dead ranges are dropped.
-    private static let trimVersion: UInt8 = 3 // 2: measured dead bytes; 3: only samples shown inside the range
+    /// 4: dead means dark and quiet (sound is checked); section length prefix.
+    private static let trimVersion: UInt8 = 4
 
     init(url: URL = ScanCache.defaultURL) {
         self.url = url
@@ -217,29 +220,39 @@ actor ScanCache {
             writer.append(record.mentionedDate)
             writer.append(record.confidence)
         }
+        // Trailing sections: count, version, byte length, records. The length lets a
+        // reader skip a section whose version it doesn't understand.
+        var exposureBlock = BinaryWriter()
+        for (id, record) in exposures {
+            exposureBlock.append(id)
+            exposureBlock.append(record.modified)
+            exposureBlock.append(record.stats.mean)
+            exposureBlock.append(record.stats.standardDeviation)
+            exposureBlock.append(record.stats.p98)
+            exposureBlock.append(record.stats.maximum)
+            exposureBlock.append(record.stats.litPerTenThousand)
+            exposureBlock.append(record.stats.saturation)
+            exposureBlock.append(record.stats.fingerScore)
+        }
         writer.append(UInt32(exposures.count))
         writer.append(Self.exposureVersion)
-        for (id, record) in exposures {
-            writer.append(id)
-            writer.append(record.modified)
-            writer.append(record.stats.mean)
-            writer.append(record.stats.standardDeviation)
-            writer.append(record.stats.p98)
-            writer.append(record.stats.maximum)
-            writer.append(record.stats.fingerScore)
+        writer.append(UInt32(exposureBlock.data.count))
+        writer.append(raw: exposureBlock.data)
+        var trimBlock = BinaryWriter()
+        for (id, record) in trims {
+            trimBlock.append(id)
+            trimBlock.append(record.modified)
+            trimBlock.append(record.deadBytes)
+            trimBlock.append(UInt16(min(record.deadRanges.count, Int(UInt16.max))))
+            for range in record.deadRanges.prefix(Int(UInt16.max)) {
+                trimBlock.append(range.start)
+                trimBlock.append(range.end)
+            }
         }
         writer.append(UInt32(trims.count))
         writer.append(Self.trimVersion)
-        for (id, record) in trims {
-            writer.append(id)
-            writer.append(record.modified)
-            writer.append(record.deadBytes)
-            writer.append(UInt16(min(record.deadRanges.count, Int(UInt16.max))))
-            for range in record.deadRanges.prefix(Int(UInt16.max)) {
-                writer.append(range.start)
-                writer.append(range.end)
-            }
-        }
+        writer.append(UInt32(trimBlock.data.count))
+        writer.append(raw: trimBlock.data)
         do {
             try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
             try writer.data.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
@@ -305,35 +318,44 @@ actor ScanCache {
         }
         var loadedExposure: [String: ExposureRecord] = [:]
         var loadedTrims: [String: TrimRecord] = [:]
-        if let exposureCount = reader.read(UInt32.self), let version = reader.read(UInt8.self) {
+        // Sections from before the length prefix (exposure v2, trim v3) can't be skipped;
+        // stop there and let the next scan recompute them.
+        var sectionsReadable = false
+        exposureSection: if let exposureCount = reader.read(UInt32.self), let version = reader.read(UInt8.self) {
+            guard version >= 3, let length = reader.read(UInt32.self) else { break exposureSection }
+            sectionsReadable = true
+            guard version == Self.exposureVersion else { reader.skip(Int(length)); break exposureSection }
+            let end = reader.offsetValue + Int(length)
             for _ in 0..<exposureCount {
                 guard let id = reader.readString(), let modified = reader.read(Double.self),
                       let mean = reader.read(UInt8.self), let deviation = reader.read(UInt8.self),
                       let p98 = reader.read(UInt8.self), let maximum = reader.read(UInt8.self),
+                      let lit = reader.read(UInt8.self), let saturation = reader.read(UInt8.self),
                       let finger = reader.read(UInt8.self) else { break }
                 loadedExposure[id] = ExposureRecord(modified: modified, stats: ExposureStats(
-                    mean: mean, standardDeviation: deviation, p98: p98, maximum: maximum, fingerScore: finger))
+                    mean: mean, standardDeviation: deviation, p98: p98, maximum: maximum,
+                    litPerTenThousand: lit, saturation: saturation, fingerScore: finger))
             }
-            // Rules changed since these were computed: recompute on the next scan.
-            if version != Self.exposureVersion { loadedExposure = [:] }
+            reader.seek(to: end)
         }
-        var trimVersionRead: UInt8?
-        if let trimCount = reader.read(UInt32.self), let version = reader.read(UInt8.self) {
-            trimVersionRead = version
-            trimLoop: for _ in 0..<trimCount {
-                guard let id = reader.readString(), let modified = reader.read(Double.self),
-                      let deadBytes = reader.read(Int64.self),
-                      let rangeCount = reader.read(UInt16.self),
-                      Int(rangeCount) <= reader.remaining / 16 else { break }
-                var ranges: [TrimRange] = []
-                for _ in 0..<rangeCount {
-                    guard let start = reader.read(Double.self), let end = reader.read(Double.self) else { break trimLoop }
-                    ranges.append(TrimRange(start: start, end: end))
+        if sectionsReadable {
+            trimSection: if let trimCount = reader.read(UInt32.self), let trimVersion = reader.read(UInt8.self),
+                            let trimLength = reader.read(UInt32.self) {
+                guard trimVersion == Self.trimVersion else { reader.skip(Int(trimLength)); break trimSection }
+                trimLoop: for _ in 0..<trimCount {
+                    guard let id = reader.readString(), let modified = reader.read(Double.self),
+                          let deadBytes = reader.read(Int64.self),
+                          let rangeCount = reader.read(UInt16.self),
+                          Int(rangeCount) <= reader.remaining / 16 else { break }
+                    var ranges: [TrimRange] = []
+                    for _ in 0..<rangeCount {
+                        guard let start = reader.read(Double.self), let end = reader.read(Double.self) else { break trimLoop }
+                        ranges.append(TrimRange(start: start, end: end))
+                    }
+                    loadedTrims[id] = TrimRecord(modified: modified, deadRanges: ranges, deadBytes: deadBytes)
                 }
-                loadedTrims[id] = TrimRecord(modified: modified, deadRanges: ranges, deadBytes: deadBytes)
             }
         }
-        if let trimVersionRead, trimVersionRead != Self.trimVersion { loadedTrims = [:] }
         exposures = loadedExposure
         trims = loadedTrims
         features = loadedFeatures
@@ -362,6 +384,8 @@ nonisolated struct BinaryWriter {
         for value in values { append(value) }
     }
 
+    mutating func append(raw bytes: Data) { data.append(bytes) }
+
     mutating func append(_ string: String) {
         let bytes = Array(string.utf8)
         append(UInt32(bytes.count))
@@ -377,6 +401,13 @@ nonisolated struct BinaryReader {
 
     /// Bytes left to read.
     var remaining: Int { data.count - offset }
+    var offsetValue: Int { offset }
+
+    /// Moves forward `count` bytes, never past the end.
+    mutating func skip(_ count: Int) { offset = min(data.count, offset + max(0, count)) }
+
+    /// Jumps to `position`, clamped to the data.
+    mutating func seek(to position: Int) { offset = min(data.count, max(0, position)) }
 
     mutating func read<T: FixedWidthInteger>(_: T.Type) -> T? {
         let size = MemoryLayout<T>.size

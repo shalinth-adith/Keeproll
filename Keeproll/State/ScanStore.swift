@@ -105,8 +105,11 @@ final class ScanStore {
     private let livePhotoScanner: LivePhotoScanning?
     private let trimScanner: SmartTrimScanning?
     /// Videos already trimmed (and the trimmed copies), so Smart Trim doesn't offer them again.
-    private(set) var trimmedVideos: Set<String>
-    private static let trimmedVideosKey = "trimmedVideos"
+    /// Trimmed originals and their copies. Kept until the original is deleted (done) or
+    /// the copy is (then the original is offered again). While both exist, the original
+    /// is listed as waiting for Review, so a relaunch can't lose the saving (QA T2).
+    private(set) var trimPairs: [TrimPair]
+    private static let trimPairsKey = "trimPairs"
     /// Live Photos already converted (and the stills made from them), so they aren't offered twice.
     private(set) var convertedLivePhotos: Set<String>
     private static let convertedLivePhotosKey = "convertedLivePhotos"
@@ -139,7 +142,8 @@ final class ScanStore {
         self.expiryScanner = expiryScanner
         self.livePhotoScanner = livePhotoScanner
         self.trimScanner = trimScanner
-        self.trimmedVideos = Set(defaults.stringArray(forKey: Self.trimmedVideosKey) ?? [])
+        self.trimPairs = defaults.data(forKey: Self.trimPairsKey)
+            .flatMap { try? JSONDecoder().decode([TrimPair].self, from: $0) } ?? []
         self.convertedLivePhotos = Set(defaults.stringArray(forKey: Self.convertedLivePhotosKey) ?? [])
         var history = defaults.data(forKey: Self.storageHistoryKey)
             .flatMap { try? JSONDecoder().decode([StorageSample].self, from: $0) } ?? []
@@ -184,9 +188,14 @@ final class ScanStore {
     var blurryBytes: Int64 { blurry.value?.reduce(0) { $0 + ($1.byteSize ?? 0) } ?? 0 }
     var accidentalBytes: Int64 { accidental.value?.reduce(0) { $0 + ($1.item.byteSize ?? 0) } ?? 0 }
     /// What trimming every candidate would roughly free (whole clips for all-dead ones).
-    var trimBytes: Int64 { visibleTrims.reduce(0) { $0 + $1.estimatedSaving } }
+    var trimBytes: Int64 {
+        visibleTrims.reduce(0) { $0 + $1.estimatedSaving } + trimPairs.reduce(0) { $0 + $1.savedBytes }
+    }
     /// Trim candidates not already trimmed.
-    var visibleTrims: [TrimCandidate] { (trims.value ?? []).filter { !trimmedVideos.contains($0.id) } }
+    var visibleTrims: [TrimCandidate] {
+        let paired = Set(trimPairs.flatMap { [$0.originalID, $0.copyID] })
+        return (trims.value ?? []).filter { !paired.contains($0.id) }
+    }
     var chatBytes: Int64 { chats.value?.reduce(0) { $0 + ($1.item.byteSize ?? 0) } ?? 0 }
     var expiredBytes: Int64 { expired.value?.reduce(0) { $0 + ($1.item.byteSize ?? 0) } ?? 0 }
     /// What converting every Live Photo would free: the clips only.
@@ -204,6 +213,8 @@ final class ScanStore {
         for item in candidates where seen.insert(item.id).inserted { total += item.byteSize ?? 0 }
         // A trim candidate not already counted frees only its dead stretches.
         for trim in visibleTrims where seen.insert(trim.id).inserted { total += trim.estimatedSaving }
+        // Originals waiting for Review free what the trim saved.
+        for pair in trimPairs where seen.insert(pair.originalID).inserted { total += pair.savedBytes }
         // A Live Photo not already counted frees only its clip.
         for live in livePhotos.value ?? [] where seen.insert(live.id).inserted { total += live.videoBytes }
         return total
@@ -292,6 +303,10 @@ final class ScanStore {
         if case .loaded(let items) = trims {
             trims = .loaded(items.filter { !ids.contains($0.id) })
         }
+        if trimPairs.contains(where: { ids.contains($0.originalID) || ids.contains($0.copyID) }) {
+            trimPairs.removeAll { ids.contains($0.originalID) || ids.contains($0.copyID) }
+            saveTrimPairs()
+        }
         if case .loaded(let groups) = similar {
             similar = .loaded(groups.compactMap { group in
                 var group = group
@@ -356,7 +371,7 @@ final class ScanStore {
         case .similar: similarPhotoCount
         case .blurry: blurry.value?.count ?? 0
         case .accidental: accidental.value?.count ?? 0
-        case .trims: visibleTrims.count
+        case .trims: visibleTrims.count + trimPairs.count
         case .contacts: duplicateContactCount
         case .calendar: calendar.value?.suggestionCount ?? 0
         case .chats: chats.value?.count ?? 0
@@ -459,9 +474,19 @@ final class ScanStore {
     }
 
     /// The original keeps its place on Review; neither it nor the copy is offered again.
-    func markTrimmed(original: String, copy: String) {
-        trimmedVideos.formUnion([original, copy])
-        defaults.set(Array(trimmedVideos), forKey: Self.trimmedVideosKey)
+    func markTrimmed(_ pair: TrimPair) {
+        trimPairs.removeAll { $0.originalID == pair.originalID }
+        trimPairs.append(pair)
+        saveTrimPairs()
+    }
+
+    private func saveTrimPairs() {
+        if let data = try? JSONEncoder().encode(trimPairs) { defaults.set(data, forKey: Self.trimPairsKey) }
+    }
+
+    /// Keeps only pairs whose original and copy both still exist.
+    static func livePairs(_ pairs: [TrimPair], existing: Set<String>) -> [TrimPair] {
+        pairs.filter { existing.contains($0.originalID) && existing.contains($0.copyID) }
     }
 
     func markCompressed(original: String, copy: String) {
@@ -529,7 +554,13 @@ final class ScanStore {
         guard let trimScanner, photosPermission.canRead else { trims = .idle; return }
         if trims.value == nil { trims = .loading }
         let items = await trimScanner.findCandidates()
+        let existing = await trimScanner.existingIDs(trimPairs.flatMap { [$0.originalID, $0.copyID] })
         guard !Task.isCancelled else { return }
+        let live = Self.livePairs(trimPairs, existing: existing)
+        if live != trimPairs {
+            trimPairs = live
+            saveTrimPairs()
+        }
         trims = .loaded(items)
     }
 

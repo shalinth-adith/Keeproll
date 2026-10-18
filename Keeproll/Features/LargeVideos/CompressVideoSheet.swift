@@ -28,6 +28,8 @@ final class CompressVideoViewModel {
 
     var estimatedSaving: Int64? { VideoCompressionService.worthCompressing(item) }
     var isWorking: Bool { if case .working = phase { true } else { false } }
+    /// Export done; the copy is being saved and can't be interrupted (QA T3).
+    var isSaving: Bool { if case .working(let value) = phase { value >= 0.999 } else { false } }
 
     /// Starts compressing. The task is kept so closing the sheet can cancel it (QA M8).
     func start() {
@@ -37,7 +39,7 @@ final class CompressVideoViewModel {
 
     /// Stops a running export. Nothing is saved and nothing goes to the cart.
     func cancel() {
-        guard isWorking else { return }
+        guard isWorking, !isSaving else { return }
         task?.cancel()
         task = nil
         phase = .ready
@@ -58,9 +60,10 @@ final class CompressVideoViewModel {
                     if case .working = self.phase { self.phase = .working(value) }
                 }
             }
-            guard !Task.isCancelled else { phase = .ready; return }
+            // A result means the copy is saved: always record it (QA T3).
             // The original is only suggested for removal: it goes to Review, not the bin.
-            cart.add([.asset(id: item.id, category: .videos, bytes: result.originalBytes)])
+            // Counted at the net saving: the smaller copy stays in the library.
+            cart.add([.asset(id: item.id, category: .videos, bytes: result.savedBytes)])
             scanStore.markCompressed(original: item.id, copy: result.newAssetID)
             phase = .done(result)
             scanStore.scan() // show the new copy in the list
@@ -104,7 +107,9 @@ struct CompressVideoSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    if vm.isWorking {
+                    if vm.isSaving {
+                        ProgressView()
+                    } else if vm.isWorking {
                         Button("Cancel") { vm.cancel() }
                     } else {
                         Button("Close") { dismiss() }

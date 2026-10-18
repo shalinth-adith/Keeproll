@@ -262,3 +262,19 @@ T.update({
  "Trimming… %lld%%": "வெட்டுகிறது… %lld%%",
  "Watching videos for dead stretches…": "வீடியோக்களில் வெற்றுப் பகுதிகளைத் தேடுகிறது…",
 })
+# Build 5 QA fixes.
+T.update({
+ "%@ → %@ · remove the original to free %@": "%@ → %@ · %@ விடுவிக்க அசலை நீக்கவும்",
+ "%@ with nothing to see or hear · %@": "%@ பார்க்கவோ கேட்கவோ எதுவும் இல்லை · %@",
+ "%lld": "%lld",
+ "%lld · %@": "%lld · %@",
+ "^[%lld item](inflect: true) selected, %@": "%lld தேர்ந்தெடுக்கப்பட்டன, %@",
+ "Almost done.": "கிட்டத்தட்ட முடிந்தது.",
+ "Can be trimmed": "வெட்டக்கூடியவை",
+ "Dark and silent": "இருட்டும் அமைதியும்",
+ "One flat grey with no detail, like a ceiling or the inside of a case.": "விவரம் இல்லாத ஒரே சாம்பல் நிறம், கூரை அல்லது கவரின் உட்பகுதி போல.",
+ "Saving the copy…": "நகலைச் சேமிக்கிறது…",
+ "The trimmed copy wouldn't be much smaller, because the dark parts take almost no space. Nothing was changed.": "வெட்டிய நகல் அதிகம் சிறியதாக இருக்காது, ஏனெனில் இருண்ட பகுதிகள் கிட்டத்தட்ட இடம் எடுக்கவில்லை. எதுவும் மாற்றப்படவில்லை.",
+ "This video has extra tracks (Cinematic, slow motion or spatial) that a trimmed copy can't keep. Nothing was changed.": "இந்த வீடியோவில் வெட்டிய நகல் வைத்திருக்க முடியாத கூடுதல் டிராக்குகள் உள்ளன (Cinematic, ஸ்லோ மோஷன் அல்லது ஸ்பேஷியல்). எதுவும் மாற்றப்படவில்லை.",
+ "Waiting for Review": "மதிப்பாய்வுக்குக் காத்திருக்கிறது",
+})

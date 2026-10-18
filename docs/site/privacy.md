@@ -12,18 +12,22 @@ Keeproll is an iPhone app that helps you free up storage. This policy is short b
 
 With your permission, Keeproll reads information on your iPhone to do its job:
 
-- **Photos and videos**, to find similar shots, screenshots, blurry photos, large videos, Live Photos and photos saved from chat apps, and to read the text of screenshots so it can tell when a code or pass has expired. Text is read on the device, used once, and never stored.
+- **Photos and videos**, to find similar shots, screenshots, blurry photos, accidental shots (pocket shots, a finger over the lens), large videos, Live Photos and photos saved from chat apps; to read the text of screenshots so it can tell when a code or pass has expired; and, for Smart Trim, to look at small frames of your videos and measure how loud each second is, to find long dark and silent stretches. Text and sound are read on the device, used once, and never stored.
 - **Contacts**, to find duplicates and show you a merged preview.
 - **Calendar**, to find duplicate events and events over a year old.
 
 Everything is processed on your iPhone. Keeproll has no network access of any kind: no account, no server, no analytics, no advertising, and no crash reporting service.
 
+## What Keeproll adds to your library
+
+Only when you ask: a smaller copy when you compress a video, a still when you convert a Live Photo, and a shorter copy when you trim a video with Smart Trim. Each new copy keeps the original's date and place. The original is never removed here; it only goes to Review, where you decide.
+
 ## What Keeproll stores
 
 Only on your iPhone, in the app's own storage:
 
-- A small cache of photo features (hashes, sharpness scores, file sizes) so a rescan is fast. It contains no images and no names.
-- Your settings, the last scan summary, a daily storage reading for the forecast, and which Live Photos you converted.
+- A small cache of photo features (hashes, sharpness and brightness scores, file sizes) and, for videos, the times of any dark, silent stretches, so a rescan is fast. It contains no images, no sound and no names.
+- Your settings, the last scan summary, a daily storage reading for the forecast, which Live Photos you converted, and which videos you trimmed.
 - Backup files (`.vcf` for contacts, `.ics` for calendar) written before any contact or calendar change, which you can share or delete.
 - Photos you choose to move into the private vault, protected by Face ID or your passcode.
 - Crash and performance reports that iOS gives the app (MetricKit), if you share analytics with developers in iOS Settings. They stay on your iPhone, and are only sent if you share one yourself from Settings › About › Diagnostics.

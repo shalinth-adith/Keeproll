@@ -102,11 +102,13 @@ nonisolated final class VideoCompressionService: VideoCompressing {
     /// Exports with the first preset that works (by default HEVC 1080p, else 720p H.264),
     /// reporting progress for the UI. Cancelling the task stops the export. Shared with Smart Trim.
     static func export(_ asset: AVAsset, presets: [String] = [AVAssetExportPresetHEVC1920x1080, AVAssetExportPreset1280x720],
+                       metadata: [AVMetadataItem] = [],
                        to url: URL, progress: @escaping @Sendable (Double) -> Void) async throws {
         guard let session = presets.lazy.compactMap({ AVAssetExportSession(asset: asset, presetName: $0) }).first else {
             throw CompressionError.exportFailed("no export session")
         }
         session.shouldOptimizeForNetworkUse = true
+        if !metadata.isEmpty { session.metadata = metadata }
         if #unavailable(iOS 18) {
             session.outputURL = url
             session.outputFileType = .mov

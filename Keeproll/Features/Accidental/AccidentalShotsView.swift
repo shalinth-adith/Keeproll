@@ -27,6 +27,7 @@ final class AccidentalShotsViewModel {
     }
 
     func isSelected(_ item: MediaItem) -> Bool { cart.contains(assetID: item.id) }
+    func rescan() { scanStore.scan() }
 
     func setSelected(_ item: MediaItem, _ selected: Bool) {
         if selected { cart.add([item.cartItem(in: .accidental)]) } else { cart.removeAssets([item.id]) }
@@ -52,7 +53,7 @@ final class AccidentalShotsViewModel {
         switch reason {
         case .tooDark: "Almost black, with no light anywhere: usually taken in a pocket or face down."
         case .finger: "A soft, warm blur along one edge: a fingertip in front of the camera."
-        case .blank: "One flat colour with no detail, like a ceiling or the inside of a case."
+        case .blank: "One flat grey with no detail, like a ceiling or the inside of a case."
         }
     }
 
@@ -91,6 +92,8 @@ struct AccidentalShotsView: View {
             .padding(.bottom, Spacing.xxl)
         }
         .background(Color.keeproll.canvas)
+        // New photos taken while Keeproll is open show up after a pull (QA U2).
+        .refreshable { vm.rescan() }
         .navigationTitle("Accidental Shots")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

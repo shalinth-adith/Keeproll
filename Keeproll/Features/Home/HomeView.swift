@@ -208,7 +208,8 @@ struct HomeView: View {
                                 Text(vm.checkSubtitle(for: category))
                                     .font(Font.keeproll.caption)
                                     .foregroundStyle(Color.keeproll.inkSecondary)
-                                    .lineLimit(1)
+                                    .lineLimit(2)
+                                    .fixedSize(horizontal: false, vertical: true)
                             }
                             Spacer(minLength: Spacing.s)
                             if let value = vm.chipValue(for: category) {

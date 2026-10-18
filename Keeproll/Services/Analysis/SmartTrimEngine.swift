@@ -7,10 +7,25 @@ nonisolated struct TrimRange: Sendable, Equatable, Hashable {
     var duration: Double { max(end - start, 0) }
 }
 
-/// One sampled frame of a video: when it is and how it looks.
+/// A trimmed original and its copy, remembered until the original is removed on Review
+/// (QA T2). `savedBytes` is what removing the original really frees.
+nonisolated struct TrimPair: Codable, Sendable, Equatable, Identifiable {
+    let originalID: String
+    let copyID: String
+    let savedBytes: Int64
+    let originalDuration: Double
+    let keptDuration: Double
+    var id: String { originalID }
+}
+
+/// One sampled frame of a video: when it is, how it looks, and whether anything can be
+/// heard around it.
 nonisolated struct TrimSample: Sendable, Equatable {
     let time: Double
     let stats: ExposureStats
+    /// Speech-level sound in this second. A dark stretch with sound (a baby monitor at
+    /// night, someone talking in the dark) is never cut (QA T4).
+    var hasSound: Bool = false
 }
 
 /// A video with dead stretches (bonus: Smart Trim).
@@ -26,7 +41,8 @@ nonisolated struct TrimCandidate: Identifiable, Hashable, Sendable {
     var duration: Double { item.duration ?? 0 }
     var deadSeconds: Double { deadRanges.reduce(0) { $0 + $1.duration } }
     var keptSeconds: Double { max(duration - deadSeconds, 0) }
-    /// Nothing worth keeping: the whole clip is dark or blank. Offered for removal, not trimming.
+    /// Nothing worth keeping: dark and silent the whole way through. Offered for removal,
+    /// not trimming.
     var isAllDead: Bool { keptSeconds < SmartTrimEngine.minimumKept }
     /// The parts a trimmed copy keeps.
     var keptRanges: [TrimRange] { SmartTrimEngine.complement(of: deadRanges, duration: duration) }
@@ -47,7 +63,8 @@ nonisolated struct TrimCandidate: Identifiable, Hashable, Sendable {
 /// unit-tested in `SmartTrimTests`.
 ///
 /// A frame is dead when it's nearly black with no bright point (recording in a pocket, or
-/// face down on a table) or one flat colour (lens covered, pointed at a ceiling). Only
+/// face down on a table) or one flat dim grey (lens covered), **and** nothing can be heard
+/// at that moment. Only
 /// stretches long enough to matter are cut: 5 s at either end, 10 s in the middle, so a
 /// brief dark moment in a real clip (a tunnel, lights off at a party) is never cut.
 /// Frozen but well-lit frames are left alone: a filmed lecture or a sleeping baby barely
@@ -67,10 +84,18 @@ nonisolated enum SmartTrimEngine {
     /// At most this many frames are sampled per video.
     static let maximumSamples = 600
 
+    /// The picture alone looks dead: dark, or a flat dim grey. A flat bright or coloured
+    /// frame (clear sky, a painted wall) is real footage.
     static func isDead(_ stats: ExposureStats) -> Bool {
-        (stats.p98 < AccidentalShotEngine.darkP98 && stats.maximum < AccidentalShotEngine.darkMaximum)
-            || stats.standardDeviation < 5
+        AccidentalShotEngine.isDark(stats)
+            || (stats.standardDeviation < 5 && stats.saturation < 20 && stats.mean < 90)
     }
+
+    /// Dead means the picture is dead and nothing is being said.
+    static func isDead(_ sample: TrimSample) -> Bool { isDead(sample.stats) && !sample.hasSound }
+
+    /// Sound louder than this (dBFS, per second) counts as speech-level.
+    static let soundThreshold: Float = -35
 
     /// Sample times for a video: about one a second, capped at `maximumSamples`.
     static func sampleTimes(duration: Double) -> [Double] {
@@ -89,7 +114,7 @@ nonisolated enum SmartTrimEngine {
         for (index, sample) in sorted.enumerated() {
             let from = index == 0 ? 0 : (sorted[index - 1].time + sample.time) / 2
             let to = index == sorted.count - 1 ? duration : (sample.time + sorted[index + 1].time) / 2
-            if isDead(sample.stats) {
+            if isDead(sample) {
                 if runStart == nil { runStart = from }
                 if index == sorted.count - 1, let start = runStart { runs.append(TrimRange(start: start, end: to)) }
             } else if let start = runStart {

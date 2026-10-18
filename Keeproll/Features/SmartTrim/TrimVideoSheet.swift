@@ -27,6 +27,9 @@ final class TrimVideoViewModel {
     }
 
     var isWorking: Bool { if case .working = phase { true } else { false } }
+    /// The export is done and the copy is being added to the library. That can't be
+    /// interrupted, so Cancel is hidden (QA T3).
+    var isSaving: Bool { if case .working(let value) = phase { value >= 0.999 } else { false } }
 
     func start() {
         guard !isWorking else { return }
@@ -34,7 +37,7 @@ final class TrimVideoViewModel {
     }
 
     func cancel() {
-        guard isWorking else { return }
+        guard isWorking, !isSaving else { return }
         task?.cancel()
         task = nil
         phase = .ready
@@ -54,10 +57,13 @@ final class TrimVideoViewModel {
                     if case .working = self.phase { self.phase = .working(value) }
                 }
             }
-            guard !Task.isCancelled else { phase = .ready; return }
-            // The original is only suggested for removal: it goes to Review (D10).
-            cart.add([.asset(id: candidate.id, category: .trims, bytes: result.originalBytes)])
-            scanStore.markTrimmed(original: candidate.id, copy: result.newAssetID)
+            // A result means the copy is in the library: always record it, even if the
+            // sheet was closed meanwhile, or the original would be orphaned (QA T3).
+            // The original is only suggested for removal: it goes to Review (D10), counted
+            // at what removing it really frees, since the copy stays (QA T5).
+            cart.add([.asset(id: candidate.id, category: .trims, bytes: result.savedBytes)])
+            scanStore.markTrimmed(TrimPair(originalID: candidate.id, copyID: result.newAssetID, savedBytes: result.savedBytes,
+                                           originalDuration: candidate.duration, keptDuration: candidate.keptSeconds))
             phase = .done(result)
         } catch is CancellationError {
             phase = .ready
@@ -101,7 +107,9 @@ struct TrimVideoSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    if vm.isWorking {
+                    if vm.isSaving {
+                        ProgressView()
+                    } else if vm.isWorking {
                         Button("Cancel") { vm.cancel() }
                     } else {
                         Button("Close") { dismiss() }
@@ -125,9 +133,9 @@ struct TrimVideoSheet: View {
         case .working(let value):
             VStack(alignment: .leading, spacing: Spacing.s) {
                 ProgressView(value: value).tint(Color.keeproll.accent)
-                Text("Trimming… \(Int((value * 100).rounded()))%")
+                Text(value >= 0.999 ? "Saving the copy…" : "Trimming… \(Int((value * 100).rounded()))%")
                     .font(Font.keeproll.caption.monospacedDigit()).foregroundStyle(Color.keeproll.inkSecondary)
-                Text("Tap Cancel to stop. Nothing is saved until it finishes.").font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkTertiary)
+                Text(value >= 0.999 ? "Almost done." : "Tap Cancel to stop. Nothing is saved until it finishes.").font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkTertiary)
             }
         case .done(let result):
             VStack(alignment: .leading, spacing: Spacing.s) {
