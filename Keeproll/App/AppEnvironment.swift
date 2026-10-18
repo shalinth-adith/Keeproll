@@ -25,6 +25,8 @@ struct AppEnvironment {
             try? FileManager.default.removeItem(at: ScanCache.defaultURL)
         }
         #endif
+        // Contacts and calendar backups expire after 90 days (QA M2).
+        BackupStore.prune()
         let cache = ScanCache()
         let sizes = AssetSizeService(cache: cache)
         let photos = PhotoLibraryService(sizes: sizes)

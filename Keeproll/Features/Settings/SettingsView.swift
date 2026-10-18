@@ -94,6 +94,11 @@ struct SettingsView: View {
                     }
                 }
 
+                section(Text("Backups")) {
+                    BackupsSection()
+                }
+                HintRow("externaldrive.badge.checkmark", Text("Saved before any contact or calendar change. Open one in Contacts or Calendar to bring things back. Backups older than 90 days are deleted."))
+
                 section(Text("About")) {
                     infoRow(title: Text("Version"), value: Text(vm.version))
                     Divider().overlay(Color.keeproll.hairline)

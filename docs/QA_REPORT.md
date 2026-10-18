@@ -207,3 +207,48 @@ The High items are one UI dead end, one way to view the private vault without un
 2. H3 and H4 (contacts), then M1 (recommended includes Best).
 3. M2 (backups list) and M5 (calendar attendees).
 4. The rest before build 5.
+
+---
+
+## Fix status (18 Oct 2026)
+
+All 25 findings have a code fix. "Device" means the fix still needs checking on a real iPhone.
+
+| ID | Status | What changed |
+|---|---|---|
+| H1 | Fixed, simulator | The Compare strip scrolls horizontally and keeps the current photo centred. Top and bottom bars are pinned to the screen width. |
+| H2 | Fixed, test | The open vault item lives in the view model, so locking closes it. The item sheet has its own privacy cover. |
+| H3 | Fixed, test | Merge and backup now include department, phonetic names, social profiles, messaging addresses, relations, dates, and the non-Gregorian birthday. The photo goes into the vCard. The copy no longer says "keeps every number"; it says notes can't be copied. |
+| H4 | Fixed, test | Contact groups get a stable ID from their member IDs. Stale contact changes are dropped from the cart after each contacts load. A plan where one contact appears in two changes is refused. |
+| M1 | Fixed, test | "Select recommended" never includes a group's Best, even when it is also blurry. |
+| M2 | Fixed, test | Settings has a Backups list with Share and Delete. Backups older than 90 days are deleted at launch. Backup names get a unique suffix. |
+| M3 | Fixed, test | Live Photos keep their motion clip in the vault and are restored as Live Photos. RAW pairs and edited photos are copied, but the original stays in the library and is not queued. |
+| M4 | Fixed, device | The index write throws, and a failed import rolls back its copies. Imports run inside a background task, and the index uses "complete unless open" protection. |
+| M5 | Fixed, test + device | Events with attendees are never suggested or removed. Duplicates only match within one calendar. Only events written to the backup are removed. |
+| M6 | Fixed, device | The fallback hash distance is 6, and the anchor check no longer loosens it. |
+| M7 | Fixed, simulator | Locked photo rows say "Needs access · tap to allow" and open Results, which explains the lock. |
+| M8 | Fixed, device | Closing or cancelling the sheet cancels the export. iOS 18 and later use the async export API. No copy is saved after cancelling. |
+| L1 | Fixed, simulator | Page dots sit in a reserved bottom inset. Phones under about 740 pt of page height drop the access illustration, and very large text scrolls. Checked on the iPhone 16e. |
+| L2 | Fixed, simulator | The unselected circle is a white ring on a dark disc. |
+| L3 | Fixed, simulator | With Photos locked, the access banner replaces the primary button, and Last scan reads "Not yet". |
+| L4 | Fixed | The Chats subtitle is now "Forwards from chat apps". |
+| L5 | Fixed, device | Share now uses a UIKit share sheet, which can only dismiss itself. The card is 1500 px, which isn't a chat size, and carries a Software tag that the chat scanner skips. |
+| L6 | Fixed, test | The all-day end date is exclusive, and alarms are backed up. Events with attendees are no longer removed (see M5). |
+| L7 | Fixed, test | Both writers turn a lone CR, U+2028, U+2029, U+0085, VT and FF into an escaped newline. Other control characters are dropped. vCard lines fold at 75 octets. |
+| L8 | Fixed, test | The cache reader caps reserved capacity and float counts by the bytes left. An unknown expiry kind reads as none. |
+| L9 | Fixed | The private keys are read only if the getter exists. Otherwise sizes fall back to the estimate. |
+| L10 | Fixed | A late import doesn't refill a locked vault, and a late progress update can't revive the bar. An item leaves the index only once its files are gone. |
+| L11 | Fixed, test | Diagnostics names include a random suffix and sort by file date. |
+| L12 | Fixed | `photos-redirect://` was removed. Summary explains where Recently Deleted is. |
+| L13 | Fixed | The vault says it is protected by the passcode, is in iPhone backups, and is deleted with the app. |
+
+**Simulator checks after the fixes:**
+
+- **Compare:** checked on the iPhone 17 Pro with a 12-photo group. Back and Make Best are visible, the strip scrolls to "12 of 12", and Back returns to the group.
+- **Settings:** the Backups list shows both kinds of backup. Delete asks first and removes the file from disk.
+- **Locked Photos:** checked on a fresh install on the iPhone 16e with Photos not allowed. Onboarding page 2 fits with its dots. Home shows only the access banner, Last scan reads "Not yet", photo rows say "Needs access · tap to allow", and a tap opens the locked Results screen.
+- **Selection circle:** visible on light thumbnails.
+
+**Found and fixed during verification:** the first L1 attempt used `ViewThatFits`. On iOS 26, SwiftUI measured its variants on a background render thread during the page transition, which tripped Swift 6's main-actor check and crashed on "Not now". It now measures the available height instead. A fresh install was re-run with no crash.
+
+**Tests:** 107 pass, 16 of them new.

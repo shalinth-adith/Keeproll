@@ -190,7 +190,8 @@ actor ScanCache {
             return
         }
         var loadedFeatures: [String: FeatureRecord] = [:]
-        loadedFeatures.reserveCapacity(Int(featureCount))
+        // A corrupt count must not reserve gigabytes: each record is at least 28 bytes (QA L8).
+        loadedFeatures.reserveCapacity(min(Int(featureCount), reader.remaining / 28))
         for _ in 0..<featureCount {
             guard let id = reader.readString(), let modified = reader.read(Double.self),
                   let hash = reader.read(UInt64.self), let sharpness = reader.read(Float.self),
@@ -225,7 +226,9 @@ actor ScanCache {
                 guard let id = reader.readString(), let modified = reader.read(Double.self), let kindByte = reader.read(UInt8.self),
                       let expires = reader.read(Double.self), let mentioned = reader.read(Double.self),
                       let confidence = reader.read(Float.self) else { return }
-                let kind = kindByte == 0 ? nil : Self.kinds[Int(kindByte) - 1]
+                // An unknown kind (corruption, or a newer build's kind) is read as "none" (QA L8).
+                let kindIndex = Int(kindByte) - 1
+                let kind = Self.kinds.indices.contains(kindIndex) ? Self.kinds[kindIndex] : nil
                 loadedExpiry[id] = ExpiryRecord(modified: modified, kind: kind, expiresAt: expires, mentionedDate: mentioned, confidence: confidence)
             }
         }
@@ -268,6 +271,9 @@ nonisolated struct BinaryReader {
 
     init(data: Data) { self.data = data }
 
+    /// Bytes left to read.
+    var remaining: Int { data.count - offset }
+
     mutating func read<T: FixedWidthInteger>(_: T.Type) -> T? {
         let size = MemoryLayout<T>.size
         guard offset + size <= data.count else { return nil }
@@ -283,6 +289,8 @@ nonisolated struct BinaryReader {
     mutating func read(_: Float.Type) -> Float? { read(UInt32.self).map(Float.init(bitPattern:)) }
 
     mutating func readFloats(_ count: Int) -> [Float]? {
+        // Never trust a length the file can't actually hold (QA L8).
+        guard count >= 0, count <= remaining / MemoryLayout<UInt32>.size else { return nil }
         var values: [Float] = []
         values.reserveCapacity(count)
         for _ in 0..<count {

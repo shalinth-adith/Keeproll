@@ -58,6 +58,11 @@ nonisolated enum AssetHeaderReader {
         let source = CGImageSourceCreateIncremental(nil)
         CGImageSourceUpdateData(source, data as CFData, false)
         guard let props = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any] else { return nil }
+        // Keeproll's own share card: known origin, never a chat save (QA L5).
+        if let tiff = props[kCGImagePropertyTIFFDictionary] as? [CFString: Any],
+           tiff[kCGImagePropertyTIFFSoftware] as? String == ShareCard.softwareTag {
+            return true
+        }
         if let tiff = props[kCGImagePropertyTIFFDictionary] as? [CFString: Any],
            tiff[kCGImagePropertyTIFFMake] != nil || tiff[kCGImagePropertyTIFFModel] != nil {
             return true

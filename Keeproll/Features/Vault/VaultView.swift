@@ -15,6 +15,8 @@ final class VaultViewModel {
     /// Originals just copied in; the banner offers to review removing them.
     private(set) var justCopied = 0
     private(set) var message: String?
+    /// The item open full screen. Lives here (not in the view) so locking closes it (QA H2).
+    var opened: VaultItem?
 
     let store: VaultStoring
     private let auth: VaultAuthenticating
@@ -49,6 +51,7 @@ final class VaultViewModel {
     func lockNow() {
         guard lock == .unlocked else { return }
         lock = .locked
+        opened = nil
         items = []
         justCopied = 0
     }
@@ -60,17 +63,30 @@ final class VaultViewModel {
             return
         }
         importProgress = (0, ids.count)
+        // Keep copying if the user leaves the app mid-import (QA M4).
+        let background = BackgroundActivity.begin("Vault import")
+        defer { background.end() }
         let result = await store.importAssets(ids) { done, total in
-            Task { @MainActor in self.importProgress = (done, total) }
+            Task { @MainActor in
+                // A late update must not bring the progress bar back (QA L10).
+                if self.importProgress != nil { self.importProgress = (done, total) }
+            }
         }
         importProgress = nil
-        items = await store.items()
         // Copies are safe; the originals are only *suggested* for removal, on Review.
         cart.add(result.copiedAssets.map { CartItem.asset(id: $0.id, category: .vault, bytes: $0.bytes) })
+        // If the vault locked while copying, don't put its contents back in memory (QA L10).
+        guard lock == .unlocked else { return }
+        items = await store.items()
         justCopied = result.copiedAssets.count
-        if result.failed > 0 {
-            message = String(localized: "\(result.failed) couldn't be copied and stay in your library.")
+        var notes: [String] = []
+        if result.keptInLibrary > 0 {
+            notes.append(String(localized: "\(result.keptInLibrary) copied, but the original stays in your library because it has RAW data or edits the vault can't keep."))
         }
+        if result.failed > 0 {
+            notes.append(String(localized: "\(result.failed) couldn't be copied and stay in your library."))
+        }
+        if !notes.isEmpty { message = notes.joined(separator: "\n\n") }
     }
 
     func reviewOriginals() {
@@ -89,7 +105,11 @@ final class VaultViewModel {
 
     func remove(_ item: VaultItem) async {
         await store.remove([item])
+        guard lock == .unlocked else { return }
         items = await store.items()
+        if items.contains(item) {
+            message = String(localized: "Couldn't remove this item. Try again.")
+        }
     }
 
     func clearMessage() { message = nil }
@@ -98,7 +118,6 @@ final class VaultViewModel {
 struct VaultView: View {
     @State private var vm: VaultViewModel
     @State private var picked: [PhotosPickerItem] = []
-    @State private var open: VaultItem?
     @Environment(\.scenePhase) private var scenePhase
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: Layout.gridGutter), count: 3)
@@ -142,7 +161,7 @@ struct VaultView: View {
                 picked = []
             }
         }
-        .sheet(item: $open) { item in VaultItemView(item: item, vm: vm) }
+        .sheet(item: $vm.opened) { item in VaultItemView(item: item, vm: vm) }
         .alert(vm.message ?? "", isPresented: Binding(get: { vm.message != nil }, set: { if !$0 { vm.clearMessage() } })) {
             Button("OK", role: .cancel) {}
         }
@@ -194,7 +213,7 @@ struct VaultView: View {
                 } else {
                     LazyVGrid(columns: columns, spacing: Layout.gridGutter) {
                         ForEach(vm.items) { item in
-                            Button { open = item } label: {
+                            Button { vm.opened = item } label: {
                                 VaultThumbnail(url: vm.store.thumbnailURL(for: item))
                                     .aspectRatio(1, contentMode: .fill)
                                     .clipShape(RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous))
@@ -210,6 +229,10 @@ struct VaultView: View {
                         }
                     }
                 }
+
+                // Be honest about what protects the vault and how it can be lost (QA L13).
+                HintRow("exclamationmark.shield", Text("The vault is protected by your iPhone passcode and is included in your iPhone backups. Deleting Keeproll deletes the vault, so save anything you want to keep to Photos first."))
+                    .padding(.top, Spacing.s)
             }
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
@@ -246,6 +269,7 @@ struct VaultItemView: View {
     let vm: VaultViewModel
     @State private var confirmRemove = false
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationStack {
@@ -270,6 +294,16 @@ struct VaultItemView: View {
             }
             .toolbarBackground(.black, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
+            // The sheet sits above VaultView's cover, so it needs its own: the app
+            // switcher snapshot must never show a vault photo (QA H2).
+            .overlay {
+                if scenePhase != .active {
+                    ZStack {
+                        Color.keeproll.canvas.ignoresSafeArea()
+                        Image(systemName: "lock.shield.fill").font(.system(size: 56)).foregroundStyle(Color.keeproll.accent)
+                    }
+                }
+            }
             .confirmationDialog("Remove from vault?", isPresented: $confirmRemove, titleVisibility: .visible) {
                 Button("Remove permanently", role: .destructive) {
                     Task {

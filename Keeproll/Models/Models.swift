@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import SwiftUI
 
@@ -17,6 +18,15 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
     /// only appears on Review, so the user sees exactly what leaves the library.
     case vault
     var id: String { rawValue }
+
+    /// Categories that read the photo library to find anything. The vault opens without
+    /// it (it has its own lock and picker); contacts and calendar ask for their own access.
+    var needsPhotoLibrary: Bool {
+        switch self {
+        case .similar, .screenshots, .blurry, .videos, .chats, .expired, .livePhotos: true
+        case .contacts, .calendar, .vault: false
+        }
+    }
 
     var title: LocalizedStringResource {
         switch self {
@@ -182,6 +192,17 @@ nonisolated struct DuplicateContactGroup: Identifiable, Hashable, Sendable {
     let id: UUID
     var contacts: [ContactSummary]
     var reasons: [MatchReason]
+
+    /// The same members always give the same ID, so a merge queued before a rescan
+    /// still matches its group afterwards (QA H4).
+    static func stableID(memberIDs: [String]) -> UUID {
+        let digest = SHA256.hash(data: Data(memberIDs.sorted().joined(separator: "\u{1F}").utf8))
+        var bytes = Array(digest.prefix(16))
+        bytes[6] = (bytes[6] & 0x0F) | 0x50 // version 5 style (name-based)
+        bytes[8] = (bytes[8] & 0x3F) | 0x80 // RFC 4122 variant
+        return UUID(uuid: (bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7],
+                           bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13], bytes[14], bytes[15]))
+    }
 
     var suggestedPrimaryID: String {
         contacts.max { $0.completeness < $1.completeness }?.id ?? contacts[0].id

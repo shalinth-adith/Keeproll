@@ -124,8 +124,8 @@ nonisolated final class SimilarityGrouper {
         if let pa = features[a].print, let pb = features[b].print {
             return FeaturePrinter.distance(pa, pb) <= config.featureThreshold * slack
         }
-        let limit = Int(Float(config.fallbackHashDistance) * slack)
-        return ImageAnalysis.hamming(features[a].dHash, features[b].dHash) <= limit
+        // A 64-bit hash is too coarse to loosen: the anchor check stays strict (QA M6).
+        return ImageAnalysis.hamming(features[a].dHash, features[b].dHash) <= config.fallbackHashDistance
     }
 
     private func join(_ a: Int, _ b: Int, similarEdge: Bool) {

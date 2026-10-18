@@ -29,6 +29,28 @@
         }
       }
     },
+    "%@ · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@"
+          }
+        }
+      }
+    },
     "%@ · %lld%% sure": {
       "localizations": {
         "en": {
@@ -263,6 +285,22 @@
         }
       }
     },
+    "%lld copied, but the original stays in your library because it has RAW data or edits the vault can't keep.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld कॉपी हुईं, लेकिन असली फ़ोटो आपकी लाइब्रेरी में रहेगी, क्योंकि उसमें RAW डेटा या एडिट हैं जिन्हें वॉल्ट नहीं रख सकता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld நகலெடுக்கப்பட்டன, ஆனால் அசல் உங்கள் லைப்ரரியில் இருக்கும், ஏனெனில் அதில் வால்ட் வைத்திருக்க முடியாத RAW தரவு அல்லது திருத்தங்கள் உள்ளன."
+          }
+        }
+      }
+    },
     "%lld couldn't be copied and stay in your library.": {
       "localizations": {
         "hi": {
@@ -449,6 +487,7 @@
       }
     },
     "A backup of the changed contacts and events was saved before anything changed.": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -460,6 +499,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "எதுவும் மாறும் முன் மாற்றப்பட்ட தொடர்புகள் மற்றும் நிகழ்வுகளின் காப்புப் பிரதி சேமிக்கப்பட்டது."
+          }
+        }
+      }
+    },
+    "A backup was saved before anything changed. You can also find it later in Settings, under Backups.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कुछ भी बदलने से पहले बैकअप सेव किया गया। आप इसे बाद में सेटिंग्स में बैकअप के नीचे भी पा सकते हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எதையும் மாற்றும் முன் காப்புப்பிரதி சேமிக்கப்பட்டது. பின்னர் அமைப்புகளில் காப்புப்பிரதிகள் பகுதியிலும் இதைக் காணலாம்."
           }
         }
       }
@@ -817,6 +872,22 @@
         }
       }
     },
+    "Backups": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बैकअप"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காப்புப்பிரதிகள்"
+          }
+        }
+      }
+    },
     "Best": {
       "localizations": {
         "hi": {
@@ -967,6 +1038,22 @@
         }
       }
     },
+    "Calendar backup": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कैलेंडर बैकअप"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நாள்காட்டி காப்புப்பிரதி"
+          }
+        }
+      }
+    },
     "Calendar changes aren't available.": {
       "localizations": {
         "hi": {
@@ -1011,6 +1098,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "இந்த வீடியோவை இயக்க முடியவில்லை"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "रद्द करें"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ரத்துசெய்"
           }
         }
       }
@@ -1453,6 +1556,22 @@
         }
       }
     },
+    "Contacts backup": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "संपर्क बैकअप"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தொடர்புகள் காப்புப்பிரதி"
+          }
+        }
+      }
+    },
     "Continue": {
       "localizations": {
         "hi": {
@@ -1577,6 +1696,22 @@
         }
       }
     },
+    "Couldn't back up this event, so it wasn't removed.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इस इवेंट का बैकअप नहीं हो सका, इसलिए इसे हटाया नहीं गया।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்த நிகழ்வை காப்புப்பிரதி எடுக்க முடியவில்லை, அதனால் அது நீக்கப்படவில்லை."
+          }
+        }
+      }
+    },
     "Couldn't read this iPhone's storage.": {
       "localizations": {
         "hi": {
@@ -1589,6 +1724,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "இந்த iPhone இன் சேமிப்பகத்தைப் படிக்க முடியவில்லை."
+          }
+        }
+      }
+    },
+    "Couldn't remove this item. Try again.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह आइटम हटाया नहीं जा सका। फिर से कोशिश करें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இதை நீக்க முடியவில்லை. மீண்டும் முயலவும்."
           }
         }
       }
@@ -1641,6 +1792,22 @@
         }
       }
     },
+    "Current photo": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मौजूदा फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "தற்போதைய படம்"
+          }
+        }
+      }
+    },
     "Currently %@": {
       "localizations": {
         "hi": {
@@ -1673,6 +1840,22 @@
         }
       }
     },
+    "Delete backup": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "बैकअप हटाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "காப்புப்பிரதியை நீக்கு"
+          }
+        }
+      }
+    },
     "Delete contact": {
       "localizations": {
         "hi": {
@@ -1685,6 +1868,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "தொடர்பை நீக்கு"
+          }
+        }
+      }
+    },
+    "Delete this backup?": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह बैकअप हटाएँ?"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்தக் காப்புப்பிரதியை நீக்கவா?"
           }
         }
       }
@@ -1706,6 +1905,7 @@
       }
     },
     "Deleted photos stay in Recently Deleted for 30 days. Empty it in the Photos app to get the space back now.": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -1717,6 +1917,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "நீக்கிய புகைப்படங்கள் 30 நாட்கள் 'சமீபத்தில் நீக்கியவை' இல் இருக்கும். இடத்தை இப்போதே பெற Photos ஆப்பில் அதைக் காலி செய்யவும்."
+          }
+        }
+      }
+    },
+    "Deleted photos stay in Recently Deleted for 30 days. To get the space back now, open Photos, go to Recently Deleted under Utilities, and delete them there.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हटाई गई फ़ोटो 30 दिन तक हाल ही में हटाए गए में रहती हैं। अभी जगह वापस पाने के लिए फ़ोटो ऐप खोलें, यूटिलिटी के नीचे हाल ही में हटाए गए में जाएँ, और उन्हें वहाँ हटाएँ।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நீக்கப்பட்ட படங்கள் 30 நாட்கள் சமீபத்தில் நீக்கியவை பகுதியில் இருக்கும். இப்போதே இடத்தைத் திரும்பப் பெற, Photos-ஐத் திறந்து, Utilities கீழ் சமீபத்தில் நீக்கியவை சென்று, அங்கே அவற்றை நீக்கவும்."
           }
         }
       }
@@ -2111,7 +2327,24 @@
         }
       }
     },
+    "Forwards from chat apps": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चैट ऐप से आई फ़ोटो"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "சாட் ஆப்களிலிருந்து வந்தவை"
+          }
+        }
+      }
+    },
     "Forwards saved by WhatsApp and Telegram": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -2272,6 +2505,7 @@
       }
     },
     "I freed %@ with Keeproll": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -3158,7 +3392,24 @@
         }
       }
     },
+    "Merging copies numbers, emails, addresses and other details into the card you keep. Notes on removed cards can't be copied. A backup is saved first.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मिलाने पर नंबर, ईमेल, पते और दूसरी जानकारी उस कार्ड में कॉपी हो जाती है जिसे आप रखते हैं। हटाए गए कार्ड के नोट कॉपी नहीं हो सकते। पहले बैकअप सेव होता है।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இணைத்தால் எண்கள், மின்னஞ்சல்கள், முகவரிகள் மற்றும் பிற விவரங்கள் நீங்கள் வைத்திருக்கும் கார்டுக்கு நகலெடுக்கப்படும். நீக்கப்படும் கார்டுகளின் குறிப்புகளை நகலெடுக்க முடியாது. முதலில் காப்புப்பிரதி சேமிக்கப்படும்."
+          }
+        }
+      }
+    },
     "Merging keeps every number and email. A backup is saved before anything changes.": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -3218,6 +3469,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Live Photos இல்லை"
+          }
+        }
+      }
+    },
+    "No backups yet": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अभी कोई बैकअप नहीं"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இன்னும் காப்புப்பிரதிகள் இல்லை"
           }
         }
       }
@@ -3799,6 +4066,7 @@
       }
     },
     "Open Photos": {
+      "extractionState": "stale",
       "localizations": {
         "hi": {
           "stringUnit": {
@@ -4675,6 +4943,22 @@
         }
       }
     },
+    "Saved before any contact or calendar change. Open one in Contacts or Calendar to bring things back. Backups older than 90 days are deleted.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "किसी भी संपर्क या कैलेंडर बदलाव से पहले सेव होता है। चीज़ें वापस लाने के लिए इसे संपर्क या कैलेंडर में खोलें। 90 दिन से पुराने बैकअप हट जाते हैं।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "எந்தத் தொடர்பு அல்லது நாள்காட்டி மாற்றத்துக்கும் முன் சேமிக்கப்படும். திரும்பக் கொண்டுவர அதை Contacts அல்லது Calendar-இல் திறக்கவும். 90 நாட்களுக்கு மேலான காப்புப்பிரதிகள் நீக்கப்படும்."
+          }
+        }
+      }
+    },
     "Saved from Chats": {
       "localizations": {
         "hi": {
@@ -5103,6 +5387,22 @@
         }
       }
     },
+    "Show this photo": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह फ़ोटो दिखाएँ"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்தப் படத்தைக் காட்டு"
+          }
+        }
+      }
+    },
     "Similar": {
       "localizations": {
         "hi": {
@@ -5313,6 +5613,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "தனிப்பட்ட புகைப்படங்களையும் வீடியோக்களையும் இங்கே கொண்டுவர 'சேர்' தட்டவும்."
+          }
+        }
+      }
+    },
+    "Tap Cancel to stop. Nothing is saved until it finishes.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "रोकने के लिए रद्द करें पर टैप करें। पूरा होने तक कुछ भी सेव नहीं होता।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "நிறுத்த ரத்துசெய் என்பதைத் தட்டவும். முடியும் வரை எதுவும் சேமிக்கப்படாது."
           }
         }
       }
@@ -5541,6 +5857,22 @@
         }
       }
     },
+    "The vault is protected by your iPhone passcode and is included in your iPhone backups. Deleting Keeproll deletes the vault, so save anything you want to keep to Photos first.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वॉल्ट आपके iPhone पासकोड से सुरक्षित है और आपके iPhone बैकअप में शामिल है। Keeproll हटाने से वॉल्ट भी हट जाता है, इसलिए जो रखना है उसे पहले फ़ोटो में सेव करें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "வால்ட் உங்கள் iPhone கடவுக்குறியீட்டால் பாதுகாக்கப்படுகிறது, உங்கள் iPhone காப்புப்பிரதிகளிலும் சேர்க்கப்படுகிறது. Keeproll-ஐ நீக்கினால் வால்ட்டும் நீங்கும், எனவே வைத்திருக்க வேண்டியதை முதலில் Photos-இல் சேமிக்கவும்."
+          }
+        }
+      }
+    },
     "The video couldn't be compressed. Nothing was changed.": {
       "localizations": {
         "hi": {
@@ -5601,6 +5933,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "இந்தக் காலண்டர் மாற்றங்களை அனுமதிக்காது."
+          }
+        }
+      }
+    },
+    "This contact is in more than one change. Open Duplicate Contacts and choose again.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "यह संपर्क एक से ज़्यादा बदलावों में है। डुप्लिकेट संपर्क खोलें और फिर से चुनें।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இந்தத் தொடர்பு ஒன்றுக்கு மேற்பட்ட மாற்றங்களில் உள்ளது. நகல் தொடர்புகளைத் திறந்து மீண்டும் தேர்வுசெய்யவும்."
           }
         }
       }
@@ -6081,6 +6429,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "உங்களிடம் வீடியோக்கள் இல்லை."
+          }
+        }
+      }
+    },
+    "You won't be able to restore these contacts or events from it.": {
+      "localizations": {
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आप इससे ये संपर्क या इवेंट वापस नहीं ला पाएँगे।"
+          }
+        },
+        "ta": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "இதிலிருந்து இந்தத் தொடர்புகளையோ நிகழ்வுகளையோ மீட்க முடியாது."
           }
         }
       }

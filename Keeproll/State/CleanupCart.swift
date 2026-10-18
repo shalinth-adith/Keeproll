@@ -35,6 +35,27 @@ final class CleanupCart {
         items = items.filter { $0.value.category != category }
     }
 
+    /// Drops contact changes that no longer match the latest scan: a merge whose group
+    /// changed or vanished, or a delete for a contact that's no longer a duplicate.
+    /// Stops a stale merge and a fresh delete from removing both copies of a person (QA H4).
+    func pruneContacts(to groups: [DuplicateContactGroup]) {
+        let membersByGroup = Dictionary(groups.map { ($0.id, Set($0.contacts.map(\.id))) }, uniquingKeysWith: { a, _ in a })
+        let duplicateIDs = Set(groups.flatMap { $0.contacts.map(\.id) })
+        let before = items.count
+        items = items.filter { _, item in
+            switch item {
+            case .contactMerge(let groupID, let primaryID, let mergedIDs, _):
+                guard let members = membersByGroup[groupID] else { return false }
+                return members == Set([primaryID] + mergedIDs)
+            case .contactDelete(let id, _):
+                return duplicateIDs.contains(id)
+            case .asset, .calendarEvent:
+                return true
+            }
+        }
+        if items.count != before { Log.cleanup.debug("Pruned \(before - self.items.count) stale contact changes") }
+    }
+
     func items(in category: CleanupCategory) -> [CartItem] {
         items.values.filter { $0.category == category }
     }

@@ -55,6 +55,8 @@ final class ScanStore {
     /// Photos the similarity scan scored as out of focus (bonus: blurry detection).
     private(set) var blurry: Loadable<[MediaItem]> = .idle
     private(set) var contacts: Loadable<[DuplicateContactGroup]> = .idle
+    /// Bumped after every contacts load, so the cart can drop stale contact changes.
+    private(set) var contactsLoadCount = 0
     /// Images saved from messaging apps, most confident first (bonus: smart categories).
     private(set) var chats: Loadable<[ChatSavedItem]> = .idle
     /// Screenshots whose content has expired (bonus: smart categories).
@@ -509,11 +511,16 @@ final class ScanStore {
     }
 
     private func loadContacts() async {
-        guard let contactsScanner, contactsPermission.canRead else { contacts = .idle; return }
+        guard let contactsScanner, contactsPermission.canRead else {
+            contacts = .idle
+            contactsLoadCount += 1
+            return
+        }
         if contacts.value == nil { contacts = .loading }
         let groups = await contactsScanner.findDuplicates()
         guard !Task.isCancelled else { return }
         contacts = .loaded(groups)
+        contactsLoadCount += 1
     }
 
     private func loadSimilar() async {

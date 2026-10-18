@@ -12,16 +12,23 @@ nonisolated struct VaultItem: Codable, Identifiable, Hashable, Sendable {
     let addedAt: Date
     let bytes: Int64
     let duration: TimeInterval?
+    /// The motion clip of a Live Photo, so it comes back as a Live Photo (QA M3).
+    /// Optional, so indexes written by older builds still decode.
+    var pairedFileName: String? = nil
 }
 
 nonisolated struct VaultImportResult: Sendable, Equatable {
     var imported: [VaultItem] = []
     /// Library assets that now have a copy in the vault (their originals go to Review).
     var copiedAssets: [(id: String, bytes: Int64)] = []
+    /// Copied, but the original stays in the library (not queued for removal) because
+    /// the vault can't hold all of it: RAW pairs and edit history (QA M3).
+    var keptInLibrary = 0
     var failed = 0
 
     static func == (a: VaultImportResult, b: VaultImportResult) -> Bool {
-        a.imported == b.imported && a.failed == b.failed && a.copiedAssets.map(\.id) == b.copiedAssets.map(\.id)
+        a.imported == b.imported && a.failed == b.failed && a.keptInLibrary == b.keptInLibrary
+            && a.copiedAssets.map(\.id) == b.copiedAssets.map(\.id)
     }
 }
 
@@ -76,9 +83,13 @@ actor VaultStore: VaultStoring {
 
         for (offset, asset) in assets.enumerated() {
             progress(offset, assets.count)
-            if let item = await copy(asset) {
-                result.imported.append(item)
-                result.copiedAssets.append((asset.localIdentifier, AssetSizeService.storageInfo(of: asset)?.bytes ?? item.bytes))
+            if let copied = await copy(asset) {
+                result.imported.append(copied.item)
+                if copied.isComplete {
+                    result.copiedAssets.append((asset.localIdentifier, AssetSizeService.storageInfo(of: asset)?.bytes ?? copied.item.bytes))
+                } else {
+                    result.keptInLibrary += 1
+                }
             } else {
                 result.failed += 1
             }
@@ -86,37 +97,59 @@ actor VaultStore: VaultStoring {
         progress(assets.count, assets.count)
         var all = loadIndex()
         all.append(contentsOf: result.imported)
-        saveIndex(all)
-        Log.photos.debug("Vault: imported \(result.imported.count), failed \(result.failed)")
+        do {
+            try saveIndex(all)
+        } catch {
+            // Without an index entry the copies would be invisible, and their originals
+            // would still be queued for removal. Roll the whole import back (QA M4).
+            Log.photos.error("Vault index write failed: \(error.localizedDescription, privacy: .public)")
+            for item in result.imported { deleteFiles(of: item) }
+            index = nil
+            return VaultImportResult(failed: ids.count)
+        }
+        Log.photos.debug("Vault: imported \(result.imported.count), kept \(result.keptInLibrary), failed \(result.failed)")
         return result
     }
 
     func saveToPhotos(_ item: VaultItem) async throws {
         let url = fileURL(for: item)
         let type: PHAssetResourceType = item.kind == .video ? .video : .photo
+        let pairedURL = item.pairedFileName.map { directory.appendingPathComponent($0) }
+            .flatMap { FileManager.default.fileExists(atPath: $0.path) ? $0 : nil }
         let date = item.creationDate
         try await PHPhotoLibrary.shared().performChanges {
             let request = PHAssetCreationRequest.forAsset()
             let options = PHAssetResourceCreationOptions()
             options.shouldMoveFile = false
             request.addResource(with: type, fileURL: url, options: options)
+            if let pairedURL {
+                // Photo + paired clip = a Live Photo again.
+                request.addResource(with: .pairedVideo, fileURL: pairedURL, options: options)
+            }
             request.creationDate = date
         }
     }
 
     /// Permanently removes items from the vault (the UI confirms first).
+    /// An item leaves the index only once its files are really gone, so a failed delete
+    /// never leaves an invisible file behind (QA L10).
     func remove(_ items: [VaultItem]) {
-        let ids = Set(items.map(\.id))
-        for item in items {
-            try? FileManager.default.removeItem(at: fileURL(for: item))
-            try? FileManager.default.removeItem(at: thumbnailURL(for: item))
+        let gone = Set(items.filter { deleteFiles(of: $0) }.map(\.id))
+        guard !gone.isEmpty else { return }
+        do {
+            try saveIndex(loadIndex().filter { !gone.contains($0.id) })
+        } catch {
+            Log.photos.error("Vault index write failed on remove: \(error.localizedDescription, privacy: .public)")
+            index = nil
         }
-        saveIndex(loadIndex().filter { !ids.contains($0.id) })
     }
 
     // MARK: - Private
 
-    private func copy(_ asset: PHAsset) async -> VaultItem? {
+    /// Copies one asset. `isComplete` is false when the vault copy can't stand in for
+    /// the original (RAW pairs, edit history, a Live Photo whose clip couldn't be copied),
+    /// so the caller leaves that original in the library.
+    private func copy(_ asset: PHAsset) async -> (item: VaultItem, isComplete: Bool)? {
         let resources = PHAssetResource.assetResources(for: asset)
         let isVideo = asset.mediaType == .video
         // The edited version if there is one, else the original.
@@ -142,10 +175,54 @@ actor VaultStore: VaultStoring {
             let thumbURL = directory.appendingPathComponent(thumbName)
             try? data.write(to: thumbURL, options: [.atomic, .completeFileProtection])
         }
-        let bytes = (try? fileURL.resourceValues(forKeys: [.fileSizeKey]).fileSize).map(Int64.init) ?? 0
-        return VaultItem(id: id, kind: isVideo ? .video : .photo, fileName: fileName, thumbnailName: thumbName,
-                         creationDate: asset.creationDate, addedAt: Date(), bytes: bytes,
-                         duration: isVideo ? asset.duration : nil)
+        var isComplete = !Self.hasExtraOriginals(resources)
+        var pairedName: String?
+        if !isVideo, asset.mediaSubtypes.contains(.photoLive) {
+            let pairedTypes: [PHAssetResourceType] = [.fullSizePairedVideo, .pairedVideo]
+            if let paired = pairedTypes.lazy.compactMap({ type in resources.first { $0.type == type } }).first {
+                let name = "\(id.uuidString)-live.mov"
+                let pairedURL = directory.appendingPathComponent(name)
+                do {
+                    try await PHAssetResourceManager.default().writeData(for: paired, toFile: pairedURL, options: options)
+                    try protect(pairedURL)
+                    pairedName = name
+                } catch {
+                    try? FileManager.default.removeItem(at: pairedURL)
+                    isComplete = false
+                }
+            } else {
+                isComplete = false
+            }
+        }
+        let size = { (url: URL) in (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize).map(Int64.init) ?? 0 }
+        let bytes = size(fileURL) + (pairedName.map { size(directory.appendingPathComponent($0)) } ?? 0)
+        let item = VaultItem(id: id, kind: isVideo ? .video : .photo, fileName: fileName, thumbnailName: thumbName,
+                             creationDate: asset.creationDate, addedAt: Date(), bytes: bytes,
+                             duration: isVideo ? asset.duration : nil, pairedFileName: pairedName)
+        return (item, isComplete)
+    }
+
+    /// True when the asset has data the vault doesn't keep: a RAW file alongside the
+    /// JPEG, or edits (the vault keeps only the rendered result).
+    nonisolated static func hasExtraOriginals(_ resources: [PHAssetResource]) -> Bool {
+        hasExtraOriginals(types: resources.map(\.type))
+    }
+
+    nonisolated static func hasExtraOriginals(types: [PHAssetResourceType]) -> Bool {
+        types.contains { [.alternatePhoto, .adjustmentData, .adjustmentBasePhoto, .adjustmentBaseVideo,
+                          .adjustmentBasePairedVideo].contains($0) }
+    }
+
+    /// Deletes an item's files. True if none of them are left on disk.
+    @discardableResult
+    private func deleteFiles(of item: VaultItem) -> Bool {
+        var urls = [fileURL(for: item), thumbnailURL(for: item)]
+        if let paired = item.pairedFileName { urls.append(directory.appendingPathComponent(paired)) }
+        var allGone = true
+        for url in urls where FileManager.default.fileExists(atPath: url.path) {
+            do { try FileManager.default.removeItem(at: url) } catch { allGone = false }
+        }
+        return allGone
     }
 
     private static func thumbnail(for asset: PHAsset) async -> UIImage? {
@@ -177,9 +254,11 @@ actor VaultStore: VaultStoring {
         return loaded
     }
 
-    private func saveIndex(_ items: [VaultItem]) {
+    /// Throws so callers can roll back (QA M4). `completeUnlessOpen` lets the write
+    /// finish if the iPhone locks during a long import; the copies themselves stay `complete`.
+    private func saveIndex(_ items: [VaultItem]) throws {
+        let data = try JSONEncoder().encode(items)
+        try data.write(to: indexURL, options: [.atomic, .completeFileProtectionUnlessOpen])
         index = items
-        guard let data = try? JSONEncoder().encode(items) else { return }
-        try? data.write(to: indexURL, options: [.atomic, .completeFileProtection])
     }
 }

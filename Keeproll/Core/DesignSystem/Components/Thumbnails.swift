@@ -91,13 +91,25 @@ struct SelectableThumbnail: View {
                     .padding(6)
                 }
                 .overlay(alignment: .topTrailing) {
-                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .font(.title3)
-                        .symbolRenderingMode(.palette)
-                        .foregroundStyle(isSelected ? Color.keeproll.onAccent : .white, isSelected ? Color.keeproll.accent : .black.opacity(0.25))
-                        .shadow(color: .black.opacity(0.3), radius: 2)
-                        .symbolEffect(.bounce, value: isSelected)
-                        .padding(6)
+                    Group {
+                        if isSelected {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.title3)
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(Color.keeproll.onAccent, Color.keeproll.accent)
+                        } else {
+                            // A dark disc under the white ring, so it shows on white
+                            // screenshots too (QA L2). "circle" has one layer, so the old
+                            // palette fill never drew.
+                            Circle()
+                                .fill(.black.opacity(0.32))
+                                .overlay(Circle().strokeBorder(.white, lineWidth: 2))
+                                .frame(width: 22, height: 22)
+                        }
+                    }
+                    .shadow(color: .black.opacity(0.3), radius: 2)
+                    .symbolEffect(.bounce, value: isSelected)
+                    .padding(6)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous))
                 .contentShape(Rectangle())

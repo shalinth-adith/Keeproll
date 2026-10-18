@@ -9,6 +9,9 @@ nonisolated struct CalendarEventSummary: Identifiable, Hashable, Sendable {
     let end: Date?
     let calendarTitle: String
     let isAllDay: Bool
+    /// `EKCalendar.calendarIdentifier`. Copies in different calendars aren't duplicates:
+    /// the "extra" one might be the shared copy (QA M5).
+    var calendarID: String = ""
 }
 
 /// What calendar cleanup suggests. Only single (non-repeating) events in calendars the
@@ -36,13 +39,14 @@ nonisolated enum CalendarCleanupFinder {
     static let oldAfter: TimeInterval = 365 * 24 * 60 * 60
 
     static func find(_ events: [CalendarEventSummary], now: Date = Date()) -> CalendarFindings {
-        // Duplicates: same title (case/space-insensitive), same start and end, same all-day flag.
+        // Duplicates: same calendar, same title (case/space-insensitive), same start and
+        // end, same all-day flag.
         var buckets: [String: [CalendarEventSummary]] = [:]
         for event in events {
             guard let start = event.start else { continue }
             let title = event.title.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
             guard !title.isEmpty else { continue }
-            let key = "\(title)|\(start.timeIntervalSinceReferenceDate)|\(event.end?.timeIntervalSinceReferenceDate ?? 0)|\(event.isAllDay)"
+            let key = "\(event.calendarID)|\(title)|\(start.timeIntervalSinceReferenceDate)|\(event.end?.timeIntervalSinceReferenceDate ?? 0)|\(event.isAllDay)"
             buckets[key, default: []].append(event)
         }
         let groups = buckets.values
@@ -72,6 +76,14 @@ nonisolated enum ICSWriter {
         var location: String?
         var notes: String?
         var url: String?
+        /// Reminders, so a restored event still alerts (QA L6).
+        var alarms: [Alarm] = []
+    }
+
+    nonisolated enum Alarm: Sendable, Equatable {
+        /// Seconds relative to the start (negative = before).
+        case relative(TimeInterval)
+        case absolute(Date)
     }
 
     static func document(_ events: [Event], now: Date = Date()) -> String {
@@ -82,7 +94,7 @@ nonisolated enum ICSWriter {
             lines.append("DTSTAMP:" + utc(now))
             if e.isAllDay {
                 lines.append("DTSTART;VALUE=DATE:" + day(e.start))
-                lines.append("DTEND;VALUE=DATE:" + day(e.end))
+                lines.append("DTEND;VALUE=DATE:" + day(allDayEnd(start: e.start, end: e.end)))
             } else {
                 lines.append("DTSTART:" + utc(e.start))
                 lines.append("DTEND:" + utc(e.end))
@@ -90,35 +102,40 @@ nonisolated enum ICSWriter {
             lines.append("SUMMARY:" + escape(e.title))
             if let v = e.location, !v.isEmpty { lines.append("LOCATION:" + escape(v)) }
             if let v = e.notes, !v.isEmpty { lines.append("DESCRIPTION:" + escape(v)) }
-            if let v = e.url, !v.isEmpty { lines.append("URL:" + v) }
+            if let v = e.url.map(BackupText.normalized)?.replacingOccurrences(of: "\n", with: ""), !v.isEmpty {
+                lines.append("URL:" + v)
+            }
+            for alarm in e.alarms {
+                lines.append("BEGIN:VALARM")
+                lines.append("ACTION:DISPLAY")
+                lines.append("DESCRIPTION:" + escape(e.title.isEmpty ? "Reminder" : e.title))
+                switch alarm {
+                case .relative(let offset):
+                    let seconds = Int(offset.rounded())
+                    lines.append("TRIGGER:\(seconds < 0 ? "-" : "")PT\(abs(seconds))S")
+                case .absolute(let date):
+                    lines.append("TRIGGER;VALUE=DATE-TIME:" + utc(date))
+                }
+                lines.append("END:VALARM")
+            }
             lines.append("END:VEVENT")
         }
         lines.append("END:VCALENDAR")
         return lines.map(fold).joined(separator: "\r\n") + "\r\n"
     }
 
-    static func escape(_ s: String) -> String {
-        s.replacingOccurrences(of: "\\", with: "\\\\")
-            .replacingOccurrences(of: ";", with: "\\;")
-            .replacingOccurrences(of: ",", with: "\\,")
-            .replacingOccurrences(of: "\r\n", with: "\\n")
-            .replacingOccurrences(of: "\n", with: "\\n")
-    }
+    static func escape(_ s: String) -> String { BackupText.escape(s) }
 
-    /// Lines longer than 75 octets are folded with CRLF + space (RFC 5545 §3.1).
-    static func fold(_ line: String) -> String {
-        var out = ""
-        var count = 0
-        for ch in line {
-            let size = String(ch).utf8.count
-            if count + size > 75 {
-                out += "\r\n "
-                count = 1
-            }
-            out.append(ch)
-            count += size
-        }
-        return out
+    static func fold(_ line: String) -> String { BackupText.fold(line) }
+
+    /// iCalendar all-day end dates are exclusive: a one-day event on the 5th ends on the
+    /// 6th. EventKit reports the end as the last moment of the 5th (QA L6).
+    static func allDayEnd(start: Date, end: Date, calendar: Calendar = .current) -> Date {
+        let endDay = calendar.startOfDay(for: end)
+        // Already midnight after the start: that's the exclusive end.
+        let exclusive = (end == endDay && end > start) ? endDay : (calendar.date(byAdding: .day, value: 1, to: endDay) ?? endDay)
+        let minimum = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: start)) ?? exclusive
+        return max(exclusive, minimum)
     }
 
     private static func utc(_ date: Date) -> String {

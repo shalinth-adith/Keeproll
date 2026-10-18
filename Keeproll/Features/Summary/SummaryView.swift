@@ -79,14 +79,15 @@ struct SummaryView: View {
 
                 if !result.backupURLs.isEmpty {
                     InlineBanner(style: .info, systemImage: "externaldrive.badge.checkmark",
-                                 message: Text("A backup of the changed contacts and events was saved before anything changed.")) {
-                        ShareLink(items: result.backupURLs) {
+                                 message: Text("A backup was saved before anything changed. You can also find it later in Settings, under Backups.")) {
+                        Button { ActivityShare.present(result.backupURLs) } label: {
                             Label("Share backup", systemImage: "square.and.arrow.up")
                                 .font(Font.keeproll.headline)
                                 .frame(maxWidth: .infinity, minHeight: 48)
                                 .foregroundStyle(Color.keeproll.accent)
                                 .background(Color.keeproll.accentSoft, in: Capsule())
                         }
+                        .buttonStyle(PressableStyle())
                     }
                 }
 
@@ -94,10 +95,8 @@ struct SummaryView: View {
                     InlineBanner(
                         style: .info,
                         systemImage: "trash",
-                        message: Text("Deleted photos stay in Recently Deleted for 30 days. Empty it in the Photos app to get the space back now.")
-                    ) {
-                        SecondaryButton(title: "Open Photos", systemImage: "photo.on.rectangle") { SystemActions.openPhotos() }
-                    }
+                        message: Text("Deleted photos stay in Recently Deleted for 30 days. To get the space back now, open Photos, go to Recently Deleted under Utilities, and delete them there.")
+                    )
                 }
             }
             .padding(.horizontal, Spacing.m)
@@ -107,13 +106,16 @@ struct SummaryView: View {
             VStack(spacing: Spacing.s) {
                 if photosRemoved, let shareImage {
                     // The only growth loop a no-network app has: an honest card, user-initiated.
-                    ShareLink(item: shareImage, preview: SharePreview(Text("I freed \(ByteFormatter.string(result.bytesFreed)) with Keeproll"), image: Image(uiImage: shareImage.image))) {
+                    Button {
+                        if let file = ShareCard.file(for: shareImage.image) { ActivityShare.present([file]) }
+                    } label: {
                         Label("Share", systemImage: "square.and.arrow.up")
                             .font(Font.keeproll.headline)
                             .frame(maxWidth: .infinity, minHeight: 48)
                             .foregroundStyle(Color.keeproll.accent)
                             .background(Color.keeproll.accentSoft, in: Capsule())
                     }
+                    .buttonStyle(PressableStyle())
                 }
                 PrimaryButton(title: "Done", action: onDone)
             }

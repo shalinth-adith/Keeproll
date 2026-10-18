@@ -43,6 +43,11 @@ struct RootView: View {
                             }
                         }
                 }
+                // A rescan can change contact groups; queued changes that no longer
+                // match are dropped (QA H4).
+                .onChange(of: env.scanStore.contactsLoadCount) { _, _ in
+                    env.cart.pruneContacts(to: env.scanStore.contacts.value ?? [])
+                }
                 .safeAreaInset(edge: .bottom) {
                     if !router.hidesSelectionBar {
                         SelectionBar(cart: env.cart) { router.presentReview() }

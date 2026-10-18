@@ -23,8 +23,15 @@ struct OnboardingView: View {
                     insertion: .move(edge: .trailing).combined(with: .opacity),
                     removal: .move(edge: .leading).combined(with: .opacity)
                 ))
+            }
+            // Reserved space above the home indicator, so the pages lay out above the
+            // dots instead of pushing them off a 6.1-inch screen (QA L1).
+            .safeAreaInset(edge: .bottom, spacing: 0) {
                 pageDots
-                    .padding(.bottom, Spacing.m)
+                    .padding(.top, Spacing.xs)
+                    .padding(.bottom, Spacing.s)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.keeproll.canvas)
             }
         }
         .animation(Motion.respecting(reduceMotion, Motion.standard), value: step)

@@ -39,11 +39,14 @@ nonisolated final class CalendarService: CalendarScanning, CalendarMutating {
             let end = Calendar.current.date(byAdding: .year, value: -year, to: now) ?? now
             let start = Calendar.current.date(byAdding: .year, value: -1, to: end) ?? end
             let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendars)
-            for event in store.events(matching: predicate) where !event.hasRecurrenceRules {
+            // Events with attendees are never suggested: removing one you organise can
+            // send cancellations to other people (QA M5).
+            for event in store.events(matching: predicate) where !event.hasRecurrenceRules && !event.hasAttendees {
                 guard let id = event.eventIdentifier, seen.insert(id).inserted else { continue }
                 events.append(CalendarEventSummary(
                     id: id, title: event.title ?? "", start: event.startDate, end: event.endDate,
-                    calendarTitle: event.calendar?.title ?? "", isAllDay: event.isAllDay
+                    calendarTitle: event.calendar?.title ?? "", isAllDay: event.isAllDay,
+                    calendarID: event.calendar?.calendarIdentifier ?? ""
                 ))
             }
         }
@@ -59,7 +62,7 @@ nonisolated final class CalendarService: CalendarScanning, CalendarMutating {
         var failures: [CleanupFailure] = []
         for item in events {
             if let event = store.event(withIdentifier: item.id), event.calendar?.allowsContentModifications == true,
-               !event.hasRecurrenceRules {
+               !event.hasRecurrenceRules, !event.hasAttendees {
                 found.append((item, event))
             } else {
                 failures.append(.init(itemKey: item.key, reason: String(localized: "This event no longer exists or can't be changed.")))
@@ -69,17 +72,22 @@ nonisolated final class CalendarService: CalendarScanning, CalendarMutating {
 
         // 1. Backup first. If it can't be written, change nothing.
         let backup: URL
+        let backedUp: Set<String>
         do {
-            backup = try writeBackup(found.map(\.1))
+            (backup, backedUp) = try writeBackup(found.map(\.1))
         } catch {
             Log.cleanup.error("Calendar backup failed, nothing changed: \(error.localizedDescription, privacy: .public)")
             let reason = String(localized: "Couldn't save a backup first, so nothing was changed.")
             return (nil, failures + found.map { CleanupFailure(itemKey: $0.0.key, reason: reason) })
         }
 
-        // 2. Remove, then commit once.
+        // 2. Remove, then commit once. Only events that are in the backup (QA M5).
         var removed: [CleanupPlan.CalendarEvent] = []
         for (item, event) in found {
+            guard backedUp.contains(item.id) else {
+                failures.append(.init(itemKey: item.key, reason: String(localized: "Couldn't back up this event, so it wasn't removed.")))
+                continue
+            }
             do {
                 try store.remove(event, span: .thisEvent, commit: false)
                 removed.append(item)
@@ -104,18 +112,26 @@ nonisolated final class CalendarService: CalendarScanning, CalendarMutating {
         }
     }
 
-    private func writeBackup(_ events: [EKEvent]) throws -> URL {
+    /// Writes the .ics backup. Returns the identifiers of the events it contains.
+    private func writeBackup(_ events: [EKEvent]) throws -> (URL, Set<String>) {
+        var included = Set<String>()
         let items = events.compactMap { e -> ICSWriter.Event? in
-            guard let start = e.startDate, let end = e.endDate else { return nil }
-            return ICSWriter.Event(uid: e.calendarItemExternalIdentifier ?? e.eventIdentifier ?? UUID().uuidString,
+            guard let start = e.startDate, let end = e.endDate, let id = e.eventIdentifier else { return nil }
+            included.insert(id)
+            let alarms: [ICSWriter.Alarm] = (e.alarms ?? []).map { alarm in
+                alarm.absoluteDate.map { .absolute($0) } ?? .relative(alarm.relativeOffset)
+            }
+            return ICSWriter.Event(uid: e.calendarItemExternalIdentifier ?? id,
                                    title: e.title ?? "", start: start, end: end, isAllDay: e.isAllDay,
-                                   location: e.location, notes: e.notes, url: e.url?.absoluteString)
+                                   location: e.location, notes: e.notes, url: e.url?.absoluteString,
+                                   alarms: alarms)
         }
         try FileManager.default.createDirectory(at: backupDirectory, withIntermediateDirectories: true)
         let stamp = ISO8601DateFormatter().string(from: Date()).replacingOccurrences(of: ":", with: "-")
-        let url = backupDirectory.appendingPathComponent("calendar-\(stamp).ics")
+        // Unique suffix: two changes in the same second must not overwrite a backup.
+        let url = backupDirectory.appendingPathComponent("calendar-\(stamp)-\(UUID().uuidString.prefix(6).lowercased()).ics")
         try Data(ICSWriter.document(items).utf8).write(to: url, options: [.atomic, .completeFileProtection])
         Log.cleanup.debug("Backed up \(items.count) events before changes")
-        return url
+        return (url, included)
     }
 }

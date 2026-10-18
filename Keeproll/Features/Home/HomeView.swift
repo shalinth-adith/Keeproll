@@ -19,9 +19,13 @@ struct HomeView: View {
                     .padding(.top, Spacing.xs)
                 heroCard
                     .rise(0, appeared)
-                PrimaryButton(title: primaryTitle, systemImage: vm.hasResults ? "sparkles" : "wand.and.stars") { vm.primaryAction() }
-                    .rise(1, appeared)
-                if vm.photosLocked { lockedBanner.rise(1, appeared) }
+                // Locked: the banner's access button is the one action (QA L3).
+                if vm.photosLocked {
+                    lockedBanner.rise(1, appeared)
+                } else {
+                    PrimaryButton(title: primaryTitle, systemImage: vm.hasResults ? "sparkles" : "wand.and.stars") { vm.primaryAction() }
+                        .rise(1, appeared)
+                }
                 stats
                     .rise(2, appeared)
                 ForecastCard(forecast: vm.forecast, points: vm.forecastPoints)

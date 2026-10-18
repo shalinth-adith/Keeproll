@@ -191,3 +191,28 @@ T.update({
  "This Live Photo is no longer in your library.": "यह Live Photo अब आपकी लाइब्रेरी में नहीं है।",
  "What's new": "नया क्या है",
 })
+# QA fixes, build 5.
+T.update({
+ "%@ · %@": "%@ · %@",
+ "%lld copied, but the original stays in your library because it has RAW data or edits the vault can't keep.": "%lld कॉपी हुईं, लेकिन असली फ़ोटो आपकी लाइब्रेरी में रहेगी, क्योंकि उसमें RAW डेटा या एडिट हैं जिन्हें वॉल्ट नहीं रख सकता।",
+ "A backup was saved before anything changed. You can also find it later in Settings, under Backups.": "कुछ भी बदलने से पहले बैकअप सेव किया गया। आप इसे बाद में सेटिंग्स में बैकअप के नीचे भी पा सकते हैं।",
+ "Backups": "बैकअप",
+ "Calendar backup": "कैलेंडर बैकअप",
+ "Cancel": "रद्द करें",
+ "Contacts backup": "संपर्क बैकअप",
+ "Couldn't back up this event, so it wasn't removed.": "इस इवेंट का बैकअप नहीं हो सका, इसलिए इसे हटाया नहीं गया।",
+ "Couldn't remove this item. Try again.": "यह आइटम हटाया नहीं जा सका। फिर से कोशिश करें।",
+ "Current photo": "मौजूदा फ़ोटो",
+ "Delete backup": "बैकअप हटाएँ",
+ "Delete this backup?": "यह बैकअप हटाएँ?",
+ "Deleted photos stay in Recently Deleted for 30 days. To get the space back now, open Photos, go to Recently Deleted under Utilities, and delete them there.": "हटाई गई फ़ोटो 30 दिन तक हाल ही में हटाए गए में रहती हैं। अभी जगह वापस पाने के लिए फ़ोटो ऐप खोलें, यूटिलिटी के नीचे हाल ही में हटाए गए में जाएँ, और उन्हें वहाँ हटाएँ।",
+ "Forwards from chat apps": "चैट ऐप से आई फ़ोटो",
+ "Merging copies numbers, emails, addresses and other details into the card you keep. Notes on removed cards can't be copied. A backup is saved first.": "मिलाने पर नंबर, ईमेल, पते और दूसरी जानकारी उस कार्ड में कॉपी हो जाती है जिसे आप रखते हैं। हटाए गए कार्ड के नोट कॉपी नहीं हो सकते। पहले बैकअप सेव होता है।",
+ "No backups yet": "अभी कोई बैकअप नहीं",
+ "Saved before any contact or calendar change. Open one in Contacts or Calendar to bring things back. Backups older than 90 days are deleted.": "किसी भी संपर्क या कैलेंडर बदलाव से पहले सेव होता है। चीज़ें वापस लाने के लिए इसे संपर्क या कैलेंडर में खोलें। 90 दिन से पुराने बैकअप हट जाते हैं।",
+ "Show this photo": "यह फ़ोटो दिखाएँ",
+ "Tap Cancel to stop. Nothing is saved until it finishes.": "रोकने के लिए रद्द करें पर टैप करें। पूरा होने तक कुछ भी सेव नहीं होता।",
+ "The vault is protected by your iPhone passcode and is included in your iPhone backups. Deleting Keeproll deletes the vault, so save anything you want to keep to Photos first.": "वॉल्ट आपके iPhone पासकोड से सुरक्षित है और आपके iPhone बैकअप में शामिल है। Keeproll हटाने से वॉल्ट भी हट जाता है, इसलिए जो रखना है उसे पहले फ़ोटो में सेव करें।",
+ "This contact is in more than one change. Open Duplicate Contacts and choose again.": "यह संपर्क एक से ज़्यादा बदलावों में है। डुप्लिकेट संपर्क खोलें और फिर से चुनें।",
+ "You won't be able to restore these contacts or events from it.": "आप इससे ये संपर्क या इवेंट वापस नहीं ला पाएँगे।",
+})

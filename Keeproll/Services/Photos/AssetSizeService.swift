@@ -90,10 +90,10 @@ actor AssetSizeService {
         let originals = resources.filter {
             [.photo, .video, .fullSizePhoto, .fullSizeVideo, .pairedVideo, .alternatePhoto].contains($0.type)
         }
-        let sizes = originals.compactMap { ($0.value(forKey: "fileSize") as? NSNumber)?.int64Value }
+        let sizes = originals.compactMap(\.keeprollFileSize)
         guard !sizes.isEmpty else { return nil }
         let primary = originals.first { $0.type == .photo || $0.type == .video } ?? originals.first
-        let isLocal = (primary?.value(forKey: "locallyAvailable") as? NSNumber)?.boolValue ?? true
+        let isLocal = primary?.keeprollLocallyAvailable ?? true
         return AssetStorageInfo(bytes: sizes.reduce(0, +), isLocal: isLocal)
     }
 
@@ -101,5 +101,21 @@ actor AssetSizeService {
     private static func estimate(_ item: MediaItem) -> Int64 {
         if let duration = item.duration { return Int64(duration * 1_000_000) }
         return Int64(Double(item.pixelWidth * item.pixelHeight) * 0.35)
+    }
+}
+
+/// Guarded reads of `PHAssetResource`'s undocumented `fileSize` and `locallyAvailable`.
+/// `value(forKey:)` on a key that doesn't exist throws an Objective-C exception and
+/// crashes, so each read checks the getter exists first. If Apple renames one, sizes
+/// fall back to the estimate instead of every scan crashing (QA L9).
+extension PHAssetResource {
+    nonisolated var keeprollFileSize: Int64? {
+        guard responds(to: NSSelectorFromString("fileSize")) else { return nil }
+        return (value(forKey: "fileSize") as? NSNumber)?.int64Value
+    }
+
+    nonisolated var keeprollLocallyAvailable: Bool? {
+        guard responds(to: NSSelectorFromString("locallyAvailable")) else { return nil }
+        return (value(forKey: "locallyAvailable") as? NSNumber)?.boolValue
     }
 }

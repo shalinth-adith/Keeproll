@@ -18,8 +18,9 @@ nonisolated struct SimilarityConfig: Sendable {
     /// The multi-index lookup is exact for values ≤ 3.
     var duplicateHashDistance = 3
     /// dHash distance used inside the time window when no feature print is available
-    /// (for example when Vision fails on the simulator).
-    var fallbackHashDistance = 10
+    /// (for example when Vision fails on the simulator). 10 chained visibly different
+    /// photos into one group; 6 keeps only near-identical frames (QA M6).
+    var fallbackHashDistance = 6
     /// Groups never grow past this.
     var maxGroupSize = 30
     /// Focus score (edge-to-contrast ratio, see `ImageAnalysis.sharpness`) below which a

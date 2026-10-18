@@ -25,10 +25,16 @@ final class DashboardViewModel {
     /// The safe suggestions: every non-best shot in a similar group, plus blurry photos.
     /// One explicit tap adds them to the cart (D9); nothing is pre-selected.
     private var recommended: [(MediaItem, CleanupCategory)] {
-        var seen = Set<String>()
+        Self.recommended(similar: scanStore.similar.value ?? [], blurry: scanStore.blurry.value ?? [])
+    }
+
+    /// A group's Best is never recommended, even when it's also blurry: otherwise a
+    /// soft low-light burst would be fully selected in one tap (QA M1).
+    nonisolated static func recommended(similar: [SimilarGroup], blurry: [MediaItem]) -> [(MediaItem, CleanupCategory)] {
+        var seen = Set(similar.map(\.bestID))
         var out: [(MediaItem, CleanupCategory)] = []
-        for item in (scanStore.similar.value ?? []).flatMap(\.othersThanBest) where seen.insert(item.id).inserted { out.append((item, .similar)) }
-        for item in scanStore.blurry.value ?? [] where seen.insert(item.id).inserted { out.append((item, .blurry)) }
+        for item in similar.flatMap(\.othersThanBest) where seen.insert(item.id).inserted { out.append((item, .similar)) }
+        for item in blurry where seen.insert(item.id).inserted { out.append((item, .blurry)) }
         return out
     }
     var recommendedCount: Int { recommended.count }

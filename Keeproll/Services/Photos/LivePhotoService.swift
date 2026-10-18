@@ -72,7 +72,7 @@ nonisolated final class LivePhotoService: LivePhotoScanning, LivePhotoConverting
     static func candidate(for asset: PHAsset) -> LivePhotoCandidate? {
         let resources = PHAssetResource.assetResources(for: asset)
         guard let clip = resources.first(where: { $0.type == .pairedVideo }),
-              let bytes = (clip.value(forKey: "fileSize") as? NSNumber)?.int64Value, bytes > 0 else { return nil }
+              let bytes = clip.keeprollFileSize, bytes > 0 else { return nil }
         return LivePhotoCandidate(item: PhotoLibraryService.item(from: asset, kind: .photo), videoBytes: bytes)
     }
 

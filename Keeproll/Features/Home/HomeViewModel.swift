@@ -28,8 +28,10 @@ final class HomeViewModel {
         return scanStore.storageHistory.filter { $0.date >= cutoff }.map(\.availableBytes)
     }
 
-    /// "Scanning…", "Just now", "2 hours ago", or "Not yet".
+    /// "Scanning…", "Just now", "2 hours ago", or "Not yet". Photos locked means no
+    /// photo scan has happened, whatever contacts did (QA L3).
     var lastScanLabel: String {
+        if photosLocked { return String(localized: "Not yet") }
         if isScanning { return String(localized: "Scanning…") }
         guard let date = lastScanDate else { return String(localized: "Not yet") }
         if Date().timeIntervalSince(date) < 60 { return String(localized: "Just now") }
@@ -67,12 +69,14 @@ final class HomeViewModel {
 
     /// One line describing what the category looks for; the locked state where it applies.
     func checkSubtitle(for category: CleanupCategory) -> LocalizedStringResource {
-        switch category {
+        // Photo rows say they're locked, like Contacts and Calendar do (QA M7).
+        if photosLocked && category.needsPhotoLibrary { return "Needs access · tap to allow" }
+        return switch category {
         case .similar: "Bursts and duplicate shots"
         case .screenshots: "Screenshots taking up space"
         case .blurry: "Out-of-focus photos"
         case .videos: "Biggest clips, compressible"
-        case .chats: "Forwards saved by WhatsApp and Telegram"
+        case .chats: "Forwards from chat apps"
         case .expired: "Old codes, passes and tickets"
         case .livePhotos: "Keep the still, drop the clip"
         case .contacts: scanStore.contactsPermission.canRead ? "The same person saved twice" : "Needs access · tap to allow"
@@ -101,8 +105,9 @@ final class HomeViewModel {
     func rescan() { scanStore.scan() }
     func openSettings() { router.open(.settings) }
     func open(_ category: CleanupCategory) {
-        let asksForItsOwnAccess = category == .contacts || category == .calendar
-        guard scanStore.photosPermission.canRead || asksForItsOwnAccess else { SystemActions.openSettings(); return }
+        // A locked photo row opens Results, which explains the lock and offers access,
+        // instead of jumping straight to iOS Settings (QA M7).
+        guard scanStore.photosPermission.canRead || !category.needsPhotoLibrary else { router.showDashboard(); return }
         switch category {
         case .similar: router.open(.similar)
         case .screenshots: router.open(.screenshots)

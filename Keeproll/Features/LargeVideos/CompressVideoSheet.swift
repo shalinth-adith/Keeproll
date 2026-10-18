@@ -13,6 +13,7 @@ final class CompressVideoViewModel {
     }
 
     private(set) var phase: Phase = .ready
+    private var task: Task<Void, Never>?
     let item: MediaItem
     private let service: VideoCompressing
     private let cart: CleanupCart
@@ -28,9 +29,27 @@ final class CompressVideoViewModel {
     var estimatedSaving: Int64? { VideoCompressionService.worthCompressing(item) }
     var isWorking: Bool { if case .working = phase { true } else { false } }
 
+    /// Starts compressing. The task is kept so closing the sheet can cancel it (QA M8).
+    func start() {
+        guard !isWorking else { return }
+        task = Task { await compress() }
+    }
+
+    /// Stops a running export. Nothing is saved and nothing goes to the cart.
+    func cancel() {
+        guard isWorking else { return }
+        task?.cancel()
+        task = nil
+        phase = .ready
+        Log.photos.debug("Compression cancelled by the user")
+    }
+
     func compress() async {
         guard !isWorking else { return }
         phase = .working(0)
+        // Finish if the user switches apps mid-way.
+        let background = BackgroundActivity.begin("Video compression")
+        defer { background.end() }
         // Saving the copy posts a library change; it isn't new content to rescan for.
         scanStore.expectOwnChanges(for: 600)
         do {
@@ -39,12 +58,16 @@ final class CompressVideoViewModel {
                     if case .working = self.phase { self.phase = .working(value) }
                 }
             }
+            guard !Task.isCancelled else { phase = .ready; return }
             // The original is only suggested for removal: it goes to Review, not the bin.
             cart.add([.asset(id: item.id, category: .videos, bytes: result.originalBytes)])
             scanStore.markCompressed(original: item.id, copy: result.newAssetID)
             phase = .done(result)
             scanStore.scan() // show the new copy in the list
+        } catch is CancellationError {
+            phase = .ready
         } catch {
+            guard !Task.isCancelled else { phase = .ready; return }
             phase = .failed(error.localizedDescription)
         }
     }
@@ -81,11 +104,16 @@ struct CompressVideoSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { dismiss() }.disabled(vm.isWorking)
+                    if vm.isWorking {
+                        Button("Cancel") { vm.cancel() }
+                    } else {
+                        Button("Close") { dismiss() }
+                    }
                 }
             }
         }
         .interactiveDismissDisabled(vm.isWorking)
+        .onDisappear { vm.cancel() }
     }
 
     @ViewBuilder private var content: some View {
@@ -104,7 +132,7 @@ struct CompressVideoSheet: View {
                 ProgressView(value: value).tint(Color.keeproll.accent)
                 Text("Compressing… \(Int((value * 100).rounded()))%")
                     .font(Font.keeproll.caption.monospacedDigit()).foregroundStyle(Color.keeproll.inkSecondary)
-                Text("Keep Keeproll open until it finishes.").font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkTertiary)
+                Text("Tap Cancel to stop. Nothing is saved until it finishes.").font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkTertiary)
             }
         case .done(let result):
             VStack(alignment: .leading, spacing: Spacing.s) {
@@ -124,7 +152,7 @@ struct CompressVideoSheet: View {
         switch vm.phase {
         case .ready:
             PrimaryButton(title: "Compress", systemImage: "arrow.down.right.and.arrow.up.left") {
-                Task { await vm.compress() }
+                vm.start()
             }
         case .working:
             PrimaryButton(title: "Compressing", isLoading: true) {}

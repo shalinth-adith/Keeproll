@@ -76,30 +76,30 @@ struct CompareView: View {
         }
         .padding(.horizontal, Spacing.m)
         .padding(.vertical, Spacing.xs)
+        .frame(maxWidth: .infinity)
         .background(.black.opacity(0.6))
     }
 
     private var bottomBar: some View {
         VStack(spacing: Spacing.s) {
             if let group {
-                HStack(spacing: Spacing.xs) {
-                    ForEach(group.members) { item in
-                        ThumbnailView(id: item.id, pointSize: 60)
-                            .frame(width: 48, height: 48)
-                            .clipShape(RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous))
-                            .overlay(RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous)
-                                .strokeBorder(item.id == currentID ? Color.keeproll.accent : .clear, lineWidth: 2))
-                            .overlay(alignment: .topTrailing) {
-                                if vm.isSelected(item) {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .font(.caption)
-                                        .symbolRenderingMode(.palette)
-                                        .foregroundStyle(Color.keeproll.onAccent, Color.keeproll.accent)
-                                        .offset(x: 4, y: -4)
-                                }
+                // A scrolling strip: a fixed row of 48 pt thumbnails is wider than the
+                // screen for big groups and pushed the Back button off-screen (QA H1).
+                ScrollViewReader { proxy in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack(spacing: Spacing.xs) {
+                            ForEach(group.members) { item in
+                                stripThumbnail(item)
+                                    .id(item.id)
                             }
-                            .opacity(item.id == currentID ? 1 : 0.6)
-                            .onTapGesture { withAnimation(Motion.standard) { currentID = item.id } }
+                        }
+                        .padding(.vertical, Spacing.xxs)
+                        .padding(.horizontal, Spacing.xxs)
+                    }
+                    .frame(height: 60)
+                    .onAppear { proxy.scrollTo(currentID, anchor: .center) }
+                    .onChange(of: currentID) { _, id in
+                        withAnimation(Motion.standard) { proxy.scrollTo(id, anchor: .center) }
                     }
                 }
             }
@@ -118,6 +118,29 @@ struct CompareView: View {
         }
         .padding(.horizontal, Spacing.m)
         .padding(.vertical, Spacing.s)
+        .frame(maxWidth: .infinity)
         .background(.black.opacity(0.6))
+    }
+
+    private func stripThumbnail(_ item: MediaItem) -> some View {
+        ThumbnailView(id: item.id, pointSize: 60)
+            .frame(width: 48, height: 48)
+            .clipShape(RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous)
+                .strokeBorder(item.id == currentID ? Color.keeproll.accent : .clear, lineWidth: 2))
+            .overlay(alignment: .topTrailing) {
+                if vm.isSelected(item) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.caption)
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(Color.keeproll.onAccent, Color.keeproll.accent)
+                        .offset(x: 4, y: -4)
+                }
+            }
+            .opacity(item.id == currentID ? 1 : 0.6)
+            .contentShape(Rectangle())
+            .onTapGesture { withAnimation(Motion.standard) { currentID = item.id } }
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(Text(item.id == currentID ? "Current photo" : "Show this photo"))
     }
 }

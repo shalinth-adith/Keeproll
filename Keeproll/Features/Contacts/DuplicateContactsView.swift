@@ -52,7 +52,7 @@ struct DuplicateContactsView: View {
             hero: Text("^[\(vm.groups.count) group](inflect: true)"),
             caption: Text("^[\(vm.duplicateCount) contact](inflect: true) that look like the same people"),
             selectedCount: vm.queuedMerges + vm.queuedDeletes,
-            hint: HintRow("externaldrive.badge.checkmark", Text("Merging keeps every number and email. A backup is saved before anything changes."))
+            hint: HintRow("externaldrive.badge.checkmark", Text("Merging copies numbers, emails, addresses and other details into the card you keep. Notes on removed cards can't be copied. A backup is saved first."))
         )
     }
 

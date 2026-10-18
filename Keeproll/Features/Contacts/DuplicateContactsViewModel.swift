@@ -28,6 +28,11 @@ final class DuplicateContactsViewModel {
         primaries[group.id] = id
         // The primary is kept; it can't also be queued for deletion.
         cart.remove(key: "contact:\(id)")
+        // A queued merge must keep the new primary, not the old one.
+        if mergeQueued(for: group) {
+            cart.remove(key: "merge:\(group.id.uuidString)")
+            toggleMerge(for: group)
+        }
     }
 
     func selectedForDeletion(in group: DuplicateContactGroup) -> Set<String> {
@@ -56,7 +61,8 @@ final class DuplicateContactsViewModel {
         }
     }
 
-    /// Queue a merge for every group (the safe bulk action: nothing is lost in a merge).
+    /// Queue a merge for every group. Merging copies numbers, emails, addresses and the
+    /// other fields Keeproll can read into the kept card; notes can't be read (QA H3).
     func mergeAll() {
         for group in groups where !mergeQueued(for: group) { toggleMerge(for: group) }
     }

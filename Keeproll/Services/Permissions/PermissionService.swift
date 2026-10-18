@@ -90,12 +90,6 @@ enum SystemActions {
         UIApplication.shared.open(url)
     }
 
-    /// Opens the Photos app (where Recently Deleted lives).
-    static func openPhotos() {
-        guard let url = URL(string: "photos-redirect://") else { return }
-        UIApplication.shared.open(url)
-    }
-
     /// Shows the system picker to change which photos Keeproll can see (FR-PERM-5).
     static func presentLimitedLibraryPicker() async {
         guard let root = topViewController() else { return }

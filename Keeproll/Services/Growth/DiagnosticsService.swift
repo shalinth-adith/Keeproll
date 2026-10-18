@@ -30,8 +30,7 @@ final class DiagnosticsService: NSObject, MXMetricManagerSubscriber {
     private nonisolated static func write(_ data: Data, kind: String) {
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-            let stamp = ISO8601DateFormatter().string(from: Date()).replacingOccurrences(of: ":", with: "-")
-            try data.write(to: directory.appendingPathComponent("\(kind)-\(stamp).json"), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+            try data.write(to: directory.appendingPathComponent(fileName(kind: kind)), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
             prune()
             Log.ui.debug("Stored a MetricKit \(kind, privacy: .public) payload")
         } catch {
@@ -39,10 +38,17 @@ final class DiagnosticsService: NSObject, MXMetricManagerSubscriber {
         }
     }
 
-    /// Newest first.
+    /// A unique name: two payloads in the same second used to overwrite each other (QA L11).
+    nonisolated static func fileName(kind: String, date: Date = Date(), unique: UUID = UUID()) -> String {
+        let stamp = ISO8601DateFormatter().string(from: date).replacingOccurrences(of: ":", with: "-")
+        return "\(kind)-\(stamp)-\(unique.uuidString.prefix(8).lowercased()).json"
+    }
+
+    /// Newest first (by file date, so metrics and diagnostics interleave correctly).
     nonisolated static func reports() -> [URL] {
-        let urls = (try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)) ?? []
-        return urls.filter { $0.pathExtension == "json" }.sorted { $0.lastPathComponent > $1.lastPathComponent }
+        let urls = (try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: [.contentModificationDateKey])) ?? []
+        func date(_ url: URL) -> Date { (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast }
+        return urls.filter { $0.pathExtension == "json" }.sorted { date($0) > date($1) }
     }
 
     /// Keep the last 30 files; a month is enough context for any bug report.

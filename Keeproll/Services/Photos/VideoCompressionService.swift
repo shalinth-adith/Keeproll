@@ -63,6 +63,8 @@ nonisolated final class VideoCompressionService: VideoCompressing {
         let output = FileManager.default.temporaryDirectory.appendingPathComponent("keeproll-\(UUID().uuidString).mov")
         defer { try? FileManager.default.removeItem(at: output) }
         try await Self.export(source.asset, to: output, progress: progress)
+        // Closing the sheet cancels the task: never save a copy after that (QA M8).
+        try Task.checkCancellation()
 
         let newBytes = (try? output.resourceValues(forKeys: [.fileSizeKey]).fileSize).map(Int64.init) ?? 0
         guard newBytes > 0 else { throw CompressionError.exportFailed("empty output") }
@@ -102,11 +104,33 @@ nonisolated final class VideoCompressionService: VideoCompressing {
                 ?? AVAssetExportSession(asset: asset, presetName: AVAssetExportPreset1280x720) else {
             throw CompressionError.exportFailed("no export session")
         }
-        session.outputURL = url
-        session.outputFileType = .mov
         session.shouldOptimizeForNetworkUse = true
+        if #unavailable(iOS 18) {
+            session.outputURL = url
+            session.outputFileType = .mov
+        }
 
         let box = SessionBox(session: session)
+        if #available(iOS 18, *) {
+            // The async API stops the export when the task is cancelled (QA M8).
+            let watcher = Task {
+                for await state in box.session.states(updateInterval: 0.2) {
+                    if case .exporting(let value) = state { progress(value.fractionCompleted) }
+                }
+            }
+            defer { watcher.cancel() }
+            do {
+                try await box.session.export(to: url, as: .mov)
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {
+                if Task.isCancelled { throw CancellationError() }
+                throw CompressionError.exportFailed(error.localizedDescription)
+            }
+            progress(1)
+            return
+        }
+
         let poller = Task {
             while !Task.isCancelled {
                 progress(Double(box.session.progress))
@@ -115,9 +139,14 @@ nonisolated final class VideoCompressionService: VideoCompressing {
         }
         defer { poller.cancel() }
 
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            box.session.exportAsynchronously { continuation.resume() }
+        await withTaskCancellationHandler {
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                box.session.exportAsynchronously { continuation.resume() }
+            }
+        } onCancel: {
+            box.session.cancelExport()
         }
+        if Task.isCancelled || box.session.status == .cancelled { throw CancellationError() }
         progress(1)
         guard box.session.status == .completed else {
             throw CompressionError.exportFailed(box.session.error?.localizedDescription ?? "status \(box.session.status.rawValue)")

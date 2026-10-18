@@ -189,3 +189,28 @@ T.update({
  "This Live Photo is no longer in your library.": "இந்த Live Photo இப்போது உங்கள் லைப்ரரியில் இல்லை.",
  "What's new": "புதிதாக என்ன",
 })
+# QA fixes, build 5.
+T.update({
+ "%@ · %@": "%@ · %@",
+ "%lld copied, but the original stays in your library because it has RAW data or edits the vault can't keep.": "%lld நகலெடுக்கப்பட்டன, ஆனால் அசல் உங்கள் லைப்ரரியில் இருக்கும், ஏனெனில் அதில் வால்ட் வைத்திருக்க முடியாத RAW தரவு அல்லது திருத்தங்கள் உள்ளன.",
+ "A backup was saved before anything changed. You can also find it later in Settings, under Backups.": "எதையும் மாற்றும் முன் காப்புப்பிரதி சேமிக்கப்பட்டது. பின்னர் அமைப்புகளில் காப்புப்பிரதிகள் பகுதியிலும் இதைக் காணலாம்.",
+ "Backups": "காப்புப்பிரதிகள்",
+ "Calendar backup": "நாள்காட்டி காப்புப்பிரதி",
+ "Cancel": "ரத்துசெய்",
+ "Contacts backup": "தொடர்புகள் காப்புப்பிரதி",
+ "Couldn't back up this event, so it wasn't removed.": "இந்த நிகழ்வை காப்புப்பிரதி எடுக்க முடியவில்லை, அதனால் அது நீக்கப்படவில்லை.",
+ "Couldn't remove this item. Try again.": "இதை நீக்க முடியவில்லை. மீண்டும் முயலவும்.",
+ "Current photo": "தற்போதைய படம்",
+ "Delete backup": "காப்புப்பிரதியை நீக்கு",
+ "Delete this backup?": "இந்தக் காப்புப்பிரதியை நீக்கவா?",
+ "Deleted photos stay in Recently Deleted for 30 days. To get the space back now, open Photos, go to Recently Deleted under Utilities, and delete them there.": "நீக்கப்பட்ட படங்கள் 30 நாட்கள் சமீபத்தில் நீக்கியவை பகுதியில் இருக்கும். இப்போதே இடத்தைத் திரும்பப் பெற, Photos-ஐத் திறந்து, Utilities கீழ் சமீபத்தில் நீக்கியவை சென்று, அங்கே அவற்றை நீக்கவும்.",
+ "Forwards from chat apps": "சாட் ஆப்களிலிருந்து வந்தவை",
+ "Merging copies numbers, emails, addresses and other details into the card you keep. Notes on removed cards can't be copied. A backup is saved first.": "இணைத்தால் எண்கள், மின்னஞ்சல்கள், முகவரிகள் மற்றும் பிற விவரங்கள் நீங்கள் வைத்திருக்கும் கார்டுக்கு நகலெடுக்கப்படும். நீக்கப்படும் கார்டுகளின் குறிப்புகளை நகலெடுக்க முடியாது. முதலில் காப்புப்பிரதி சேமிக்கப்படும்.",
+ "No backups yet": "இன்னும் காப்புப்பிரதிகள் இல்லை",
+ "Saved before any contact or calendar change. Open one in Contacts or Calendar to bring things back. Backups older than 90 days are deleted.": "எந்தத் தொடர்பு அல்லது நாள்காட்டி மாற்றத்துக்கும் முன் சேமிக்கப்படும். திரும்பக் கொண்டுவர அதை Contacts அல்லது Calendar-இல் திறக்கவும். 90 நாட்களுக்கு மேலான காப்புப்பிரதிகள் நீக்கப்படும்.",
+ "Show this photo": "இந்தப் படத்தைக் காட்டு",
+ "Tap Cancel to stop. Nothing is saved until it finishes.": "நிறுத்த ரத்துசெய் என்பதைத் தட்டவும். முடியும் வரை எதுவும் சேமிக்கப்படாது.",
+ "The vault is protected by your iPhone passcode and is included in your iPhone backups. Deleting Keeproll deletes the vault, so save anything you want to keep to Photos first.": "வால்ட் உங்கள் iPhone கடவுக்குறியீட்டால் பாதுகாக்கப்படுகிறது, உங்கள் iPhone காப்புப்பிரதிகளிலும் சேர்க்கப்படுகிறது. Keeproll-ஐ நீக்கினால் வால்ட்டும் நீங்கும், எனவே வைத்திருக்க வேண்டியதை முதலில் Photos-இல் சேமிக்கவும்.",
+ "This contact is in more than one change. Open Duplicate Contacts and choose again.": "இந்தத் தொடர்பு ஒன்றுக்கு மேற்பட்ட மாற்றங்களில் உள்ளது. நகல் தொடர்புகளைத் திறந்து மீண்டும் தேர்வுசெய்யவும்.",
+ "You won't be able to restore these contacts or events from it.": "இதிலிருந்து இந்தத் தொடர்புகளையோ நிகழ்வுகளையோ மீட்க முடியாது.",
+})

@@ -1,4 +1,6 @@
+import ImageIO
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// The image behind the Summary "Share" button: the brand mark, the amount freed, and
 /// the privacy line. Honest and plain; no app-store badge, no device frame.
@@ -34,11 +36,31 @@ struct ShareCard: View {
                 .background(.white.opacity(0.16), in: Capsule())
         }
         .padding(44)
-        .frame(width: 720, height: 720, alignment: .topLeading)
+        // 750 × 2 = 1500 px: not one of the long edges chat apps re-encode to, so a saved
+        // card doesn't look like a forward (QA L5).
+        .frame(width: 750, height: 750, alignment: .topLeading)
         .background(KeeprollGradient.hero)
     }
 
-    /// Renders at 2× for a crisp 1440 px square.
+    /// Written into the card's TIFF Software tag. `AssetHeaderReader` recognises it, so a
+    /// card saved to Photos is never suggested as "Saved from Chats" (QA L5).
+    nonisolated static let softwareTag = "Keeproll share card"
+
+    /// JPEG with the Software tag, written to a temporary file named for the share sheet.
+    @MainActor static func file(for image: UIImage) -> URL? {
+        guard let cgImage = image.cgImage else { return nil }
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Keeproll.jpg")
+        try? FileManager.default.removeItem(at: url)
+        guard let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.jpeg.identifier as CFString, 1, nil) else { return nil }
+        let properties: [CFString: Any] = [
+            kCGImageDestinationLossyCompressionQuality: 0.92,
+            kCGImagePropertyTIFFDictionary: [kCGImagePropertyTIFFSoftware: softwareTag],
+        ]
+        CGImageDestinationAddImage(destination, cgImage, properties as CFDictionary)
+        return CGImageDestinationFinalize(destination) ? url : nil
+    }
+
+    /// Renders at 2× for a crisp 1500 px square.
     @MainActor static func image(bytesFreed: Int64, itemCount: Int) -> UIImage? {
         let renderer = ImageRenderer(content: ShareCard(bytesFreed: bytesFreed, itemCount: itemCount))
         renderer.scale = 2

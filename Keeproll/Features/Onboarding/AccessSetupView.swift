@@ -49,6 +49,14 @@ final class AccessSetupViewModel {
 
 struct AccessSetupPage: View {
     @State private var vm: AccessSetupViewModel
+    /// Height the page has to work with, measured, so small phones can drop the
+    /// illustration. (`ViewThatFits` crashed here: iOS 26 measures its variants on a
+    /// background renderer during the page transition.)
+    @State private var available: CGFloat = 0
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// The illustration needs roughly this much height on top of the rows and buttons.
+    private static let heroMinHeight: CGFloat = 740
     let onFinish: () -> Void
 
     init(scanStore: ScanStore, onFinish: @escaping () -> Void) {
@@ -57,9 +65,21 @@ struct AccessSetupPage: View {
     }
 
     var body: some View {
-        VStack(spacing: Spacing.xl) {
+        // Small phones drop the illustration; very large text scrolls (QA L1). The scroll
+        // view only moves when the content is taller than the screen.
+        let showsHero = available >= Self.heroMinHeight && !typeSize.isAccessibilitySize
+        ScrollView(showsIndicators: false) {
+            content(showsHero: showsHero)
+                .frame(minHeight: available)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { available = $0 }
+    }
+
+    private func content(showsHero: Bool) -> some View {
+        VStack(spacing: showsHero ? Spacing.xl : Spacing.l) {
             Spacer(minLength: 0)
-            OnboardingHero.Access()
+            if showsHero { OnboardingHero.Access() }
             VStack(spacing: Spacing.xs) {
                 Text("Set up access")
                     .font(.system(.largeTitle, design: .rounded, weight: .bold))
