@@ -50,24 +50,6 @@ nonisolated enum CleanupCategory: String, CaseIterable, Hashable, Sendable, Iden
         }
     }
 
-    /// Short name for the dashboard card, so titles never wrap next to their number.
-    var cardTitle: LocalizedStringResource {
-        switch self {
-        case .similar: "Similar"
-        case .screenshots: "Screenshots"
-        case .blurry: "Blurry"
-        case .accidental: "Accidental"
-        case .videos: "Videos"
-        case .trims: "Smart Trim"
-        case .chats: "From chats"
-        case .expired: "Expired"
-        case .livePhotos: "Live Photos"
-        case .contacts: "Contacts"
-        case .calendar: "Calendar"
-        case .vault: "Vault"
-        }
-    }
-
     var symbol: String {
         switch self {
         case .similar: "square.on.square"

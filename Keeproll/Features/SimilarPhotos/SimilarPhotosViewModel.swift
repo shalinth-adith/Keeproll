@@ -18,6 +18,8 @@ final class SimilarPhotosViewModel {
     var isLoading: Bool { scanStore.similar.isLoading && groups.isEmpty }
     var freeableBytes: Int64 { scanStore.similarBytes }
     var photoCount: Int { groups.reduce(0) { $0 + $1.members.count } }
+    /// Photos other than each group's best: the number Results shows (UX review P2-3).
+    var extraCount: Int { groups.reduce(0) { $0 + $1.othersThanBest.count } }
     var selectedCount: Int { groups.flatMap(\.members).filter { cart.contains(assetID: $0.id) }.count }
 
     func isSelected(_ item: MediaItem) -> Bool { cart.contains(assetID: item.id) }

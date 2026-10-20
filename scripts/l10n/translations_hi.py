@@ -280,3 +280,26 @@ T.update({
  "This video has extra tracks (Cinematic, slow motion or spatial) that a trimmed copy can't keep. Nothing was changed.": "इस वीडियो में अतिरिक्त ट्रैक हैं (Cinematic, स्लो मोशन या स्पेशियल) जिन्हें काटी गई कॉपी नहीं रख सकती। कुछ नहीं बदला।",
  "Waiting for Review": "समीक्षा का इंतज़ार",
 })
+# UX review fixes.
+T.update({
+ "%@ free": "%@ खाली",
+ "%@ used": "%@ भरा",
+ "%lld screenshots past their date": "%lld स्क्रीनशॉट की तारीख़ निकल चुकी है",
+ "^[%lld extra shot](inflect: true)": "%lld अतिरिक्त फ़ोटो",
+ "^[%lld photo](inflect: true) in ^[%lld group](inflect: true) · ^[%lld extra shot](inflect: true)": "%lld फ़ोटो, %lld समूहों में · %lld अतिरिक्त",
+ "1 screenshot past its date": "1 स्क्रीनशॉट की तारीख़ निकल चुकी है",
+ "Biggest wins": "सबसे बड़ी बचत",
+ "Can be freed": "खाली किया जा सकता है",
+ "Card to keep": "रखा जाने वाला कार्ड",
+ "Clear saved scan data": "सेव किया स्कैन डेटा मिटाएँ",
+ "clip %@": "क्लिप %@",
+ "Delete ^[%lld item](inflect: true)": "%lld आइटम हटाएँ",
+ "Delete ^[%lld item](inflect: true) · %@": "%lld आइटम हटाएँ · %@",
+ "Delete ^[%lld item](inflect: true) · merge ^[%lld group](inflect: true)": "%lld आइटम हटाएँ · %lld समूह मिलाएँ",
+ "Keep best in all": "हर समूह में सबसे अच्छी रखें",
+ "Keep this card instead": "इसके बजाय यह कार्ड रखें",
+ "Merge ^[%lld contact group](inflect: true)": "%lld संपर्क समूह मिलाएँ",
+ "No contacts": "कोई संपर्क नहीं",
+ "No events": "कोई इवेंट नहीं",
+ "See all %lld": "सभी %lld देखें",
+})

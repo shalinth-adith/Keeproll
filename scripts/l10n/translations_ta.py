@@ -278,3 +278,26 @@ T.update({
  "This video has extra tracks (Cinematic, slow motion or spatial) that a trimmed copy can't keep. Nothing was changed.": "இந்த வீடியோவில் வெட்டிய நகல் வைத்திருக்க முடியாத கூடுதல் டிராக்குகள் உள்ளன (Cinematic, ஸ்லோ மோஷன் அல்லது ஸ்பேஷியல்). எதுவும் மாற்றப்படவில்லை.",
  "Waiting for Review": "மதிப்பாய்வுக்குக் காத்திருக்கிறது",
 })
+# UX review fixes.
+T.update({
+ "%@ free": "%@ காலி",
+ "%@ used": "%@ பயன்பாட்டில்",
+ "%lld screenshots past their date": "%lld ஸ்கிரீன்ஷாட்களின் தேதி கடந்துவிட்டது",
+ "^[%lld extra shot](inflect: true)": "%lld கூடுதல் படங்கள்",
+ "^[%lld photo](inflect: true) in ^[%lld group](inflect: true) · ^[%lld extra shot](inflect: true)": "%lld புகைப்படங்கள், %lld குழுக்களில் · %lld கூடுதல்",
+ "1 screenshot past its date": "1 ஸ்கிரீன்ஷாட்டின் தேதி கடந்துவிட்டது",
+ "Biggest wins": "அதிக இடம் மிச்சம்",
+ "Can be freed": "காலி செய்யலாம்",
+ "Card to keep": "வைத்திருக்கும் கார்டு",
+ "Clear saved scan data": "சேமித்த ஸ்கேன் தரவை அழி",
+ "clip %@": "கிளிப் %@",
+ "Delete ^[%lld item](inflect: true)": "%lld உருப்படிகளை நீக்கு",
+ "Delete ^[%lld item](inflect: true) · %@": "%lld உருப்படிகளை நீக்கு · %@",
+ "Delete ^[%lld item](inflect: true) · merge ^[%lld group](inflect: true)": "%lld உருப்படிகளை நீக்கு · %lld குழுக்களை இணை",
+ "Keep best in all": "எல்லாவற்றிலும் சிறந்ததை வைத்திரு",
+ "Keep this card instead": "பதிலாக இந்தக் கார்டை வைத்திரு",
+ "Merge ^[%lld contact group](inflect: true)": "%lld தொடர்புக் குழுக்களை இணை",
+ "No contacts": "தொடர்புகள் இல்லை",
+ "No events": "நிகழ்வுகள் இல்லை",
+ "See all %lld": "எல்லா %lld-ஐயும் பார்",
+})

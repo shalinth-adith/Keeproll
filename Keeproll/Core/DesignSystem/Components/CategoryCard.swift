@@ -28,16 +28,19 @@ struct CategoryCard: View {
                     badge
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(category.cardTitle)
+                    // The full name, the same as Home and the screen title (UX review P2-1).
+                    // It may wrap to two lines; the number sits below it, not beside it.
+                    Text(category.title)
                         .font(Font.keeproll.headline)
                         .foregroundStyle(Color.keeproll.inkPrimary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.85)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                     number
                     caption
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            // Fill the row's height, so two cards side by side match when one name wraps.
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .card()
             .contentShape(RoundedRectangle(cornerRadius: Radius.card, style: .continuous))
         }
@@ -107,7 +110,10 @@ struct CategoryCard: View {
         Group {
             switch state {
             case .ready(_, let count):
-                if hasBytes {
+                if category == .similar {
+                    // The count is the extra shots, not every photo in the groups (UX review P2-3).
+                    Text("^[\(count) extra shot](inflect: true)")
+                } else if hasBytes {
                     Text("^[\(count) item](inflect: true)")
                 } else if category == .contacts {
                     Text("^[\(count) duplicate](inflect: true)")

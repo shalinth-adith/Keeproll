@@ -8,6 +8,9 @@ nonisolated struct BackupFile: Identifiable, Hashable, Sendable {
     let kind: Kind
     let date: Date
     let bytes: Int64
+    /// Contacts or events inside. A size like "32 bytes" read as broken; a count says
+    /// what the backup can bring back (UX review P2-3).
+    var itemCount: Int = 0
 
     var id: URL { url }
 }
@@ -32,9 +35,17 @@ nonisolated enum BackupStore {
             else { return nil }
             let values = try? url.resourceValues(forKeys: Set(keys))
             let date = values?.creationDate ?? values?.contentModificationDate ?? .distantPast
-            return BackupFile(url: url, kind: kind, date: date, bytes: Int64(values?.fileSize ?? 0))
+            return BackupFile(url: url, kind: kind, date: date, bytes: Int64(values?.fileSize ?? 0),
+                              itemCount: itemCount(in: url, kind: kind))
         }
         .sorted { $0.date > $1.date }
+    }
+
+    /// Counts `BEGIN:VCARD` or `BEGIN:VEVENT` lines. Backups are small text files.
+    static func itemCount(in url: URL, kind: BackupFile.Kind) -> Int {
+        guard let text = try? String(contentsOf: url, encoding: .utf8) else { return 0 }
+        let marker = kind == .contacts ? "BEGIN:VCARD" : "BEGIN:VEVENT"
+        return text.components(separatedBy: .newlines).filter { $0.trimmingCharacters(in: .whitespaces) == marker }.count
     }
 
     @discardableResult

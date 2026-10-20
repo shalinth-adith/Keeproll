@@ -7,9 +7,10 @@ struct StorageSegment: Identifiable {
     let color: Color
 }
 
-/// The dashboard's one graphic: a 6 pt bar of the device's storage. Freeable
-/// categories are coloured segments at the start, the rest of the used space is
-/// grey, and free space is the track (DESIGN_SYSTEM §8, `StorageBar`).
+/// The dashboard's one graphic: a 6 pt bar of the device's storage. What can be freed is
+/// a coloured segment at the start, the rest of the used space is grey, and free space is
+/// the track (DESIGN_SYSTEM §8, `StorageBar`). Everything is to scale; a tiny freeable
+/// share shows as a 3 pt sliver, not as a percentage it doesn't have (UX review P1-4).
 struct StorageBar: View {
     let snapshot: StorageSnapshot?
     let segments: [StorageSegment]
@@ -23,7 +24,7 @@ struct StorageBar: View {
                     ForEach(parts(for: snapshot)) { part in
                         RoundedRectangle(cornerRadius: 1)
                             .fill(part.color)
-                            .frame(width: max(geo.size.width * part.fraction * progress - 1, 0))
+                            .frame(width: max(geo.size.width * part.fraction * progress - 1, part.isFreeable ? 3 * progress : 0))
                     }
                 }
                 Spacer(minLength: 0)
@@ -36,15 +37,14 @@ struct StorageBar: View {
         .accessibilityHidden(true)
     }
 
-    private struct Part: Identifiable { let id: String; let fraction: Double; let color: Color }
+    private struct Part: Identifiable { let id: String; let fraction: Double; let color: Color; var isFreeable = false }
 
     private func parts(for snapshot: StorageSnapshot) -> [Part] {
         let total = Double(snapshot.totalBytes)
         var result: [Part] = []
         var categorised: Int64 = 0
         for segment in segments where segment.bytes > 0 {
-            // Tiny categories still get a visible sliver, so the colour appears on the bar.
-            result.append(Part(id: segment.id, fraction: max(Double(segment.bytes) / total, 0.015), color: segment.color))
+            result.append(Part(id: segment.id, fraction: Double(segment.bytes) / total, color: segment.color, isFreeable: true))
             categorised += segment.bytes
         }
         let other = max(snapshot.usedBytes - categorised, 0)

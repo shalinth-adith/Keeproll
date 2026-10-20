@@ -54,16 +54,18 @@ struct ContactGroupCard: View {
     private func contactRow(_ contact: ContactSummary) -> some View {
         let isPrimary = contact.id == primaryID
         let isDeleting = selectedForDeletion.contains(contact.id)
+        // A star picks the card to keep, like Best in similar photos; the tick on the right
+        // is the app's usual "will be removed" mark (UX review P1-1).
         return HStack(spacing: Spacing.s) {
             Button { onSetPrimary(contact.id) } label: {
-                Image(systemName: isPrimary ? "largecircle.fill.circle" : "circle")
+                Image(systemName: isPrimary ? "star.fill" : "star")
                     .font(.title3)
                     .foregroundStyle(isPrimary ? Color.keeproll.accent : Color.keeproll.inkTertiary)
                     .frame(width: Layout.minTouchTarget, height: Layout.minTouchTarget)
             }
             .buttonStyle(.plain)
             .disabled(mergeQueued)
-            .accessibilityLabel(Text(isPrimary ? "Primary contact" : "Make primary"))
+            .accessibilityLabel(Text(isPrimary ? "Card to keep" : "Keep this card instead"))
 
             ContactAvatar(contact: contact, size: 36)
 
@@ -73,13 +75,7 @@ struct ContactGroupCard: View {
                         .font(Font.keeproll.headline)
                         .foregroundStyle(isDeleting ? Color.keeproll.inkTertiary : Color.keeproll.inkPrimary)
                         .strikethrough(isDeleting)
-                    if isPrimary {
-                        Text("Keep")
-                            .font(Font.keeproll.badge)
-                            .foregroundStyle(Color.keeproll.onAccent)
-                            .padding(.horizontal, 6).padding(.vertical, 2)
-                            .background(Color.keeproll.accent, in: Capsule())
-                    }
+                    if isPrimary { KeepBadge(showsIcon: false).fixedSize() }
                 }
                 ForEach(contact.phones + contact.emails, id: \.self) { line in
                     Text(line)
@@ -93,18 +89,19 @@ struct ContactGroupCard: View {
             }
             Spacer(minLength: Spacing.xs)
 
-            Button { onToggleDelete(contact.id) } label: {
-                Image(systemName: isDeleting ? "trash.circle.fill" : "trash.circle")
-                    .font(.title2)
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(isDeleting ? Color.keeproll.onAccent : Color.keeproll.inkTertiary,
-                                     isDeleting ? Color.keeproll.accent : .clear)
-                    .frame(width: Layout.minTouchTarget, height: Layout.minTouchTarget)
+            // The kept card has no removal control at all, rather than a faded one.
+            if !isPrimary {
+                Button { onToggleDelete(contact.id) } label: {
+                    RemoveCheck(isSelected: isDeleting)
+                        .frame(width: Layout.minTouchTarget, height: Layout.minTouchTarget)
+                }
+                .buttonStyle(.plain)
+                .disabled(mergeQueued)
+                .opacity(mergeQueued ? 0.35 : 1)
+                .accessibilityLabel(Text(isDeleting ? "Don't delete" : "Delete this contact"))
+            } else {
+                Color.clear.frame(width: Layout.minTouchTarget, height: Layout.minTouchTarget)
             }
-            .buttonStyle(.plain)
-            .disabled(mergeQueued || isPrimary)
-            .opacity(mergeQueued || isPrimary ? 0.35 : 1)
-            .accessibilityLabel(Text(isDeleting ? "Don't delete" : "Delete this contact"))
         }
         .padding(.vertical, Spacing.xs)
         .padding(.horizontal, Spacing.xxs)

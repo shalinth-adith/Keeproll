@@ -70,8 +70,12 @@ struct SelectableThumbnail: View {
             ThumbnailView(id: id)
                 .aspectRatio(1, contentMode: .fill)
                 .overlay {
+                    // A hairline edge so white screenshots don't melt into the canvas (UX review P3-5).
+                    RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous)
+                        .strokeBorder(Color.keeproll.hairline, lineWidth: 1)
                     if isSelected {
-                        Color.keeproll.accent.opacity(0.18)
+                        // No tint over the photo: the border and tick say "selected", and the photo stays
+                        // readable for comparing (UX review P2-6).
                         RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous)
                             .strokeBorder(Color.keeproll.accent, lineWidth: 3)
                     }

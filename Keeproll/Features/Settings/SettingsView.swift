@@ -78,7 +78,7 @@ struct SettingsView: View {
                 HintRow("lock.shield", Text("Keeproll reads these on your iPhone only. Nothing is uploaded, and nothing is removed until you confirm on Review."))
 
                 section(Text("Data on this iPhone")) {
-                    actionRow(symbol: "internaldrive", tint: Color.keeproll.catVault, title: Text("Clear scan cache"),
+                    actionRow(symbol: "internaldrive", tint: Color.keeproll.catVault, title: Text("Clear saved scan data"),
                               subtitle: Text(vm.cacheCleared ? "Cleared. The next scan will take longer." : "Photo features kept so rescans take seconds. Safe to clear.")) {
                         confirmCache = true
                     }
@@ -97,7 +97,7 @@ struct SettingsView: View {
                 section(Text("Backups")) {
                     BackupsSection()
                 }
-                HintRow("externaldrive.badge.checkmark", Text("Saved before any contact or calendar change. Open one in Contacts or Calendar to bring things back. Backups older than 90 days are deleted."))
+                HintRow("clock.arrow.circlepath", Text("Saved before any contact or calendar change. Open one in Contacts or Calendar to bring things back. Backups older than 90 days are deleted."))
 
                 section(Text("About")) {
                     infoRow(title: Text("Version"), value: Text(vm.version))

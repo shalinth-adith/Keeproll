@@ -221,6 +221,9 @@ final class ScanStore {
     }
     var similarPhotoCount: Int { similar.value?.reduce(0) { $0 + $1.othersThanBest.count } ?? 0 }
     var duplicateContactCount: Int { contacts.value?.reduce(0) { $0 + $1.contacts.count } ?? 0 }
+    /// Cards that would go if every group were merged: each group keeps one. This is the
+    /// "duplicates" number on Home and Results (UX review P2-3).
+    var extraContactCount: Int { contacts.value?.reduce(0) { $0 + max($1.contacts.count - 1, 0) } ?? 0 }
 
     /// Re-reads permission state (for example on returning from Settings). Rescans if
     /// access changed.
@@ -372,7 +375,7 @@ final class ScanStore {
         case .blurry: blurry.value?.count ?? 0
         case .accidental: accidental.value?.count ?? 0
         case .trims: visibleTrims.count + trimPairs.count
-        case .contacts: duplicateContactCount
+        case .contacts: extraContactCount
         case .calendar: calendar.value?.suggestionCount ?? 0
         case .chats: chats.value?.count ?? 0
         case .expired: expired.value?.count ?? 0

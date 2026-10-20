@@ -44,7 +44,7 @@ struct BackupsSection: View {
             VStack(alignment: .leading, spacing: 1) {
                 Text(file.kind == .contacts ? "Contacts backup" : "Calendar backup")
                     .font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkPrimary)
-                Text("\(file.date.formatted(date: .abbreviated, time: .shortened)) · \(ByteFormatter.string(file.bytes))")
+                Text("\(file.date.formatted(date: .abbreviated, time: .shortened)) · \(contents(file))")
                     .font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
             }
             Spacer(minLength: Spacing.s)
@@ -54,14 +54,24 @@ struct BackupsSection: View {
                     .frame(width: Layout.minTouchTarget, height: Layout.minTouchTarget)
             }
             .accessibilityLabel(Text("Share backup"))
+            // Not red: red is for the final Review button. The confirmation is red (UX review P2-5).
             Button { pendingDelete = file } label: {
                 Image(systemName: "trash")
-                    .font(Font.keeproll.headline).foregroundStyle(Color.keeproll.destructive)
+                    .font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkSecondary)
                     .frame(width: Layout.minTouchTarget, height: Layout.minTouchTarget)
             }
             .buttonStyle(.plain)
             .accessibilityLabel(Text("Delete backup"))
         }
         .padding(.vertical, Spacing.xxs)
+    }
+
+    private func contents(_ file: BackupFile) -> Text {
+        switch (file.kind, file.itemCount) {
+        case (.contacts, 0): Text("No contacts")
+        case (.calendar, 0): Text("No events")
+        case (.contacts, let count): Text("^[\(count) contact](inflect: true)")
+        case (.calendar, let count): Text("^[\(count) event](inflect: true)")
+        }
     }
 }

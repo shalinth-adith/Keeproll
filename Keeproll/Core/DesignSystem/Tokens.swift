@@ -104,7 +104,9 @@ enum Elevation {
 /// Shared gradients: the brand hero and a per-category tile gradient.
 enum KeeprollGradient {
     static var hero: LinearGradient {
-        LinearGradient(colors: [Color.keeproll.accent, Color.keeproll.accentDeep], startPoint: .topLeading, endPoint: .bottomTrailing)
+        // Own colours, not accent: in dark mode the accent is a bright mint that made the hero
+        // the brightest thing on screen (UX review P3-8). Light mode is unchanged.
+        LinearGradient(colors: [Color(.heroTop), Color(.heroBottom)], startPoint: .topLeading, endPoint: .bottomTrailing)
     }
 
     static func tile(_ color: Color) -> LinearGradient {

@@ -11,6 +11,9 @@ struct SelectableMediaGrid: View {
     let isSelected: (MediaItem) -> Bool
     let setSelected: (MediaItem, Bool) -> Void
     let accessibilityLabel: (MediaItem) -> Text
+    /// The size badge. Defaults to the file size; Live Photos shows the clip, which is
+    /// what converting frees (UX review P2-3).
+    var caption: ((MediaItem) -> String?)? = nil
 
     @Environment(\.thumbnails) private var thumbnails
     @Environment(\.displayScale) private var displayScale
@@ -44,7 +47,7 @@ struct SelectableMediaGrid: View {
                 SelectableThumbnail(
                     id: item.id,
                     isSelected: isSelected(item),
-                    caption: item.byteSize.map(ByteFormatter.string),
+                    caption: caption.map { $0(item) } ?? item.byteSize.map(ByteFormatter.string),
                     isCloudOnly: item.isCloudOnly,
                     accessibilityText: accessibilityLabel(item)
                 ) {

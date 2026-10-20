@@ -100,6 +100,10 @@ final class ReviewViewModel {
     var calendarEventCount: Int { cart.count(in: .calendar) }
     /// Contact and calendar changes: things with no byte size.
     var recordChangeCount: Int { contactActionCount + calendarEventCount }
+    /// Duplicate-contact groups that will be merged rather than deleted.
+    var mergeCount: Int { cart.items.values.filter { if case .contactMerge = $0 { true } else { false } }.count }
+    /// Everything that will be deleted: photos, videos, contacts and events.
+    var deleteCount: Int { cart.count - mergeCount }
 
     func assetIDs(in category: CleanupCategory) -> [String] {
         cart.items(in: category).compactMap {

@@ -31,7 +31,8 @@ struct SimilarPhotosView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button(vm.smartSelectActive ? "Clear" : "Smart select", systemImage: "sparkles") { vm.toggleSmartSelect() }
+                // Text, not just an icon: one tap selects every extra shot (UX review P1-2).
+                Button(vm.smartSelectActive ? "Clear" : "Keep best in all") { vm.toggleSmartSelect() }
                     .disabled(vm.groups.isEmpty)
             }
         }
@@ -43,7 +44,7 @@ struct SimilarPhotosView: View {
     private var header: some View {
         CategoryHeader(
             hero: Text(ByteFormatter.string(vm.freeableBytes)),
-            caption: Text("^[\(vm.groups.count) group](inflect: true) · ^[\(vm.photoCount) photo](inflect: true)"),
+            caption: Text("^[\(vm.photoCount) photo](inflect: true) in ^[\(vm.groups.count) group](inflect: true) · ^[\(vm.extraCount) extra shot](inflect: true)"),
             selectedCount: vm.selectedCount,
             hint: HintRow("star", Text("The sharpest shot in each group is marked Best. Tap a photo to compare; hold to make it Best.")),
             scanning: vm.isScanning ? Text("Still scanning — groups appear as they're found") : nil
@@ -76,8 +77,10 @@ struct SimilarPhotosView: View {
         return ThumbnailView(id: item.id, pointSize: 150)
             .frame(width: 132, height: 132)
             .overlay {
+                RoundedRectangle(cornerRadius: Radius.control, style: .continuous).strokeBorder(Color.keeproll.hairline, lineWidth: 1)
                 if selected {
-                    Color.keeproll.accent.opacity(0.18)
+                    // No tint over the photo: the border and tick say "selected", and the photo stays
+                    // readable for comparing (UX review P2-6).
                     RoundedRectangle(cornerRadius: Radius.control, style: .continuous).strokeBorder(Color.keeproll.accent, lineWidth: 3)
                 }
             }

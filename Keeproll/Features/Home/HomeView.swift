@@ -32,6 +32,9 @@ struct HomeView: View {
                     .rise(3, appeared)
                 checks
                     .rise(4, appeared)
+                if vm.hasResults && !vm.photosLocked {
+                    tools.rise(5, appeared)
+                }
             }
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
@@ -150,14 +153,12 @@ struct HomeView: View {
                 Label("Tap Scan to see what can be freed", systemImage: "sparkles")
             }
         }
+        // Plain text on the gradient, not a white capsule: the capsule looked like a button
+        // but did nothing, next to the real button below (UX review P3-7).
         .font(Font.keeproll.headline)
-        .foregroundStyle(Color.keeproll.accentDeep)
+        .foregroundStyle(.white)
         .multilineTextAlignment(.center)
-        .padding(.horizontal, Spacing.m)
-        .padding(.vertical, Spacing.s)
-        // A capsule turns into an oval once the text wraps at large sizes.
-        .background(Color.white.opacity(0.92),
-                    in: RoundedRectangle(cornerRadius: typeSize.isAccessibilitySize ? Radius.card : 100, style: .continuous))
+        .fixedSize(horizontal: false, vertical: true)
         .animation(Motion.standard, value: vm.totalFreeable)
     }
 
@@ -185,19 +186,19 @@ struct HomeView: View {
     private var checks: some View {
         VStack(alignment: .leading, spacing: Spacing.s) {
             HStack(alignment: .firstTextBaseline) {
-                Text("What Keeproll checks")
+                Text(vm.hiddenCategoryCount > 0 ? "Biggest wins" : "What Keeproll checks")
                     .font(Font.keeproll.title)
                     .foregroundStyle(Color.keeproll.inkPrimary)
                     .accessibilityAddTraits(.isHeader)
                 Spacer()
                 if vm.hasResults {
-                    Button("All results") { vm.primaryAction() }
+                    Button(vm.hiddenCategoryCount > 0 ? "See all \(vm.categories.count)" : "All results") { vm.primaryAction() }
                         .font(Font.keeproll.caption.weight(.semibold))
                         .foregroundStyle(Color.keeproll.accent)
                 }
             }
             VStack(spacing: 0) {
-                ForEach(Array(vm.categories.enumerated()), id: \.element) { index, category in
+                ForEach(Array(vm.homeCategories.enumerated()), id: \.element) { index, category in
                     Button { vm.open(category) } label: {
                         HStack(spacing: Spacing.s) {
                             CategoryTile(category: category, side: 36)
@@ -213,7 +214,7 @@ struct HomeView: View {
                             }
                             Spacer(minLength: Spacing.s)
                             if let value = vm.chipValue(for: category) {
-                                Text(value)
+                                value
                                     .font(Font.keeproll.metric)
                                     .foregroundStyle(Color.keeproll.inkPrimary)
                                     .monospacedDigit()
@@ -227,12 +228,27 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityElement(children: .combine)
-                    if index < vm.categories.count - 1 {
+                    if index < vm.homeCategories.count - 1 {
                         Divider().overlay(Color.keeproll.hairline).padding(.leading, 36 + Spacing.s)
                     }
                 }
             }
             .card(padding: Spacing.m)
+        }
+    }
+
+    /// Swipe to sort and the vault, which used to live only at the bottom of Results
+    /// (UX review P2-7). Same cards as Results.
+    private var tools: some View {
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            Text("Tools")
+                .font(Font.keeproll.title)
+                .foregroundStyle(Color.keeproll.inkPrimary)
+                .accessibilityAddTraits(.isHeader)
+            ToolCard(symbol: "hand.draw.fill", tint: Color.keeproll.accent, title: Text("Swipe to sort"),
+                     subtitle: Text("One photo at a time. Right to keep, left to remove.")) { vm.openSwipe() }
+            ToolCard(symbol: "lock.shield.fill", tint: Color.keeproll.catVault, title: Text("Private Vault"),
+                     subtitle: Text("Keep private photos out of your library, behind Face ID.")) { vm.openVault() }
         }
     }
 
@@ -253,25 +269,31 @@ struct ForecastCard: View {
     let forecast: StorageForecast
     let points: [Int64]
 
+    /// Text first, then the chart on its own full-width row, so neither squeezes the other
+    /// (UX review P3-6).
     var body: some View {
-        HStack(alignment: .center, spacing: Spacing.s) {
-            Image(systemName: symbol)
-                .font(Font.keeproll.headline)
-                .foregroundStyle(tint)
-                .frame(width: 36, height: 36)
-                .background(tint.opacity(0.14), in: Circle())
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Storage forecast").font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
-                headline.font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkPrimary)
-                    .fixedSize(horizontal: false, vertical: true)
-                caption.font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            HStack(alignment: .top, spacing: Spacing.s) {
+                Image(systemName: symbol)
+                    .font(Font.keeproll.headline)
+                    .foregroundStyle(tint)
+                    .frame(width: 36, height: 36)
+                    .background(tint.opacity(0.14), in: Circle())
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Storage forecast").font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
+                    headline.font(Font.keeproll.headline).foregroundStyle(Color.keeproll.inkPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    caption.font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
             }
-            Spacer(minLength: Spacing.xs)
             if points.count >= 3 {
                 Sparkline(values: points.map(Double.init), tint: tint)
-                    .frame(width: 72, height: 32)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 36)
+                    .padding(.leading, 36 + Spacing.s)
                     .accessibilityHidden(true)
             }
         }

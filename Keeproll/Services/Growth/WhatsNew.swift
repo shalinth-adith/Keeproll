@@ -18,7 +18,7 @@ nonisolated enum WhatsNew {
         ("5", [
             WhatsNewItem(symbol: "hand.raised.fingers.spread", title: "Accidental Shots", detail: "Pocket shots, black frames and a finger over the lens, found for you."),
             WhatsNewItem(symbol: "scissors", title: "Smart Trim", detail: "Cuts the dark, empty stretches out of videos and keeps the rest at full quality."),
-            WhatsNewItem(symbol: "externaldrive.badge.checkmark", title: "Backups in Settings", detail: "Contact and calendar backups are now listed in Settings, to share or delete."),
+            WhatsNewItem(symbol: "clock.arrow.circlepath", title: "Backups in Settings", detail: "Contact and calendar backups are now listed in Settings, to share or delete."),
         ]),
         ("4", [
             WhatsNewItem(symbol: "bubble.left.and.bubble.right", title: "Saved from Chats", detail: "Photos that arrived through WhatsApp and Telegram, told apart from the ones you shot."),

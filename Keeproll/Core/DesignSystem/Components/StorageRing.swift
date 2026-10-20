@@ -1,8 +1,10 @@
 import SwiftUI
 
 /// The Home hero ring (DESIGN_SYSTEM §8, `StorageRing`). Drawn on the hero gradient:
-/// a translucent white track for free space, a solid white arc for used space, and the
-/// freeable categories as glowing coloured arcs at the start. Free space sits in the middle.
+/// a translucent white track for free space and a solid white arc for used space, both to
+/// scale. What can be freed is one glowing arc at the end of the used space, also to
+/// scale: when it is tiny it shows as a dot, never as a fake share of the disk (UX review
+/// P1-4). The centre says "free" and "used" in words.
 struct StorageRing: View {
     let snapshot: StorageSnapshot?
     let segments: [StorageSegment]
@@ -22,9 +24,9 @@ struct StorageRing: View {
                 ForEach(arcs(for: snapshot).reversed(), id: \.id) { arc in
                     Circle()
                         .trim(from: arc.start * reveal, to: arc.end * reveal)
-                        .stroke(arc.color, style: StrokeStyle(lineWidth: lineWidth, lineCap: arc.isCategory ? .round : .butt))
+                        .stroke(arc.color, style: StrokeStyle(lineWidth: lineWidth, lineCap: arc.isFreeable ? .round : .butt))
                         .rotationEffect(.degrees(-90))
-                        .shadow(color: arc.isCategory ? arc.color.opacity(0.7) : .clear, radius: 8)
+                        .shadow(color: arc.isFreeable ? arc.color.opacity(0.8) : .clear, radius: 8)
                 }
             }
             if let scanProgress {
@@ -43,15 +45,20 @@ struct StorageRing: View {
         .accessibilityHidden(true)
     }
 
-    /// Free bytes normally; at accessibility sizes just the free share, which fits.
+    private func percent(_ value: Double) -> String {
+        value.formatted(.percent.precision(.fractionLength(0)))
+    }
+
+    /// Free bytes and the used share normally; at accessibility sizes just the free share,
+    /// which fits, still with the word "free" (UX review P1-4).
     @ViewBuilder private var centre: some View {
         if let snapshot, typeSize.isAccessibilitySize, snapshot.totalBytes > 0 {
-            Text(Double(snapshot.availableBytes) / Double(snapshot.totalBytes), format: .percent.precision(.fractionLength(0)))
-                .font(Font.keeproll.heroNumber)
+            Text("\(percent(1 - snapshot.usedFraction)) free")
+                .font(Font.keeproll.title)
                 .foregroundStyle(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(0.3)
-                .padding(.horizontal, lineWidth * 1.5)
+                .padding(.horizontal, lineWidth * 2)
                 .frame(width: size)
         } else if let snapshot {
             VStack(spacing: 0) {
@@ -66,6 +73,11 @@ struct StorageRing: View {
                     .foregroundStyle(.white.opacity(0.8))
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
+                Text("\(percent(snapshot.usedFraction)) used")
+                    .font(Font.keeproll.badge)
+                    .foregroundStyle(.white.opacity(0.7))
+                    .lineLimit(1)
+                    .padding(.top, 2)
             }
             .padding(.horizontal, lineWidth * 1.5)
             .frame(width: size)
@@ -74,22 +86,18 @@ struct StorageRing: View {
         }
     }
 
-    private struct Arc: Identifiable { let id: String; let start: Double; let end: Double; let color: Color; let isCategory: Bool }
+    private struct Arc: Identifiable { let id: String; let start: Double; let end: Double; let color: Color; let isFreeable: Bool }
 
-    /// Category arcs first (with a visible minimum), then the rest of the used space in white.
+    /// Used space in white, then what can be freed as one arc at its end. Both to scale.
     private func arcs(for snapshot: StorageSnapshot) -> [Arc] {
         let total = Double(snapshot.totalBytes)
-        var cursor = 0.0
-        var result: [Arc] = []
-        var categorised: Int64 = 0
-        for segment in segments where segment.bytes > 0 {
-            let length = max(Double(segment.bytes) / total, 0.025)
-            result.append(Arc(id: segment.id, start: cursor, end: cursor + length, color: segment.color, isCategory: true))
-            cursor += length
-            categorised += segment.bytes
+        let used = snapshot.usedFraction
+        let freeableBytes = segments.reduce(Int64(0)) { $0 + max($1.bytes, 0) }
+        let freeable = min(Double(freeableBytes) / total, used)
+        var result = [Arc(id: "used", start: 0, end: used - freeable, color: .white.opacity(0.9), isFreeable: false)]
+        if freeableBytes > 0 {
+            result.append(Arc(id: "freeable", start: used - freeable, end: used, color: Color.keeproll.warning, isFreeable: true))
         }
-        let other = max(snapshot.usedBytes - categorised, 0)
-        result.append(Arc(id: "used", start: cursor, end: min(cursor + Double(other) / total, 1), color: .white.opacity(0.9), isCategory: false))
         return result
     }
 }

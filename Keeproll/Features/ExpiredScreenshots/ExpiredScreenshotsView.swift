@@ -111,7 +111,8 @@ struct ExpiredScreenshotsView: View {
     private var header: some View {
         CategoryHeader(
             hero: Text(ByteFormatter.string(vm.totalBytes)),
-            caption: Text("^[\(vm.entries.count) screenshot](inflect: true) past their date"),
+            caption: vm.entries.count == 1 ? Text("1 screenshot past its date")
+                                           : Text("\(vm.entries.count) screenshots past their date"),
             selectedCount: vm.selectedCount,
             hint: HintRow("eye.slash", Text("Text is read on this iPhone and never stored. Only the kind and the date are kept."))
         )
@@ -145,6 +146,8 @@ struct ExpiredScreenshotsView: View {
                 ThumbnailView(id: entry.id, pointSize: 160)
                     .frame(width: 56, height: 72)
                     .clipShape(RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous)
+                        .strokeBorder(Color.keeproll.hairline, lineWidth: 1))
                     .contextMenu {} preview: {
                         ThumbnailView(id: entry.id, pointSize: 600)
                             .aspectRatio(CGFloat(max(entry.item.pixelWidth, 1)) / CGFloat(max(entry.item.pixelHeight, 1)), contentMode: .fit)
@@ -153,7 +156,8 @@ struct ExpiredScreenshotsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(vm.detail(entry)).font(Font.keeproll.body).foregroundStyle(Color.keeproll.inkPrimary)
                         .fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
-                    Text("\(ByteFormatter.string(entry.item.byteSize ?? 0)) · \(Int((entry.verdict.confidence * 100).rounded()))% sure")
+                    // Words, not a percentage, as Saved from Chats does (UX review P3-9).
+                    Text("\(ByteFormatter.string(entry.item.byteSize ?? 0)) · \(entry.verdict.confidence >= 0.9 ? String(localized: "Very likely") : String(localized: "Likely"))")
                         .font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
                 }
                 Spacer(minLength: Spacing.xs)

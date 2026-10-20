@@ -222,3 +222,37 @@ Each of these is small to fix, and together they matter more than any new featur
 - **VoiceOver:** not walked this pass.
 - **Hindi and Tamil layouts:** check the longer translations against the P2-1 renames.
 - **Real device:** haptics, scroll performance on a large library.
+
+---
+
+## Fix status (20 Oct 2026)
+
+All 20 findings are fixed and checked in the simulator. The after-screenshots are in [`docs/ux-review/after/`](ux-review/after/).
+
+| ID | What changed | After |
+|---|---|---|
+| P1-1 | One rule: a tick always means "will be removed". Calendar's kept event shows only a **Keep** pill. Contacts uses a star to pick the card to keep, and the standard tick (not a trash icon) to delete a card (FR-CON-3 still needs delete). New shared `KeepBadge` and `RemoveCheck`. | [21](ux-review/after/21-calendar-tap.png), [19](ux-review/after/19-contacts.png) |
+| P1-2 | "Keep best in all" / "Clear" and "Merge all" are text buttons. | [04](ux-review/after/04-similar.png), [19](ux-review/after/19-contacts.png) |
+| P1-3 | "Delete 16 items · 2.5 MB". Merge-only plans say "Merge 2 contact groups", and mixed plans say both. | [23](ux-review/after/23-review.png) |
+| P1-4 | The ring and the Results bar are to scale, using one de-duplicated freeable total. The centre adds "96% used"; at AX sizes it shows "4% free". | [01](ux-review/after/01-home.png), [27](ux-review/after/27-home-ax5.png) |
+| P2-1 | One name per category everywhere; the short card names are removed. Home shows "Biggest wins" (top 3 by size) and "See all 11". The Calendar screen is titled "Old Calendar Events". Results cards in a row match height. | [02](ux-review/after/02-home-2.png), [03](ux-review/after/03-results.png), [08](ux-review/after/08-results-grid.png) |
+| P2-2 | Sorted by size; counts carry their noun ("2 duplicates", "9 events"). | [02](ux-review/after/02-home-2.png) |
+| P2-3 | Contacts count only the cards that would go (2, not 4). Live Photo badges show the clip ("clip 223 KB"). Similar reads "16 extra shots" on Results and "19 photos in 3 groups · 16 extra shots" on its screen. Backups show "9 events" / "No events" instead of bytes. | [08](ux-review/after/08-results-2.png), [17](ux-review/after/17-live.png), [25](ux-review/after/25-settings.png) |
+| P2-4 | No passcode prompt until the vault has been unlocked once. | [11](ux-review/after/11-vault.png) |
+| P2-5 | Smart Trim's cut part is grey. The Settings trash icon is secondary ink; its confirmation stays red. | [14](ux-review/after/14-trim.png), [25](ux-review/after/25-settings.png) |
+| P2-6 | No tint over selected photos; the border and tick remain. | [05](ux-review/after/05-similar-selected.png) |
+| P2-7 | Home has a Tools section once there are results. | [02](ux-review/after/02-home-2.png) |
+| P3-1 | "Just now" / "8 minutes ago" in sentence case. | [01](ux-review/after/01-home.png) |
+| P3-2 | "1 screenshot past its date". | [16](ux-review/after/16-expired.png) |
+| P3-3 | Backup hints use `clock.arrow.circlepath`; the cache row keeps `internaldrive` and is renamed "Clear saved scan data". | [19](ux-review/after/19-contacts.png) |
+| P3-4 | Swipe's Keep button is a thumbs-up, matching the "kept" counter. A tick would contradict P1-1, and a heart reads as Favourite. | [10](ux-review/after/10-swipe.png) |
+| P3-5 | A 1 pt hairline on photo thumbnails. | [16](ux-review/after/16-expired.png) |
+| P3-6 | The forecast chart has its own full-width row. | [01](ux-review/after/01-home.png) |
+| P3-7 | The hero status line is plain white text, not a white capsule. | [01](ux-review/after/01-home.png) |
+| P3-8 | Dark mode has its own deep-teal hero colours. | [26](ux-review/after/26-home-dark.png) |
+| P3-9 | Expired screenshots say "Very likely" / "Likely". | [16](ux-review/after/16-expired.png) |
+
+**Note:** the "32 bytes" calendar backup seen in the review is a test file left by an earlier QA session (`calendar-…-def456.ics`), not one the app wrote. It now reads "No events".
+
+**Checks:** 144 tests pass (1 new: backup item counts). Debug and Release build with no warnings. The privacy gates are clean. Hindi and Tamil cover all 20 new strings.
+

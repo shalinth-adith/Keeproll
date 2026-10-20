@@ -14,6 +14,48 @@ struct BestBadge: View {
     }
 }
 
+/// "Keep" pill on the item that stays in a duplicate group (calendar, contacts). It is a
+/// label, never a tick: across the app a tick always means "will be removed".
+struct KeepBadge: View {
+    /// Off where a filled star already marks the row (contacts), to save width.
+    var showsIcon = true
+
+    var body: some View {
+        Label("Keep", systemImage: "star.fill")
+            .font(Font.keeproll.badge)
+            .labelStyle(KeepBadgeLabelStyle(showsIcon: showsIcon))
+            .foregroundStyle(Color.keeproll.onAccent)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 3)
+            .background(Color.keeproll.accent, in: Capsule())
+    }
+}
+
+private struct KeepBadgeLabelStyle: LabelStyle {
+    let showsIcon: Bool
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 3) {
+            if showsIcon { configuration.icon }
+            configuration.title
+        }
+    }
+}
+
+/// The app's one selection mark for list rows: empty circle, or a filled tick meaning
+/// "will be removed". Matches the photo grids.
+struct RemoveCheck: View {
+    let isSelected: Bool
+
+    var body: some View {
+        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+            .font(.title2)
+            .symbolRenderingMode(.palette)
+            .foregroundStyle(isSelected ? Color.keeproll.onAccent : Color.keeproll.inkTertiary,
+                             isSelected ? Color.keeproll.accent : .clear)
+            .symbolEffect(.bounce, value: isSelected)
+    }
+}
+
 /// Small pill for iCloud-only assets (FR-SIM-7).
 struct CloudBadge: View {
     var body: some View {
@@ -125,12 +167,7 @@ struct VideoRow: View {
             Spacer(minLength: Spacing.xs)
 
             Button(action: onToggle) {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.title2)
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(isSelected ? Color.keeproll.onAccent : Color.keeproll.inkTertiary,
-                                     isSelected ? Color.keeproll.accent : .clear)
-                    .symbolEffect(.bounce, value: isSelected)
+                RemoveCheck(isSelected: isSelected)
                     .frame(width: Layout.minTouchTarget, height: Layout.minTouchTarget)
             }
             .buttonStyle(.plain)

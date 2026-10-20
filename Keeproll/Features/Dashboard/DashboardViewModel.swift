@@ -81,21 +81,9 @@ final class DashboardViewModel {
         scanStore.isScanning && !scanStore.isLoaded(category) && scanStore.lastSummary?.counts[category.rawValue] != nil
     }
 
+    /// The bar's freeable part: one de-duplicated total, to scale (UX review P1-4).
     var segments: [StorageSegment] {
-        categories.compactMap { category in
-            switch category {
-            case .similar: StorageSegment(id: "similar", label: "Similar", bytes: scanStore.displayBytes(.similar) ?? 0, color: Color.keeproll.catSimilar)
-            case .screenshots: StorageSegment(id: "screenshots", label: "Screenshots", bytes: scanStore.displayBytes(.screenshots) ?? 0, color: Color.keeproll.catScreenshots)
-            case .blurry: StorageSegment(id: "blurry", label: "Blurry", bytes: scanStore.displayBytes(.blurry) ?? 0, color: Color.keeproll.catBlurry)
-            case .accidental: StorageSegment(id: "accidental", label: "Accidental", bytes: scanStore.displayBytes(.accidental) ?? 0, color: Color.keeproll.catAccidental)
-            case .trims: StorageSegment(id: "trims", label: "Smart Trim", bytes: scanStore.displayBytes(.trims) ?? 0, color: Color.keeproll.catTrim)
-            case .chats: StorageSegment(id: "chats", label: "From chats", bytes: scanStore.displayBytes(.chats) ?? 0, color: Color.keeproll.catChats)
-            case .expired: StorageSegment(id: "expired", label: "Expired", bytes: scanStore.displayBytes(.expired) ?? 0, color: Color.keeproll.catExpired)
-            case .livePhotos: StorageSegment(id: "live", label: "Live Photos", bytes: scanStore.displayBytes(.livePhotos) ?? 0, color: Color.keeproll.catLive)
-            case .videos: StorageSegment(id: "videos", label: "Videos", bytes: scanStore.displayBytes(.videos) ?? 0, color: Color.keeproll.catVideos)
-            case .contacts, .calendar, .vault: nil // no meaningful bytes (FR-DASH-2)
-            }
-        }
+        [StorageSegment(id: "freeable", label: "Can be freed", bytes: totalFreeable, color: Color.keeproll.accent)]
     }
 
     func cardState(for category: CleanupCategory) -> CategoryCard.State {
@@ -153,7 +141,7 @@ final class DashboardViewModel {
             return .empty
         case .contacts:
             guard scanStore.contactsPermission.canRead else { return .locked }
-            return state(scanStore.contacts, bytes: 0) { _ in scanStore.duplicateContactCount }
+            return state(scanStore.contacts, bytes: 0) { _ in scanStore.extraContactCount }
         }
     }
 

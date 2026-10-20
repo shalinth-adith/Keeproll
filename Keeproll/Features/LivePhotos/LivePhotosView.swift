@@ -58,7 +58,8 @@ struct LivePhotosView: View {
                         setSelected: vm.setSelected,
                         accessibilityLabel: { item in
                             Text("Live Photo, clip \(vm.clipSize(item) ?? ""), \(item.creationDate?.formatted(date: .abbreviated, time: .omitted) ?? "")\(vm.isSelected(item) ? ", selected" : "")")
-                        }
+                        },
+                        caption: { item in vm.clipSize(item).map { String(localized: "clip \($0)") } }
                     )
                 }
             }

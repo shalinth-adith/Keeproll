@@ -78,7 +78,7 @@ struct SummaryView: View {
                 }
 
                 if !result.backupURLs.isEmpty {
-                    InlineBanner(style: .info, systemImage: "externaldrive.badge.checkmark",
+                    InlineBanner(style: .info, systemImage: "clock.arrow.circlepath",
                                  message: Text("A backup was saved before anything changed. You can also find it later in Settings, under Backups.")) {
                         Button { ActivityShare.present(result.backupURLs) } label: {
                             Label("Share backup", systemImage: "square.and.arrow.up")

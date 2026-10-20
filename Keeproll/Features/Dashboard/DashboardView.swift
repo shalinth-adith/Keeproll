@@ -40,7 +40,7 @@ struct DashboardView: View {
                             ToolCard(symbol: "hand.draw.fill", tint: Color.keeproll.accent, title: Text("Swipe to sort"),
                                      subtitle: Text("One photo at a time. Right to keep, left to remove.")) { vm.openSwipe() }
                         }
-                        ToolCard(symbol: "lock.shield.fill", tint: Color.keeproll.catVault, title: Text("Private vault"),
+                        ToolCard(symbol: "lock.shield.fill", tint: Color.keeproll.catVault, title: Text("Private Vault"),
                                  subtitle: Text("Keep private photos out of your library, behind Face ID.")) { vm.openVault() }
                     }
                 }

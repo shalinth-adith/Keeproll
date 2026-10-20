@@ -147,3 +147,13 @@ A least-squares trend over at most 30 daily samples, never fewer than three dist
 - **Smart Trim.** Dead = dark (or flat dim grey) **and** silent: audio is decoded to 8 kHz mono and any second above −35 dBFS keeps the stretch (± 1 s). Cinematic, slow-motion, spatial and multi-video-track videos are excluded; audio and timed-metadata tracks are all copied and the asset metadata is passed to the export. The 1 MB minimum is enforced at trim time; passthrough failure falls back to a highest-quality re-encode. Originals are queued at the **net** saving (compression too).
 - **Pending pairs** (`trimPairs`, JSON in UserDefaults) replace the `trimmedVideos` set. Pairs are pruned when either side disappears.
 - **Cache:** trailing sections are now length-prefixed (count, version, byte length), so a version change skips just that section. Older layouts stop parsing and are recomputed once.
+
+### Amendment — 2026-10-20 (UI/UX review: one selection meaning, honest graphics)
+- **A tick always means "will be removed."** The item that stays in a duplicate group gets a `KeepBadge` (and, in contacts, a star that picks it), never a tick. Calendar and Contacts used to show a filled tick for "keep", next to rows where the same mark meant "remove". FR-CON-3's delete action stays, as the standard `RemoveCheck`.
+- **Bulk actions are words.** "Keep best in all" and "Merge all" are text buttons; one tap selects many items.
+- **The Review button names the consequence:** "Delete 16 items · 2.5 MB", "Merge 2 contact groups", or both.
+- **Storage graphics are to scale.** The ring and the Results bar draw one de-duplicated freeable total with no minimum size; the ring says "% used" in words.
+- **One name per category** (`CleanupCategory.title`) on Home, Results and the screen title; the short card names are gone. Home shows the top three categories by size once results exist ("Biggest wins", "See all 11"), every category before the first scan or while photos are locked, and a Tools section.
+- **Red stays on the final Review button only.** Smart Trim's cut part is neutral grey; the backup trash in Settings is secondary ink (its confirmation dialog stays destructive).
+- **The vault doesn't prompt on first open**; it waits for Unlock until it has been unlocked once.
+- Dark mode uses its own deep-teal hero (`heroTop`/`heroBottom`) instead of the bright mint accent.

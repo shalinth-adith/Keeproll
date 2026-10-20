@@ -84,7 +84,7 @@ struct CalendarCleanupView: View {
             .padding(.bottom, Spacing.xxl)
         }
         .background(Color.keeproll.canvas)
-        .navigationTitle("Calendar")
+        .navigationTitle("Old Calendar Events")
         .navigationBarTitleDisplayMode(.inline)
         .overlay { if vm.isLoading && vm.findings.isEmpty && vm.permission.canRead { ProgressView() } }
     }
@@ -94,7 +94,7 @@ struct CalendarCleanupView: View {
             hero: Text("^[\(vm.findings.suggestionCount) event](inflect: true)"),
             caption: Text("duplicates and events over a year old"),
             selectedCount: vm.selectedCount,
-            hint: HintRow("externaldrive.badge.checkmark", Text("Repeating events are never touched. A calendar backup is saved before anything is removed."))
+            hint: HintRow("clock.arrow.circlepath", Text("Repeating events are never touched. A calendar backup is saved before anything is removed."))
         )
     }
 
@@ -159,26 +159,17 @@ struct CalendarCleanupView: View {
         }
     }
 
-    /// The copy that stays, styled like the kept contact in a duplicate group.
+    /// The copy that stays: a Keep badge and no tick, because a tick means "will be removed"
+    /// everywhere else (UX review P1-1).
     private func keptRow(_ event: CalendarEventSummary) -> some View {
         HStack(spacing: Spacing.s) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.title3)
-                .foregroundStyle(Color.keeproll.success)
-                .frame(width: 28)
             VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: Spacing.xs) {
-                    Text(event.title.isEmpty ? String(localized: "Untitled event") : event.title)
-                        .font(Font.keeproll.body).foregroundStyle(Color.keeproll.inkPrimary).lineLimit(2)
-                    Text("Keep")
-                        .font(Font.keeproll.badge)
-                        .foregroundStyle(Color.keeproll.onAccent)
-                        .padding(.horizontal, 6).padding(.vertical, 2)
-                        .background(Color.keeproll.accent, in: Capsule())
-                }
+                Text(event.title.isEmpty ? String(localized: "Untitled event") : event.title)
+                    .font(Font.keeproll.body).foregroundStyle(Color.keeproll.inkPrimary).lineLimit(2)
                 Text(event.calendarTitle).font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
             }
-            Spacer(minLength: 0)
+            Spacer(minLength: Spacing.xs)
+            KeepBadge()
         }
         .frame(minHeight: Layout.minTouchTarget)
         .accessibilityElement(children: .combine)
@@ -189,16 +180,13 @@ struct CalendarCleanupView: View {
         let selected = vm.isSelected(event)
         return Button { vm.toggle(event) } label: {
             HStack(spacing: Spacing.s) {
-                Image(systemName: selected ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundStyle(selected ? Color.keeproll.accent : Color.keeproll.inkTertiary)
-                    .frame(width: 28)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(event.title.isEmpty ? String(localized: "Untitled event") : event.title)
                         .font(Font.keeproll.body).foregroundStyle(Color.keeproll.inkPrimary).lineLimit(2)
                     detail.font(Font.keeproll.caption).foregroundStyle(Color.keeproll.inkSecondary)
                 }
-                Spacer(minLength: 0)
+                Spacer(minLength: Spacing.xs)
+                RemoveCheck(isSelected: selected)
             }
             .frame(minHeight: Layout.minTouchTarget)
             .contentShape(Rectangle())
@@ -206,6 +194,7 @@ struct CalendarCleanupView: View {
         .buttonStyle(.plain)
         .sensoryFeedback(.selection, trigger: selected)
         .accessibilityAddTraits(selected ? .isSelected : [])
+        .accessibilityHint(Text(selected ? "Selected to remove" : "Select to remove"))
     }
 
     private func dateText(_ event: CalendarEventSummary) -> String {

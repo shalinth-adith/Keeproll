@@ -31,6 +31,11 @@ final class VaultViewModel {
     }
 
     var isUnlocked: Bool { lock == .unlocked }
+    /// Set after the first successful unlock. Until then the vault waits on its explainer
+    /// for the user to tap Unlock, rather than asking for a passcode for something they
+    /// haven't read about yet (UX review P2-4).
+    static let unlockedOnceKey = "vaultUnlockedOnce"
+    var shouldUnlockOnOpen: Bool { UserDefaults.standard.bool(forKey: Self.unlockedOnceKey) }
     var totalBytes: Int64 { items.reduce(0) { $0 + $1.bytes } }
 
     func unlock() async {
@@ -40,6 +45,7 @@ final class VaultViewModel {
         case .unlocked:
             items = await store.items()
             lock = .unlocked
+            UserDefaults.standard.set(true, forKey: Self.unlockedOnceKey)
         case .cancelled:
             lock = .locked
         case .unavailable(let reason):
@@ -140,7 +146,7 @@ struct VaultView: View {
         .overlay { if scenePhase != .active && vm.isUnlocked { privacyCover } }
         .onChange(of: scenePhase) { _, phase in if phase == .background { vm.lockNow() } }
         .onDisappear { vm.lockNow() }
-        .task { await vm.unlock() }
+        .task { if vm.shouldUnlockOnOpen { await vm.unlock() } }
         .navigationTitle("Private Vault")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

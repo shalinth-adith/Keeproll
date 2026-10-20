@@ -40,7 +40,7 @@ struct DuplicateContactsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Merge all", systemImage: "arrow.triangle.merge") { vm.mergeAll() }
+                Button("Merge all") { vm.mergeAll() }
                     .disabled(vm.groups.isEmpty)
             }
         }
@@ -52,7 +52,7 @@ struct DuplicateContactsView: View {
             hero: Text("^[\(vm.groups.count) group](inflect: true)"),
             caption: Text("^[\(vm.duplicateCount) contact](inflect: true) that look like the same people"),
             selectedCount: vm.queuedMerges + vm.queuedDeletes,
-            hint: HintRow("externaldrive.badge.checkmark", Text("Merging copies numbers, emails, addresses and other details into the card you keep. Notes on removed cards can't be copied. A backup is saved first."))
+            hint: HintRow("clock.arrow.circlepath", Text("Merging copies numbers, emails, addresses and other details into the card you keep. Notes on removed cards can't be copied. A backup is saved first."))
         )
     }
 

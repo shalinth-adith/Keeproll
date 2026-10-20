@@ -225,6 +225,23 @@ struct QAFixTests {
         #expect(FileManager.default.fileExists(atPath: other.path))
     }
 
+    // MARK: UX review P2-3 — backups say what they hold
+
+    @Test func backupCountsTheEventsAndContactsInside() throws {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("backups-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let ics = dir.appendingPathComponent("calendar-a.ics")
+        try Data("BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nSUMMARY:A\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nSUMMARY:B\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n".utf8).write(to: ics)
+        let empty = dir.appendingPathComponent("calendar-b.ics")
+        try Data("BEGIN:VCALENDAR\r\nEND:VCALENDAR\r\n".utf8).write(to: empty)
+        let vcf = dir.appendingPathComponent("contacts-c.vcf")
+        try Data("BEGIN:VCARD\nFN:A\nEND:VCARD\n".utf8).write(to: vcf)
+
+        let counts = Dictionary(uniqueKeysWithValues: BackupStore.files(in: dir).map { ($0.url.lastPathComponent, $0.itemCount) })
+        #expect(counts == ["calendar-a.ics": 2, "calendar-b.ics": 0, "contacts-c.vcf": 1])
+    }
+
     // MARK: Security review — calendar cart and alarm guard
 
     @Test func calendarRemovalsNoLongerSuggestedArePruned() {

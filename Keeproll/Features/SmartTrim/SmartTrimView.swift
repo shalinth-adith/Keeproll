@@ -225,7 +225,7 @@ struct TrimTimeline: View {
             if showsLegend {
                 HStack(spacing: Spacing.s) {
                     legend(Color.keeproll.accent, Text("Kept \(DurationFormatter.string(candidate.keptSeconds))"), striped: false)
-                    legend(Color.keeproll.catTrim, Text("Cut \(DurationFormatter.string(candidate.deadSeconds))"), striped: true)
+                    legend(Color.keeproll.inkTertiary, Text("Cut \(DurationFormatter.string(candidate.deadSeconds))"), striped: true)
                 }
             }
         }
@@ -245,17 +245,18 @@ struct TrimTimeline: View {
     }
 }
 
-/// Red diagonal stripes on a pale red base: "this part is cut".
+/// Grey diagonal stripes on a pale base: "this part is cut". Neutral, not red: red is
+/// kept for the final Review button (UX review P2-5).
 private struct CutStripes: View {
     var body: some View {
         Canvas { context, size in
-            context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(Color.keeproll.catTrim.opacity(0.22)))
+            context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(Color.keeproll.inkTertiary.opacity(0.18)))
             var x = -size.height
             while x < size.width {
                 var stripe = Path()
                 stripe.move(to: CGPoint(x: x, y: size.height))
                 stripe.addLine(to: CGPoint(x: x + size.height, y: 0))
-                context.stroke(stripe, with: .color(Color.keeproll.catTrim), lineWidth: 2)
+                context.stroke(stripe, with: .color(Color.keeproll.inkTertiary), lineWidth: 2)
                 x += 6
             }
         }

@@ -1,0 +1,1 @@
+{"feature":"project-wide","status":"PASSED_WITH_WARNINGS","mode":"mvp","platform":"ios","database_type":"none","steps_passed":["build","typecheck","tests","visual","placeholder"],"steps_failed":[],"report_path":"verification-report.md","screenshots_dir":"docs/ux-review/after/","timestamp":"2026-10-20T13:30:00Z"}

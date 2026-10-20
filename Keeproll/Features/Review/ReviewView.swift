@@ -212,7 +212,7 @@ struct ReviewView: View {
         VStack(spacing: Spacing.s) {
             InlineBanner(
                 style: .info,
-                systemImage: vm.mediaCount == 0 ? "externaldrive.badge.checkmark" : "trash",
+                systemImage: vm.mediaCount == 0 ? "clock.arrow.circlepath" : "trash",
                 message: Text(vm.mediaCount == 0
                     ? "Keeproll saves a backup before changing any contact or event. They have no Recently Deleted, so the backup is your undo."
                     : vm.recordChangeCount > 0
@@ -220,9 +220,7 @@ struct ReviewView: View {
                     : "Photos and videos go to Recently Deleted in the Photos app. The space comes back once you empty it, or automatically after 30 days.")
             )
             PrimaryButton(
-                title: vm.mediaCount > 0
-                    ? "Confirm ^[\(vm.cart.count) item](inflect: true) · \(ByteFormatter.string(vm.cart.totalBytes))"
-                    : "Confirm ^[\(vm.cart.count) change](inflect: true)",
+                title: confirmTitle,
                 systemImage: "trash",
                 role: .destructive,
                 isLoading: vm.phase == .deleting
@@ -235,5 +233,17 @@ struct ReviewView: View {
         .padding(.top, Spacing.s)
         .padding(.bottom, Spacing.xs)
         .background(Color.keeproll.canvas.opacity(0.97))
+    }
+
+    /// Names the consequence, never just "Confirm" (CLAUDE.md §4, UX review P1-3).
+    private var confirmTitle: LocalizedStringKey {
+        let deletes = vm.deleteCount, merges = vm.mergeCount
+        if merges == 0 {
+            return vm.mediaCount > 0
+                ? "Delete ^[\(deletes) item](inflect: true) · \(ByteFormatter.string(vm.cart.totalBytes))"
+                : "Delete ^[\(deletes) item](inflect: true)"
+        }
+        if deletes == 0 { return "Merge ^[\(merges) contact group](inflect: true)" }
+        return "Delete ^[\(deletes) item](inflect: true) · merge ^[\(merges) group](inflect: true)"
     }
 }

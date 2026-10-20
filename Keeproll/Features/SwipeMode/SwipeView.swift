@@ -195,7 +195,7 @@ struct SwipeView: View {
     private var controls: some View {
         HStack(spacing: Spacing.xl) {
             roundButton("xmark", label: "Remove", tint: Color.keeproll.inkPrimary, fill: Color.keeproll.surface) { fling(.left) }
-            roundButton("heart.fill", label: "Keep", tint: Color.keeproll.onAccent, fill: Color.keeproll.accent) { fling(.right) }
+            roundButton("hand.thumbsup.fill", label: "Keep", tint: Color.keeproll.onAccent, fill: Color.keeproll.accent) { fling(.right) }
         }
         .padding(.bottom, Spacing.s)
     }
