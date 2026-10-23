@@ -9,6 +9,10 @@ enum KeeprollColor {
     static let canvas = Color(.canvas)
     static let surface = Color(.surface)
     static let surfaceRaised = Color(.surfaceRaised)
+    /// Card background: translucent white, so the mint canvas shows through (frosted).
+    static let cardFill = Color(.cardFill)
+    /// Thin green edge around cards.
+    static let cardStroke = Color(.cardStroke)
     static let hairline = Color(.hairline)
 
     static let inkPrimary = Color(.inkPrimary)
@@ -93,7 +97,8 @@ enum Layout {
 
 /// Soft, single-step elevation for cards on the canvas (DESIGN_SYSTEM §5, v4).
 enum Elevation {
-    static let cardColor = Color.black.opacity(0.07)
+    /// Green-tinted, so cards float on the mint canvas without a grey halo.
+    static let cardColor = Color(.accentDeep).opacity(0.10)
     static let cardRadius: CGFloat = 16
     static let cardY: CGFloat = 6
     static let floatingColor = Color.black.opacity(0.14)
@@ -124,17 +129,38 @@ struct CardStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding(.all, padding ?? 0)
-            .background(Color.keeproll.surface, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
-            // Dark mode separates surfaces by value, not shadow (DESIGN_SYSTEM §5).
+            // Frosted green glass: translucent white over the mint canvas, a thin green edge,
+            // and a soft green shadow in light mode. Dark mode separates by edge, not shadow
+            // (DESIGN_SYSTEM §5).
+            .background(Color.keeproll.cardFill, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .strokeBorder(Color.keeproll.hairline.opacity(scheme == .dark ? 1 : 0)))
+                .strokeBorder(Color.keeproll.cardStroke, lineWidth: 1))
             .shadow(color: scheme == .dark ? .clear : Elevation.cardColor, radius: Elevation.cardRadius, y: Elevation.cardY)
+    }
+}
+
+/// Screen background: the mint canvas with a soft green glow at the top, so the brand
+/// colour surrounds the content instead of a flat white page. Frosted cards pick it up.
+struct KeeprollBackground: View {
+    var body: some View {
+        Color.keeproll.canvas
+            .overlay(alignment: .top) {
+                RadialGradient(colors: [Color.keeproll.accent.opacity(0.20), .clear],
+                               center: .top, startRadius: 0, endRadius: 520)
+                    .frame(height: 620)
+            }
+            .ignoresSafeArea()
     }
 }
 
 extension View {
     func card(radius: CGFloat = Radius.card, padding: CGFloat? = Spacing.m) -> some View {
         modifier(CardStyle(radius: radius, padding: padding))
+    }
+
+    /// The app's screen background (see `KeeprollBackground`).
+    func keeprollBackground() -> some View {
+        background { KeeprollBackground() }
     }
 }
 

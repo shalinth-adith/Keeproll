@@ -96,7 +96,7 @@ struct ExpiredScreenshotsView: View {
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Expired Screenshots")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

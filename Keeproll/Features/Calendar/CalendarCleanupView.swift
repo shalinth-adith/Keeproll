@@ -83,7 +83,7 @@ struct CalendarCleanupView: View {
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Old Calendar Events")
         .navigationBarTitleDisplayMode(.inline)
         .overlay { if vm.isLoading && vm.findings.isEmpty && vm.permission.canRead { ProgressView() } }

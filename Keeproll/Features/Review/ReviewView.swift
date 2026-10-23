@@ -52,7 +52,7 @@ struct ReviewView: View {
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xl)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Review")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) { footer }

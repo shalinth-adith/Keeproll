@@ -81,7 +81,7 @@ struct ChatSavedView: View {
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Saved from Chats")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

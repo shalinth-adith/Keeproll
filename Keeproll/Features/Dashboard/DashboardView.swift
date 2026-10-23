@@ -58,7 +58,7 @@ struct DashboardView: View {
             .padding(.bottom, Spacing.xxl)
             .animation(Motion.respecting(reduceMotion, Motion.standard), value: vm.showStaleBanner)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Results")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

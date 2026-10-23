@@ -35,7 +35,7 @@ struct DuplicateContactsView: View {
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Duplicate Contacts")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

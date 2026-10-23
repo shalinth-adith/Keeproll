@@ -36,7 +36,7 @@ struct LargeVideosView: View {
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Large Videos")
         .navigationBarTitleDisplayMode(.inline)
         .overlay { if vm.isLoading && vm.items.isEmpty { ProgressView() } }

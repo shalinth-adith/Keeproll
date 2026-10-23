@@ -31,7 +31,7 @@ struct OnboardingView: View {
                     .padding(.top, Spacing.xs)
                     .padding(.bottom, Spacing.s)
                     .frame(maxWidth: .infinity)
-                    .background(Color.keeproll.canvas)
+                    .keeprollBackground()
             }
         }
         .animation(Motion.respecting(reduceMotion, Motion.standard), value: step)

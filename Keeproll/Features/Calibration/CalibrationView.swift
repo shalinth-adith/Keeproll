@@ -175,7 +175,7 @@ struct CalibrationScreen: View {
             }
             .padding(Spacing.m)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Calibrate")
         .navigationBarTitleDisplayMode(.inline)
     }

@@ -101,7 +101,7 @@ struct SummaryView: View {
             }
             .padding(.horizontal, Spacing.m)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: Spacing.s) {
                 if photosRemoved, let shareImage {

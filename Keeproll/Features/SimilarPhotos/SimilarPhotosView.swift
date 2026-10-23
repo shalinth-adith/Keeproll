@@ -26,7 +26,7 @@ struct SimilarPhotosView: View {
             .padding(.bottom, Spacing.xxl)
             .animation(Motion.standard, value: vm.groups.map(\.id))
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Similar Photos")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

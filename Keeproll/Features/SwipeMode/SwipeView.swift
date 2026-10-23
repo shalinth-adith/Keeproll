@@ -95,7 +95,7 @@ struct SwipeView: View {
             if !vm.isFinished && !vm.deck.isEmpty { controls }
         }
         .padding(Spacing.m)
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Swipe to sort")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

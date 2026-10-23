@@ -32,7 +32,7 @@ struct ScreenshotsView: View {
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Screenshots")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

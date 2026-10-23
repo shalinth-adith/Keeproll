@@ -77,7 +77,7 @@ struct RootView: View {
                 OnboardingView(env: env)
             }
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active else { return }
             env.scanStore.refreshPermissions()

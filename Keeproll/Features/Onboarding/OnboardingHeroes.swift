@@ -163,5 +163,5 @@ enum OnboardingHero {
         OnboardingHero.Photos()
         OnboardingHero.Contacts()
     }
-    .background(Color.keeproll.canvas)
+    .keeprollBackground()
 }

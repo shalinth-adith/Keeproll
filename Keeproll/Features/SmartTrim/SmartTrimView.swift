@@ -90,7 +90,7 @@ struct SmartTrimView: View {
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         // New videos added while Keeproll is open show up after a pull (QA U2).
         .refreshable { vm.rescan() }
         .navigationTitle("Smart Trim")

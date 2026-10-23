@@ -102,7 +102,7 @@ struct TrimVideoSheet: View {
                 footer
             }
             .padding(Spacing.m)
-            .background(Color.keeproll.canvas)
+            .keeprollBackground()
             .navigationTitle("Smart Trim")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -40,7 +40,7 @@ struct WhatsNewSheet: View {
                 }
                 .padding(Spacing.m)
             }
-            .background(Color.keeproll.canvas)
+            .keeprollBackground()
             .safeAreaInset(edge: .bottom) {
                 PrimaryButton(title: "Continue", action: onDone)
                     .padding(.horizontal, Spacing.m)

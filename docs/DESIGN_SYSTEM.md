@@ -32,10 +32,12 @@ Defined as asset-catalog colour sets (`Assets.xcassets/Colors/`) with Any and Da
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| `canvas` | `#F6F5F1` (warm paper) | `#0E1113` | App background |
-| `surface` | `#FFFFFF` | `#171B1E` | Cards, list rows |
-| `surfaceRaised` | `#FFFFFF` | `#1F2427` | Sheets, selection bar |
-| `hairline` | `#E4E2DC` | `#2A3035` | 1 pt separators and card borders |
+| `canvas` | `#E9F3EF` (soft mint) | `#0A1412` (green-black) | App background, under a soft accent glow at the top (`keeprollBackground()`) |
+| `cardFill` | `#FFFFFF` at 62 % | `#FFFFFF` at 5 % | Cards: frosted, so the mint shows through (`.card()`) |
+| `cardStroke` | `#0B7A6F` at 14 % | `#3CC7B5` at 18 % | 1 pt green edge on every card |
+| `surface` | `#FFFFFF` | `#14221F` | Solid controls over content (round buttons, chips) |
+| `surfaceRaised` | `#FFFFFF` | `#1A2B27` | Sheets, selection bar (must stay opaque: content scrolls under it) |
+| `hairline` | `#D2E4DD` | `#1F332F` | 1 pt separators |
 | `inkPrimary` | `#13181B` | `#F2F4F5` | Titles, body |
 | `inkSecondary` | `#5B6770` | `#9AA6AE` | Captions, metadata (≥ 4.5:1 on canvas and surface) |
 | `inkTertiary` | `#8A949B` | `#6B767D` | Placeholders and disabled text only (not for essential info) |

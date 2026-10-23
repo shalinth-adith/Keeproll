@@ -120,7 +120,7 @@ struct SettingsView: View {
             .padding(.vertical, Spacing.s)
             .padding(.bottom, Spacing.xxl)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
         .confirmationDialog("Clear the scan cache?", isPresented: $confirmCache, titleVisibility: .visible) {

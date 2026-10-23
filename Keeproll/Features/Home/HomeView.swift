@@ -39,7 +39,7 @@ struct HomeView: View {
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .toolbar(.hidden, for: .navigationBar)
         .navigationTitle("Home")
         .refreshable { vm.rescan() }

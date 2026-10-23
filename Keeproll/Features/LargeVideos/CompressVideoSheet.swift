@@ -102,7 +102,7 @@ struct CompressVideoSheet: View {
                 footer
             }
             .padding(Spacing.m)
-            .background(Color.keeproll.canvas)
+            .keeprollBackground()
             .navigationTitle("Compress video")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

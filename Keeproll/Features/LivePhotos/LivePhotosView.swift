@@ -66,7 +66,7 @@ struct LivePhotosView: View {
             .padding(.horizontal, Spacing.m)
             .padding(.bottom, Spacing.xxl)
         }
-        .background(Color.keeproll.canvas)
+        .keeprollBackground()
         .navigationTitle("Live Photos")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -172,7 +172,7 @@ struct ConvertLivePhotosSheet: View {
                 footer
             }
             .padding(Spacing.m)
-            .background(Color.keeproll.canvas)
+            .keeprollBackground()
             .navigationTitle("Convert to stills")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Close") { dismiss() }.disabled(vm.isWorking) } }
